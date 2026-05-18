@@ -1,0 +1,20 @@
+{# categories/templates/categories/index.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ category.name }}</h1>
+
+  {% if subcategories and subcategories.children %}
+    <h2>Розділи каталогу</h2>
+    <ul>
+      {% for child in subcategories.children %}
+        {% include "categories/partials/category_node.html" with category=child %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Немає розділів</p>
+  {% endif %}
+
+  {# Возврата на родителя нет, можно добавить ссылку на главную сайта #}
+  <a href="{% url 'shop:index' %}">← На головну</a>
+{% endblock %}

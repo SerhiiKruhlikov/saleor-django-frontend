@@ -1,0 +1,12 @@
+# products/graphql/queries/product_by_slug.graphql
+query ProductBySlug($slug: String!) {
+  product(slug: $slug) {
+    id
+    name
+    slug
+    description
+    category {
+      id name slug
+    }
+  }
+}

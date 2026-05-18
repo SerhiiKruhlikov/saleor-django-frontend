@@ -1,0 +1,6 @@
+# categories/graphql/queries/category_count.graphql
+query CategoriesTotalCount {
+  categories {
+    totalCount
+  }
+}

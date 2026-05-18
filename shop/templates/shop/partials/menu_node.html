@@ -1,0 +1,16 @@
+{# categories/templates/categories/partials/category_node.html #}
+
+<li>
+  {% if category.slug == 'catalog' %}
+    <a href="{% url 'categories:root' %}">{{ category.name }}</a>
+  {% else %}
+    <a href="{% url 'categories:detail' slug=category.slug %}">{{ category.name }}</a>
+  {% endif %}
+  {% if category.children %}
+    <ul>
+      {% for child in category.children %}
+        {% include "shop/partials/menu_node.html" with category=child %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+</li>

@@ -1,0 +1,40 @@
+{# categories/templates/categories/detail.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ category.name }}</h1>
+
+  {% if subcategories and subcategories.children %}
+    <h2>Підкатегорії</h2>
+    <ul>
+      {% for child in subcategories.children %}
+        {% include "categories/partials/category_node.html" with category=child %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Немає підкатегорій</p>
+  {% endif %}
+
+  {# Блок товаров (будет добавлен позже) #}
+  {% if products %}
+    <h2>Товари</h2>
+    <div class="products-grid">
+      {% for product in products %}
+        <!-- карточка товара -->
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>У цій категорії поки немає товарів</p>
+  {% endif %}
+
+  {# Ссылка возврата #}
+  {% if parent %}
+    {% if parent.slug == 'catalog' %}
+      <a href="{% url 'categories:root' %}">← Повернутися до {{ parent.name }}</a>
+    {% else %}
+      <a href="{% url 'categories:detail' slug=parent.slug %}">← Повернутися до {{ parent.name }}</a>
+    {% endif %}
+  {% else %}
+    <a href="{% url 'shop:index' %}">← На головну</a>
+  {% endif %}
+{% endblock %}

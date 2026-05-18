@@ -1,0 +1,22 @@
+{# templates/partials/header.html #}
+<header>
+  <nav>
+    <ul class="menu">
+      {# Статические ссылки #}
+      {% if menu_links %}
+        {% for link in menu_links %}
+          <li>
+            <a href="{{ link.url }}">{{ link.name }}</a>
+          </li>
+        {% endfor %}
+      {% endif %}
+
+      {# Каталог с выпадающим списком категорий #}
+      {% if menu_category_tree %}
+        {% for category in menu_category_tree %}
+          {% include "shop/partials/menu_node.html" with category=category %}
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </nav>
+</header>

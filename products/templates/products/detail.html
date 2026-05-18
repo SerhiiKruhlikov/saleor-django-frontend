@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>{% if product %}{{ product.name }}{% endif %}</h1>
+
+  {# Блок товару #}
+  {% if product %}
+    {% if product.description %}
+    	 {{ product.description|safe }}
+    {% endif %}
+  {% else %}
+    <p>Немає товару</p>
+  {% endif %}
+
+  {# Ссылка возврата #}
+  {% if parent %}
+    {% if parent.slug == 'catalog' %}
+      <a href="{% url 'categories:root' %}">← Повернутися до {{ parent.name }}</a>
+    {% else %}
+      <a href="{% url 'categories:detail' slug=parent.slug %}">← Повернутися до {{ parent.name }}</a>
+    {% endif %}
+  {% else %}
+    <a href="{% url 'shop:index' %}">← На головну</a>
+  {% endif %}
+
+{% endblock %}

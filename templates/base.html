@@ -1,0 +1,23 @@
+{# templates/base.html #}
+{% load i18n static %}
+
+<!doctype html>
+<html class="no-js" lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% trans "Site name" %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  </noscript>
+</head>
+<body>
+{% include 'partials/header.html' %}
+<main>
+  {% block content %}{% endblock %}
+</main>
+{% include 'partials/footer.html' %}
+</body>
+</html>

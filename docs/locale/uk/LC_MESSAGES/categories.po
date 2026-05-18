@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, serhii.kruhlikov@gmail.com
+# This file is distributed under the same license as the
+# saleor-django-frontend package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: saleor-django-frontend 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-19 00:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../categories.rst:2
+msgid "Category service"
+msgstr "Сервіс категорій"
+
+#: categories.services.categories.build_category_tree:1 of
+msgid ""
+"Converts a flat list of categories into a tree (children in the "
+"``children`` key)."
+msgstr ""
+"Перетворює плоский список категорій у дерево (діти в ключі "
+"``children``)."
+
+#: categories.services.categories.build_category_tree:3 of
+msgid ""
+"Each category receives an additional ``children`` key (list). Categories "
+"with ``parent=None`` become root nodes, the rest are distributed to their"
+" parents according to ``parent.id``."
+msgstr ""
+"Кожна категорія отримує додатковий ключ ``children`` (список). Категорії "
+"з ``parent=None`` стають кореневими вузлами, решта розподіляються за "
+"батьками відповідно до ``parent.id``."
+
+#: ../../categories.rst categories.services.categories.build_category_tree
+#: categories.services.categories.find_node_in_tree
+#: categories.services.categories.get_all_categories of
+msgid "Parameters"
+msgstr "Параметри"
+
+#: categories.services.categories.build_category_tree:7 of
+msgid "Flat list of dictionaries, each of which must"
+msgstr "Плоский список словників, кожен з яких обов'язково"
+
+#: ../../categories.rst categories.services.categories.build_category_tree
+#: categories.services.categories.find_node_in_tree
+#: categories.services.categories.get_all_categories of
+msgid "Returns"
+msgstr "Повертає"
+
+#: categories.services.categories.build_category_tree:11 of
+msgid ""
+"List of root categories with recursively nested subcategories in the "
+"``children`` field."
+msgstr ""
+"Список кореневих категорій із рекурсивно вкладеними підкатегоріями "
+"в полі ``children``."
+
+#: categories.services.categories.build_category_tree:15
+#: categories.services.categories.find_node_in_tree:13
+#: categories.services.categories.get_all_categories:14 of
+msgid "Example"
+msgstr "Приклад"
+
+#: categories.services.categories.find_node_in_tree:1 of
+msgid "Recursively searches for a node with the given slug in the category tree."
+msgstr "Рекурсивно шукає вузол із заданим slug у дереві категорій."
+
+#: categories.services.categories.find_node_in_tree:3 of
+msgid ""
+"Used to highlight the active menu branch or build a subtree on the "
+"category detail page."
+msgstr ""
+"Використовується для виділення активної гілки меню або побудови "
+"піддерева на детальній сторінці категорії."
+
+#: categories.services.categories.find_node_in_tree:6 of
+msgid "URL identifier of the category to find."
+msgstr "URL-ідентифікатор категорії, яку потрібно знайти."
+
+#: categories.services.categories.find_node_in_tree:7 of
+msgid "List of tree nodes (usually the result of :func:`get_full_tree`"
+msgstr "Список вузлів дерева (зазвичай результат :func:`get_full_tree`"
+
+#: categories.services.categories.find_node_in_tree:10 of
+msgid ""
+"Node dictionary (with ``children`` field) or ``None`` if the node is not "
+"found."
+msgstr ""
+"Словник вузла (з полем ``children``) або ``None``, якщо вузол не знайдено."
+
+#: categories.services.categories.get_all_categories:1 of
+msgid "Retrieves a flat list of all categories from Saleor."
+msgstr "Отримує плоский список усіх категорій із Saleor."
+
+#: categories.services.categories.get_all_categories:3 of
+msgid ""
+"If the ``first`` parameter is not provided, it automatically queries the "
+"total number of categories via :func:`_cached_category_count` and loads "
+"all of them. The result is extracted from the ``edges → node`` structure "
+"and returned as a list of dictionaries."
+msgstr ""
+"Якщо параметр ``first`` не передано, автоматично запитує загальну "
+"кількість категорій через :func:`_cached_category_count` і завантажує "
+"їх усі. Результат витягується зі структури ``edges → node`` і "
+"повертається як список словників."
+
+#: categories.services.categories.get_all_categories:8 of
+msgid "Maximum number of categories (None – all)."
+msgstr "Максимальна кількість категорій (None – усі)."
+
+#: categories.services.categories.get_all_categories:10 of
+msgid "``id``, ``name``, ``slug``, ``parent`` (None or dict with ``id``)."
+msgstr "``id``, ``name``, ``slug``, ``parent`` (None або dict з ``id``)."
+
+#: categories.services.categories.get_all_categories of
+msgid "Return type"
+msgstr "Тип повернення"
+
+#: categories.services.categories.get_category_by_slug:1 of
+msgid "Retrieves a single category by its slug (human-readable URL)."
+msgstr "Отримує одну категорію за її slug (людинозрозумілою URL-адресою)."
+
+#: categories.services.categories.get_category_by_slug:3 of
+msgid ""
+"Executes the query ``category_by_slug.graphql``, passing the ``slug`` "
+"variable. Returns a dictionary with the full set of category fields, "
+"including parent, children, and description."
+msgstr ""
+"Виконує запит ``category_by_slug.graphql``, передаючи змінну ``slug``. "
+"Повертає словник із повним набором полів категорії, включаючи батька, "
+"дочірні елементи та опис."
+
+#: categories.services.categories.get_category_by_slug:7 of
+msgid "URL identifier of the category (e.g., ``\"video-walls\"``)."
+msgstr "URL-ідентифікатор категорії (наприклад, ``\"video-walls\"``)."
+
+#: categories.services.categories.get_category_by_slug:9 of
+msgid "Category dictionary or ``None`` if the category is not found."
+msgstr "Словник категорії або ``None``, якщо категорію не знайдено."
+
+#: ../../categories.rst
+msgid "Raises"
+msgstr "Викликає виняток"
+
+#: categories.services.categories.get_category_by_slug:11 of
+msgid "If there is a problem with the request."
+msgstr "Якщо виникла проблема із запитом."
+
+#: categories.services.categories.get_category_count:1 of
+msgid "Queries the total number of categories from Saleor."
+msgstr "Запитує загальну кількість категорій із Saleor."
+
+#: categories.services.categories.get_category_count:3 of
+msgid ""
+"Executes the GraphQL query ``category_count.graphql`` and returns the "
+"number that can be used to limit the results in "
+":func:`get_all_categories`."
+msgstr ""
+"Виконує GraphQL-запит ``category_count.graphql`` і повертає число, "
+"яке можна використовувати для обмеження вибірки в :func:`get_all_categories`."
+
+#: categories.services.categories.get_category_count:6 of
+msgid "Total number of categories (int)."
+msgstr "Загальна кількість категорій (int)."
+
+#: categories.services.categories.get_category_count:8 of
+msgid "If there is a connection error or an invalid response from Saleor."
+msgstr "При помилці з'єднання або некоректній відповіді від Saleor."
+
+#: categories.services.categories.get_full_tree:1 of
+msgid "Returns the full category tree (cached)."
+msgstr "Повертає повне дерево категорій (кешоване)."
+
+#: categories.services.categories.get_full_tree:3 of
+msgid ""
+"Loads all categories via :func:`get_all_categories` without a limit, then"
+" builds the tree using :func:`build_category_tree`. The result can be "
+"cached globally for better performance."
+msgstr ""
+"Завантажує всі категорії через :func:`get_all_categories` без обмеження, "
+"потім будує дерево за допомогою :func:`build_category_tree`. Результат "
+"можна закешувати глобально для кращої продуктивності."
+
+#: categories.services.categories.get_full_tree:7 of
+msgid "Category tree (list of root nodes with nested ``children``)."
+msgstr "Дерево категорій (список кореневих вузлів із вкладеними ``children``)."
+
+#: categories.services.categories.get_full_tree:11 of
+msgid ""
+"For production, it is recommended to add caching at the Django level "
+"(e.g., ``django.core.cache``) so that all categories are not queried on "
+"every call."
+msgstr ""
+"Для продакшену рекомендується додати кешування на рівні Django "
+"(наприклад, ``django.core.cache``), щоб не запитувати всі категорії "
+"при кожному виклику."
+

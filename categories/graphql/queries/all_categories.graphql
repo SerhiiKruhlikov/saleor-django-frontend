@@ -1,0 +1,13 @@
+# categories/graphql/queries/all_categories.graphql
+query AllCategories($first: Int!) {
+  categories(first: $first) {
+    edges {
+      node {
+        id
+        name
+        slug
+        parent { id }
+      }
+    }
+  }
+}
