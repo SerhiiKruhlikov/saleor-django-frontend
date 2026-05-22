@@ -1,17 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
+# Ukrainian translations for saleor-django-frontend.
 # Copyright (C) 2026, serhii.kruhlikov@gmail.com
 # This file is distributed under the same license as the
 # saleor-django-frontend package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Serhii Kruhlikov <serhii.kruhlikov@gmail.com>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: saleor-django-frontend 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 00:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-05-22 12:45+0200\n"
+"PO-Revision-Date: 2026-05-22 13:00+0200\n"
+"Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language: uk\n"
 "Language-Team: uk <LL@li.org>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -27,11 +26,10 @@ msgstr "Сервіс категорій"
 
 #: categories.services.categories.build_category_tree:1 of
 msgid ""
-"Converts a flat list of categories into a tree (children in the "
-"``children`` key)."
+"Converts a flat list of categories into a tree (children in ``children`` "
+"key)."
 msgstr ""
-"Перетворює плоский список категорій у дерево (діти в ключі "
-"``children``)."
+"Перетворює плаский список категорій на дерево (діти в ключі ``children``)."
 
 #: categories.services.categories.build_category_tree:3 of
 msgid ""
@@ -41,7 +39,7 @@ msgid ""
 msgstr ""
 "Кожна категорія отримує додатковий ключ ``children`` (список). Категорії "
 "з ``parent=None`` стають кореневими вузлами, решта розподіляються за "
-"батьками відповідно до ``parent.id``."
+"батьками згідно з ``parent.id``."
 
 #: ../../categories.rst categories.services.categories.build_category_tree
 #: categories.services.categories.find_node_in_tree
@@ -50,8 +48,12 @@ msgid "Parameters"
 msgstr "Параметри"
 
 #: categories.services.categories.build_category_tree:7 of
-msgid "Flat list of dictionaries, each of which must"
-msgstr "Плоский список словників, кожен з яких обов'язково"
+msgid ""
+"Flat list of dictionaries, each of which must contain ``id`` and "
+"``parent`` (``None`` or dict with ``id`` key)."
+msgstr ""
+"Плаский список словників, кожен з яких повинен містити ``id`` та "
+"``parent`` (``None`` або словник із ключем ``id``)."
 
 #: ../../categories.rst categories.services.categories.build_category_tree
 #: categories.services.categories.find_node_in_tree
@@ -59,23 +61,23 @@ msgstr "Плоский список словників, кожен з яких �
 msgid "Returns"
 msgstr "Повертає"
 
-#: categories.services.categories.build_category_tree:11 of
+#: categories.services.categories.build_category_tree:10 of
 msgid ""
 "List of root categories with recursively nested subcategories in the "
 "``children`` field."
 msgstr ""
 "Список кореневих категорій із рекурсивно вкладеними підкатегоріями "
-"в полі ``children``."
+"у полі ``children``."
 
-#: categories.services.categories.build_category_tree:15
-#: categories.services.categories.find_node_in_tree:13
-#: categories.services.categories.get_all_categories:14 of
+#: categories.services.categories.build_category_tree:14
+#: categories.services.categories.find_node_in_tree:14
+#: categories.services.categories.get_all_categories:13 of
 msgid "Example"
 msgstr "Приклад"
 
 #: categories.services.categories.find_node_in_tree:1 of
 msgid "Recursively searches for a node with the given slug in the category tree."
-msgstr "Рекурсивно шукає вузол із заданим slug у дереві категорій."
+msgstr "Рекурсивно шукає вузол із заданим слагом у дереві категорій."
 
 #: categories.services.categories.find_node_in_tree:3 of
 msgid ""
@@ -83,127 +85,134 @@ msgid ""
 "category detail page."
 msgstr ""
 "Використовується для виділення активної гілки меню або побудови "
-"піддерева на детальній сторінці категорії."
+"піддерева на сторінці детальної категорії."
 
 #: categories.services.categories.find_node_in_tree:6 of
 msgid "URL identifier of the category to find."
 msgstr "URL-ідентифікатор категорії, яку потрібно знайти."
 
 #: categories.services.categories.find_node_in_tree:7 of
-msgid "List of tree nodes (usually the result of :func:`get_full_tree`"
-msgstr "Список вузлів дерева (зазвичай результат :func:`get_full_tree`"
+msgid ""
+"List of tree nodes (usually the result of :func:`get_full_tree` or the "
+"``children`` of some node)."
+msgstr ""
+"Список вузлів дерева (зазвичай результат :func:`get_full_tree` або "
+"``children`` деякого вузла)."
 
 #: categories.services.categories.find_node_in_tree:10 of
 msgid ""
 "Node dictionary (with ``children`` field) or ``None`` if the node is not "
 "found."
 msgstr ""
-"Словник вузла (з полем ``children``) або ``None``, якщо вузол не знайдено."
+"Словник вузла (з полем ``children``) або ``None``, якщо вузол не "
+"знайдено."
 
 #: categories.services.categories.get_all_categories:1 of
-msgid "Retrieves a flat list of all categories from Saleor."
-msgstr "Отримує плоский список усіх категорій із Saleor."
+msgid "Retrieves a flat list of all categories from Saleor (cached)."
+msgstr "Отримує плаский список усіх категорій з Saleor (кешовано)."
 
 #: categories.services.categories.get_all_categories:3 of
 msgid ""
-"If the ``first`` parameter is not provided, it automatically queries the "
-"total number of categories via :func:`_cached_category_count` and loads "
-"all of them. The result is extracted from the ``edges → node`` structure "
-"and returned as a list of dictionaries."
+"When ``first`` is ``None``, the total count is obtained automatically "
+"(also cached) and all categories are loaded. The result is stored in "
+"Redis with a key that includes the ``first`` parameter."
 msgstr ""
-"Якщо параметр ``first`` не передано, автоматично запитує загальну "
-"кількість категорій через :func:`_cached_category_count` і завантажує "
-"їх усі. Результат витягується зі структури ``edges → node`` і "
-"повертається як список словників."
+"Коли ``first`` дорівнює ``None``, загальна кількість отримується "
+"автоматично (також кешовано) і завантажуються всі категорії. Результат "
+"зберігається в Redis з ключем, який містить параметр ``first``."
 
-#: categories.services.categories.get_all_categories:8 of
-msgid "Maximum number of categories (None – all)."
-msgstr "Максимальна кількість категорій (None – усі)."
+#: categories.services.categories.get_all_categories:7 of
+msgid "Maximum number of categories (``None`` to fetch all)."
+msgstr "Максимальна кількість категорій (``None`` для отримання всіх)."
 
-#: categories.services.categories.get_all_categories:10 of
-msgid "``id``, ``name``, ``slug``, ``parent`` (None or dict with ``id``)."
-msgstr "``id``, ``name``, ``slug``, ``parent`` (None або dict з ``id``)."
-
-#: categories.services.categories.get_all_categories of
-msgid "Return type"
-msgstr "Тип повернення"
+#: categories.services.categories.get_all_categories:9 of
+msgid ""
+"List of dictionaries, each containing ``id``, ``name``, ``slug``, and "
+"``parent`` (``None`` or a dict with ``id``)."
+msgstr ""
+"Список словників, кожен з яких містить ``id``, ``name``, ``slug`` та "
+"``parent`` (``None`` або словник з ``id``)."
 
 #: categories.services.categories.get_category_by_slug:1 of
-msgid "Retrieves a single category by its slug (human-readable URL)."
-msgstr "Отримує одну категорію за її slug (людинозрозумілою URL-адресою)."
+msgid "Retrieves a single category by its slug (cached for 30 minutes)."
+msgstr "Отримує одну категорію за її слагом (кешується на 30 хвилин)."
 
 #: categories.services.categories.get_category_by_slug:3 of
 msgid ""
-"Executes the query ``category_by_slug.graphql``, passing the ``slug`` "
-"variable. Returns a dictionary with the full set of category fields, "
-"including parent, children, and description."
+"Executes the ``category_by_slug.graphql`` query, passing the ``slug`` "
+"variable. The result is stored in Redis under a slug‑specific key."
 msgstr ""
 "Виконує запит ``category_by_slug.graphql``, передаючи змінну ``slug``. "
-"Повертає словник із повним набором полів категорії, включаючи батька, "
-"дочірні елементи та опис."
+"Результат зберігається в Redis під ключем, що залежить від слагу."
 
-#: categories.services.categories.get_category_by_slug:7 of
-msgid "URL identifier of the category (e.g., ``\"video-walls\"``)."
+#: categories.services.categories.get_category_by_slug:6 of
+msgid "URL identifier of the category (e.g. ``\"video-walls\"``)."
 msgstr "URL-ідентифікатор категорії (наприклад, ``\"video-walls\"``)."
 
-#: categories.services.categories.get_category_by_slug:9 of
-msgid "Category dictionary or ``None`` if the category is not found."
-msgstr "Словник категорії або ``None``, якщо категорію не знайдено."
+#: categories.services.categories.get_category_by_slug:8 of
+msgid ""
+"Category dictionary, or ``None`` if the category is not found. ``None`` "
+"values are **not** cached."
+msgstr ""
+"Словник категорії або ``None``, якщо категорію не знайдено. Значення "
+"``None`` **не** кешуються."
 
 #: ../../categories.rst
 msgid "Raises"
-msgstr "Викликає виняток"
+msgstr "Може викликати"
 
 #: categories.services.categories.get_category_by_slug:11 of
 msgid "If there is a problem with the request."
 msgstr "Якщо виникла проблема із запитом."
 
 #: categories.services.categories.get_category_count:1 of
-msgid "Queries the total number of categories from Saleor."
-msgstr "Запитує загальну кількість категорій із Saleor."
+msgid "Returns the total number of categories (cached in Redis)."
+msgstr "Повертає загальну кількість категорій (кешується в Redis)."
 
 #: categories.services.categories.get_category_count:3 of
 msgid ""
-"Executes the GraphQL query ``category_count.graphql`` and returns the "
-"number that can be used to limit the results in "
-":func:`get_all_categories`."
+"The value is fetched from Saleor once every 10 minutes, or until the "
+"cache is explicitly invalidated."
 msgstr ""
-"Виконує GraphQL-запит ``category_count.graphql`` і повертає число, "
-"яке можна використовувати для обмеження вибірки в :func:`get_all_categories`."
+"Значення отримується з Saleor один раз кожні 10 хвилин або до моменту "
+"явного скидання кешу."
 
 #: categories.services.categories.get_category_count:6 of
 msgid "Total number of categories (int)."
-msgstr "Загальна кількість категорій (int)."
+msgstr "Загальна кількість категорій (ціле число)."
 
 #: categories.services.categories.get_category_count:8 of
-msgid "If there is a connection error or an invalid response from Saleor."
-msgstr "При помилці з'єднання або некоректній відповіді від Saleor."
+msgid "If there is a connection error or an invalid     response from Saleor."
+msgstr "У разі помилки з'єднання або некоректної відповіді від Saleor."
 
 #: categories.services.categories.get_full_tree:1 of
-msgid "Returns the full category tree (cached)."
-msgstr "Повертає повне дерево категорій (кешоване)."
+msgid "Returns the full category tree (cached in Redis for 1 hour)."
+msgstr "Повертає повне дерево категорій (кешується в Redis на 1 годину)."
 
 #: categories.services.categories.get_full_tree:3 of
 msgid ""
-"Loads all categories via :func:`get_all_categories` without a limit, then"
-" builds the tree using :func:`build_category_tree`. The result can be "
-"cached globally for better performance."
+"Loads all categories via :func:`get_all_categories` without a limit, "
+"builds the tree using :func:`build_category_tree`, and stores the result "
+"until it expires or is invalidated."
 msgstr ""
-"Завантажує всі категорії через :func:`get_all_categories` без обмеження, "
-"потім будує дерево за допомогою :func:`build_category_tree`. Результат "
-"можна закешувати глобально для кращої продуктивності."
+"Завантажує всі категорії через :func:`get_all_categories` без обмежень, "
+"будує дерево за допомогою :func:`build_category_tree` і зберігає "
+"результат до закінчення терміну дії або скидання."
 
 #: categories.services.categories.get_full_tree:7 of
 msgid "Category tree (list of root nodes with nested ``children``)."
-msgstr "Дерево категорій (список кореневих вузлів із вкладеними ``children``)."
+msgstr "Дерево категорій (список кореневих вузлів з вкладеними ``children``)."
 
-#: categories.services.categories.get_full_tree:11 of
+#: categories.services.categories.invalidate_category_cache:1 of
+msgid "Invalidates all cached data related to categories."
+msgstr "Скидає всі кешовані дані, пов'язані з категоріями."
+
+#: categories.services.categories.invalidate_category_cache:3 of
 msgid ""
-"For production, it is recommended to add caching at the Django level "
-"(e.g., ``django.core.cache``) so that all categories are not queried on "
-"every call."
+"Removes specific keys as well as wildcard patterns, so that the next "
+"request to any of the cached functions will fetch fresh data from Saleor."
+" Pattern deletion requires the Redis cache backend."
 msgstr ""
-"Для продакшену рекомендується додати кешування на рівні Django "
-"(наприклад, ``django.core.cache``), щоб не запитувати всі категорії "
-"при кожному виклику."
-
+"Видаляє конкретні ключі, а також шаблони, тому наступний виклик "
+"будь-якої з кешованих функцій отримає свіжі дані з Saleor. Видалення "
+"за шаблоном потребує Redis-бекенду для кешу."

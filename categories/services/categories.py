@@ -1,39 +1,34 @@
 # categories/services/categories.py
 from gateway.saleor.loader import load_query
 from gateway.saleor.client import execute_query
-from functools import lru_cache
+from django.core.cache import cache
 
 APP_NAME = "categories"
 
 
-@lru_cache(maxsize=1)
-def _cached_category_count() -> int:
-    """
-    Returns the cached total number of categories.
-
-    A wrapper function that queries the number of categories
-    from Saleor once and stores the result until the process restarts.
-    Used inside :func:`get_all_categories` when called without the `first` argument.
-
-    Returns:
-        Total number of categories in the store.
-    """
-    return get_category_count()
-
-
 def get_category_count() -> int:
     """
-    Queries the total number of categories from Saleor.
+    Returns the total number of categories (cached in Redis).
 
-    Executes the GraphQL query ``category_count.graphql`` and returns the number
-    that can be used to limit the results in :func:`get_all_categories`.
+    The value is fetched from Saleor once every 10 minutes, or until the
+    cache is explicitly invalidated.
 
     Returns:
         Total number of categories (int).
 
     Raises:
-        requests.HTTPError: If there is a connection error or an invalid response from Saleor.
+        requests.HTTPError: If there is a connection error or an invalid
+            response from Saleor.
     """
+    return cache.get_or_set(
+        "category_total_count",
+        _fetch_category_count,
+        timeout=600,
+    )
+
+
+def _fetch_category_count() -> int:
+    """Executes the GraphQL query to obtain the number of categories."""
     query = load_query(APP_NAME, "queries/category_count.graphql")
     data = execute_query(query)
     return data["categories"]["totalCount"]
@@ -41,59 +36,94 @@ def get_category_count() -> int:
 
 def get_all_categories(first: int | None = None) -> list[dict]:
     """
-    Retrieves a flat list of all categories from Saleor.
+    Retrieves a flat list of all categories from Saleor (cached).
 
-    If the ``first`` parameter is not provided, it automatically queries
-    the total number of categories via :func:`_cached_category_count`
-    and loads all of them. The result is extracted from the
-    ``edges → node`` structure and returned as a list of dictionaries.
+    When ``first`` is ``None``, the total count is obtained automatically
+    (also cached) and all categories are loaded. The result is stored in
+    Redis with a key that includes the ``first`` parameter.
 
     Args:
-        first: Maximum number of categories (None – all).
+        first: Maximum number of categories (``None`` to fetch all).
 
     Returns:
-        List of dictionaries, where each item contains:
-        ``id``, ``name``, ``slug``, ``parent`` (None or dict with ``id``).
+        List of dictionaries, each containing ``id``, ``name``, ``slug``,
+        and ``parent`` (``None`` or a dict with ``id``).
 
     Example:
         >>> cats = get_all_categories(first=10)
-        >>> cats[0]['name']
+        >>> cats[0]["name"]
         'Catalog'
     """
     if first is None:
-        first = _cached_category_count()
-    query = load_query(APP_NAME, "queries/all_categories.graphql")
-    variables = {"first": first}
-    data = execute_query(query, variables)
-    return [edge["node"] for edge in data["categories"]["edges"]]
+        first = get_category_count()
+
+    cache_key = f"all_categories_first_{first}"
+    categories = cache.get(cache_key)
+    if categories is None:
+        query = load_query(APP_NAME, "queries/all_categories.graphql")
+        variables = {"first": first}
+        data = execute_query(query, variables)
+        categories = [edge["node"] for edge in data["categories"]["edges"]]
+        cache.set(cache_key, categories, timeout=600)
+    return categories
 
 
 def get_category_by_slug(slug: str) -> dict:
     """
-    Retrieves a single category by its slug (human-readable URL).
+    Retrieves a single category by its slug (cached for 30 minutes).
 
-    Executes the query ``category_by_slug.graphql``, passing the ``slug`` variable.
-    Returns a dictionary with the full set of category fields, including parent,
-    children, and description.
+    Executes the ``category_by_slug.graphql`` query, passing the ``slug``
+    variable. The result is stored in Redis under a slug‑specific key.
 
     Args:
-        slug: URL identifier of the category (e.g., ``"video-walls"``).
+        slug: URL identifier of the category (e.g. ``"video-walls"``).
 
     Returns:
-        Category dictionary or ``None`` if the category is not found.
+        Category dictionary, or ``None`` if the category is not found.
+        ``None`` values are **not** cached.
 
     Raises:
         requests.HTTPError: If there is a problem with the request.
     """
-    query = load_query(APP_NAME, "queries/category_by_slug.graphql")
-    variables = {"slug": slug}
-    data = execute_query(query, variables)
-    return data["category"]
+    cache_key = f"category_slug_{slug}"
+    category = cache.get(cache_key)
+    if category is None:
+        query = load_query(APP_NAME, "queries/category_by_slug.graphql")
+        variables = {"slug": slug}
+        data = execute_query(query, variables)
+        category = data.get("category")
+        if category is not None:
+            cache.set(cache_key, category, timeout=1800)
+    return category
+
+
+def get_full_tree() -> list[dict]:
+    """
+    Returns the full category tree (cached in Redis for 1 hour).
+
+    Loads all categories via :func:`get_all_categories` without a limit,
+    builds the tree using :func:`build_category_tree`, and stores the
+    result until it expires or is invalidated.
+
+    Returns:
+        Category tree (list of root nodes with nested ``children``).
+    """
+    return cache.get_or_set(
+        "full_category_tree",
+        _compute_full_tree,
+        timeout=3600,
+    )
+
+
+def _compute_full_tree() -> list[dict]:
+    """Builds the complete category tree without caching."""
+    flat = get_all_categories()
+    return build_category_tree(flat)
 
 
 def build_category_tree(categories: list[dict]) -> list[dict]:
     """
-    Converts a flat list of categories into a tree (children in the ``children`` key).
+    Converts a flat list of categories into a tree (children in ``children`` key).
 
     Each category receives an additional ``children`` key (list).
     Categories with ``parent=None`` become root nodes, the rest
@@ -101,7 +131,7 @@ def build_category_tree(categories: list[dict]) -> list[dict]:
 
     Args:
         categories: Flat list of dictionaries, each of which must
-        contain ``id`` and ``parent`` (``None`` or dict with ``id`` key).
+            contain ``id`` and ``parent`` (``None`` or dict with ``id`` key).
 
     Returns:
         List of root categories with recursively nested subcategories
@@ -130,26 +160,6 @@ def build_category_tree(categories: list[dict]) -> list[dict]:
     return roots
 
 
-def get_full_tree() -> list[dict]:
-    """
-    Returns the full category tree (cached).
-
-    Loads all categories via :func:`get_all_categories` without a limit,
-    then builds the tree using :func:`build_category_tree`.
-    The result can be cached globally for better performance.
-
-    Returns:
-        Category tree (list of root nodes with nested ``children``).
-
-    Note:
-        For production, it is recommended to add caching at the Django level
-        (e.g., ``django.core.cache``) so that all categories are not
-        queried on every call.
-    """
-    flat = get_all_categories()
-    return build_category_tree(flat)
-
-
 def find_node_in_tree(slug: str, nodes: list[dict]) -> dict | None:
     """
     Recursively searches for a node with the given slug in the category tree.
@@ -160,10 +170,11 @@ def find_node_in_tree(slug: str, nodes: list[dict]) -> dict | None:
     Args:
         slug: URL identifier of the category to find.
         nodes: List of tree nodes (usually the result of :func:`get_full_tree`
-        or the ``children`` of some node).
+            or the ``children`` of some node).
 
     Returns:
-        Node dictionary (with ``children`` field) or ``None`` if the node is not found.
+        Node dictionary (with ``children`` field) or ``None`` if the node
+        is not found.
 
     Example:
         >>> full_tree = get_full_tree()
@@ -178,3 +189,21 @@ def find_node_in_tree(slug: str, nodes: list[dict]) -> dict | None:
         if found:
             return found
     return None
+
+
+# ----------------------------------------------------------------------
+# Cache invalidation
+# ----------------------------------------------------------------------
+
+def invalidate_category_cache():
+    """
+    Invalidates all cached data related to categories.
+
+    Removes specific keys as well as wildcard patterns, so that the next
+    request to any of the cached functions will fetch fresh data from Saleor.
+    Pattern deletion requires the Redis cache backend.
+    """
+    cache.delete("category_total_count")
+    cache.delete("full_category_tree")
+    cache.delete_pattern("all_categories_*")
+    cache.delete_pattern("category_slug_*")
