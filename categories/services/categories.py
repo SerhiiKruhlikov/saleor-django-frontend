@@ -148,6 +148,7 @@ def build_category_tree(categories: list[dict]) -> list[dict]:
     """
     for cat in categories:
         cat.setdefault("children", [])
+        cat.setdefault("parent_node", None)
     lookup = {cat["id"]: cat for cat in categories}
     roots = []
     for cat in categories:
@@ -157,6 +158,7 @@ def build_category_tree(categories: list[dict]) -> list[dict]:
         else:
             parent_id = parent["id"] if isinstance(parent, dict) else parent
             lookup[parent_id]["children"].append(cat)
+            cat["parent_node"] = lookup[parent_id]
     return roots
 
 

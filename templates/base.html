@@ -8,10 +8,12 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% trans "Site name" %}{% endblock %}</title>
+  {% include "partials/critical.css.html" %}
   <link rel="stylesheet" href="{% static 'css/app.css' %}" media="print" onload="this.media='all'">
   <noscript>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
   </noscript>
+  {% include "partials/critical.js.html" %}
 </head>
 <body>
 {% include 'partials/header.html' %}
@@ -19,5 +21,6 @@
   {% block content %}{% endblock %}
 </main>
 {% include 'partials/footer.html' %}
+<script src="{% static 'js/app.js' %}" defer></script>
 </body>
 </html>
