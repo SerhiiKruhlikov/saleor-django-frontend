@@ -1,0 +1,228 @@
+# Ukrainian translations for saleor-django-frontend webhooks.
+# Copyright (C) 2026, serhii.kruhlikov@gmail.com
+# This file is distributed under the same license as the
+# saleor-django-frontend package.
+# Serhii Kruhlikov <serhii.kruhlikov@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: saleor-django-frontend 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-13 22:55+0300\n"
+"PO-Revision-Date: 2026-06-13 23:30+0300\n"
+"Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../webhooks.rst:2
+msgid "Webhooks"
+msgstr "Вебхуки"
+
+#: of webhooks:1
+msgid "Webhook receiver and dispatch system."
+msgstr "Система прийому та диспетчеризації вебхуків."
+
+#: of webhooks:3
+msgid ""
+"Saleor sends webhook notifications (GraphQL subscriptions) to a single "
+"endpoint.  This package:"
+msgstr ""
+"Saleor надсилає вебхук-сповіщення (GraphQL-підписки) на єдиний "
+"ендпоінт. Цей пакет:"
+
+#: of webhooks:6
+msgid "**Verifies** the request signature (if a secret is configured)."
+msgstr "**Перевіряє** підпис запиту (якщо налаштовано секретний ключ)."
+
+#: of webhooks:7
+msgid "**Parses** the JSON payload and extracts the ``__typename``."
+msgstr "**Парсить** JSON-дані та видобуває ``__typename``."
+
+#: of webhooks:8
+msgid ""
+"**Dispatches** the event to the appropriate application handler via the "
+"registry in :mod:`webhooks.handlers`."
+msgstr ""
+"**Диспетчеризує** подію до відповідного обробника додатку через реєстр "
+"у :mod:`webhooks.handlers`."
+
+#: of webhooks:11
+msgid "Adding a new entity (e.g., products) requires three steps:"
+msgstr "Додавання нової сутності (наприклад, товарів) потребує трьох кроків:"
+
+#: of webhooks:13
+msgid "Create ``<app>/webhooks.py`` with a handler function."
+msgstr "Створити ``<app>/webhooks.py`` з функцією-обробником."
+
+#: of webhooks:14
+msgid "Register the handler in :data:`webhooks.handlers.EVENT_HANDLERS`."
+msgstr "Зареєструвати обробник у :data:`webhooks.handlers.EVENT_HANDLERS`."
+
+#: of webhooks:15
+msgid ""
+"Configure the corresponding webhook in the Saleor Dashboard (Settings → "
+"Webhooks)."
+msgstr ""
+"Налаштувати відповідний вебхук у Saleor Dashboard (Settings → Webhooks)."
+
+#: ../../webhooks.rst:10
+msgid "Handlers"
+msgstr "Обробники"
+
+#: of webhooks.handlers:1
+msgid "Central registry that maps Saleor event types to handler functions."
+msgstr ""
+"Центральний реєстр, який зіставляє типи подій Saleor з функціями-"
+"обробниками."
+
+#: of webhooks.handlers:3
+msgid ""
+"Each key is the ``__typename`` string sent by Saleor (e.g. "
+"``\"CategoryCreated\"``).  The corresponding value is a callable with the"
+" signature ``handler(event_type: str, payload: dict)``."
+msgstr ""
+"Кожен ключ — це рядок ``__typename``, надісланий Saleor (наприклад, "
+"``\"CategoryCreated\"``). Відповідне значення — це викликуваний об'єкт "
+"із сигнатурою ``handler(event_type: str, payload: dict)``."
+
+#: of webhooks.handlers:7
+msgid "To add support for a new entity:"
+msgstr "Щоб додати підтримку нової сутності:"
+
+#: of webhooks.handlers:9
+msgid "Create a ``webhooks.py`` file in the relevant Django app."
+msgstr "Створіть файл ``webhooks.py`` у відповідному Django-додатку."
+
+#: of webhooks.handlers:10
+msgid ""
+"Define a handler function that performs the necessary cache invalidation "
+"or other side effects."
+msgstr ""
+"Визначте функцію-обробник, яка виконує необхідну інвалідацію кешу чи "
+"інші побічні дії."
+
+#: of webhooks.handlers:12
+msgid "Import the handler here and add an entry to ``EVENT_HANDLERS``."
+msgstr ""
+"Імпортуйте обробник сюди та додайте запис до ``EVENT_HANDLERS``."
+
+#: ../../webhooks.rst:18
+msgid "Services"
+msgstr "Сервіси"
+
+#: of webhooks.services.verify_saleor_signature:1
+msgid "Verify that the incoming request comes from Saleor."
+msgstr "Перевіряє, що вхідний запит надійшов від Saleor."
+
+#: of webhooks.services.verify_saleor_signature:3
+msgid ""
+"Checks the ``Saleor-Signature`` header against the HMAC‑SHA256 digest of "
+"the request body using the secret key configured in "
+"``SALEOR_WEBHOOK_SECRET``."
+msgstr ""
+"Порівнює заголовок ``Saleor-Signature`` із HMAC‑SHA256 дайджестом тіла "
+"запиту, використовуючи секретний ключ, заданий у "
+"``SALEOR_WEBHOOK_SECRET``."
+
+#: ../../webhooks.rst
+msgid "Parameters"
+msgstr "Параметри"
+
+#: of webhooks.services.verify_saleor_signature:7
+msgid "Django HttpRequest object."
+msgstr "Об'єкт Django HttpRequest."
+
+#: ../../webhooks.rst
+msgid "Returns"
+msgstr "Повертає"
+
+#: of webhooks.services.verify_saleor_signature:9
+msgid "``True`` if the signature is valid, ``False`` otherwise."
+msgstr "``True``, якщо підпис дійсний, інакше ``False``."
+
+#: ../../webhooks.rst:26
+msgid "Views"
+msgstr "Представлення"
+
+#: of webhooks.views.saleor_webhook:1
+msgid "Handle incoming webhook notifications from Saleor."
+msgstr "Обробляє вхідні вебхук-сповіщення від Saleor."
+
+#: of webhooks.views.saleor_webhook:4
+msgid ""
+"The corresponding webhook **must** be configured in the Saleor Dashboard "
+"(Settings → Webhooks) with the target URL pointing to this view and the "
+"following events enabled:"
+msgstr ""
+"Відповідний вебхук **повинен** бути налаштований у Saleor Dashboard "
+"(Settings → Webhooks) із цільовою URL-адресою, що вказує на це "
+"представлення, і з увімкненими такими подіями:"
+
+#: of webhooks.views.saleor_webhook:8
+msgid "``CategoryCreated``"
+msgstr "``CategoryCreated``"
+
+#: of webhooks.views.saleor_webhook:9
+msgid "``CategoryUpdated``"
+msgstr "``CategoryUpdated``"
+
+#: of webhooks.views.saleor_webhook:10
+msgid "``CategoryDeleted``"
+msgstr "``CategoryDeleted``"
+
+#: of webhooks.views.saleor_webhook:12
+msgid "(Add product events when you are ready for product cache invalidation.)"
+msgstr "(Додайте події товарів, коли будете готові до інвалідації кешу товарів.)"
+
+#: of webhooks.views.saleor_webhook:15
+msgid ""
+"The ``Saleor-Signature`` header is verified only when "
+"``SALEOR_WEBHOOK_SECRET`` is set (optional, as the legacy secret "
+"mechanism is deprecated in recent Saleor versions)."
+msgstr ""
+"Заголовок ``Saleor-Signature`` перевіряється лише тоді, коли встановлено "
+"``SALEOR_WEBHOOK_SECRET`` (необов'язково, оскільки застарілий механізм "
+"секретів є deprecated у нових версіях Saleor)."
+
+#: ../../webhooks.rst:34
+msgid "URLs"
+msgstr "URL-адреси"
+
+#: ../../webhooks.rst:42
+msgid "Category Webhooks"
+msgstr "Вебхуки категорій"
+
+#: categories.webhooks.handle_category_event:1 of
+msgid "Handle Saleor webhook events related to categories."
+msgstr "Обробляє події вебхуків Saleor, пов'язані з категоріями."
+
+#: categories.webhooks.handle_category_event:3 of
+msgid ""
+"Calls :func:`~categories.services.categories.invalidate_category_cache`, "
+"which **removes every cached key** belonging to categories.  This is "
+"intentionally broad: a change in one category can affect the full tree, "
+"parent/child relationships, or counts.  The next request to any category "
+"service will transparently re-fetch fresh data from Saleor."
+msgstr ""
+"Викликає :func:`~categories.services.categories.invalidate_category_cache`, "
+"яка **видаляє всі кешовані ключі**, що належать категоріям. Це зроблено "
+"навмисно широко: зміна однієї категорії може вплинути на все дерево, "
+"зв'язки батьків/нащадків або лічильники. Наступний запит до будь-якого "
+"сервісу категорій прозоро перезавантажить свіжі дані з Saleor."
+
+#: categories.webhooks.handle_category_event:9 of
+#, python-brace-format
+msgid ""
+"If more granular invalidation is needed in the future, the ``payload`` "
+"argument (which currently contains ``{\"category\": {\"slug\": "
+"\"...\"}}``) can be used to delete only affected keys."
+msgstr ""
+"Якщо в майбутньому знадобиться більш точкова інвалідація, аргумент "
+"``payload`` (який наразі містить ``{\"category\": {\"slug\": \"...\"}}``) "
+"можна використовувати для видалення лише тих ключів, яких торкнулися зміни."

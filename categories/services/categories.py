@@ -1,9 +1,20 @@
 # categories/services/categories.py
+from django.conf import settings
 from gateway.saleor.loader import load_query
 from gateway.saleor.client import execute_query
 from django.core.cache import cache
 
 APP_NAME = "categories"
+
+# ----------------------------------------------------------------------
+# Cache timeouts from settings (with sensible defaults)
+# ----------------------------------------------------------------------
+CACHE_TIMEOUTS = getattr(settings, 'CACHE_TIMEOUTS', {})
+
+TIMEOUT_CATEGORY_COUNT = CACHE_TIMEOUTS.get('CATEGORY_COUNT', 600)
+TIMEOUT_ALL_CATEGORIES = CACHE_TIMEOUTS.get('ALL_CATEGORIES', 600)
+TIMEOUT_CATEGORY_BY_SLUG = CACHE_TIMEOUTS.get('CATEGORY_BY_SLUG', 1800)
+TIMEOUT_FULL_TREE = CACHE_TIMEOUTS.get('FULL_TREE', 3600)
 
 
 def get_category_count() -> int:
@@ -23,7 +34,7 @@ def get_category_count() -> int:
     return cache.get_or_set(
         "category_total_count",
         _fetch_category_count,
-        timeout=600,
+        timeout=TIMEOUT_CATEGORY_COUNT,
     )
 
 
@@ -64,7 +75,7 @@ def get_all_categories(first: int | None = None) -> list[dict]:
         variables = {"first": first}
         data = execute_query(query, variables)
         categories = [edge["node"] for edge in data["categories"]["edges"]]
-        cache.set(cache_key, categories, timeout=600)
+        cache.set(cache_key, categories, timeout=TIMEOUT_ALL_CATEGORIES)
     return categories
 
 
@@ -93,7 +104,7 @@ def get_category_by_slug(slug: str) -> dict:
         data = execute_query(query, variables)
         category = data.get("category")
         if category is not None:
-            cache.set(cache_key, category, timeout=1800)
+            cache.set(cache_key, category, timeout=TIMEOUT_CATEGORY_BY_SLUG)
     return category
 
 
@@ -111,7 +122,7 @@ def get_full_tree() -> list[dict]:
     return cache.get_or_set(
         "full_category_tree",
         _compute_full_tree,
-        timeout=3600,
+        timeout=TIMEOUT_FULL_TREE,
     )
 
 
@@ -201,9 +212,10 @@ def invalidate_category_cache():
     """
     Invalidates all cached data related to categories.
 
+    Called from the webhook handler in :mod:`categories.webhooks`.
     Removes specific keys as well as wildcard patterns, so that the next
-    request to any of the cached functions will fetch fresh data from Saleor.
-    Pattern deletion requires the Redis cache backend.
+    request to any of the cached functions will fetch fresh data from
+    Saleor.  Pattern deletion requires the Redis cache backend.
     """
     cache.delete("category_total_count")
     cache.delete("full_category_tree")

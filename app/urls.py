@@ -4,9 +4,13 @@ from django.http import HttpResponseRedirect
 from django.views.static import serve as static_serve
 from django.contrib import admin
 from django.urls import path, include, re_path
+from webhooks import views as webhooks_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('webhooks/saleor/', webhooks_views.saleor_webhook),
+    path('webhooks/', include('webhooks.urls')),
     path('', include(('shop.urls', 'shop'), namespace='shop')),
     path('catalog/', include(('categories.urls', 'categories'), namespace='categories')),
     path('product/', include(('products.urls', 'products'), namespace='products')),

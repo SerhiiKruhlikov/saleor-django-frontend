@@ -172,7 +172,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -226,154 +226,13 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-categories.services.categories">
-<span id="category-service"></span><h1>Category service<a class="headerlink" href="#module-categories.services.categories" title="Link to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.build_category_tree">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">build_category_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.build_category_tree" title="Link to this definition">¶</a></dt>
-<dd><p>Converts a flat list of categories into a tree (children in <code class="docutils literal notranslate"><span class="pre">children</span></code> key).</p>
-<p>Each category receives an additional <code class="docutils literal notranslate"><span class="pre">children</span></code> key (list).
-Categories with <code class="docutils literal notranslate"><span class="pre">parent=None</span></code> become root nodes, the rest
-are distributed to their parents according to <code class="docutils literal notranslate"><span class="pre">parent.id</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>categories</strong> – Flat list of dictionaries, each of which must
-contain <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">parent</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> or dict with <code class="docutils literal notranslate"><span class="pre">id</span></code> key).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of root categories with recursively nested subcategories
-in the <code class="docutils literal notranslate"><span class="pre">children</span></code> field.</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flat</span> <span class="o">=</span> <span class="p">[</span>
-<span class="gp">... </span>  <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
-<span class="gp">... </span>  <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}},</span>
-<span class="gp">... </span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tree</span> <span class="o">=</span> <span class="n">build_category_tree</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tree</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;children&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-<span class="go">&#39;B&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.find_node_in_tree">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">find_node_in_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#categories.services.categories.find_node_in_tree" title="Link to this definition">¶</a></dt>
-<dd><p>Recursively searches for a node with the given slug in the category tree.</p>
-<p>Used to highlight the active menu branch or build a subtree
-on the category detail page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>slug</strong> – URL identifier of the category to find.</p></li>
-<li><p><strong>nodes</strong> – List of tree nodes (usually the result of <a class="reference internal" href="#categories.services.categories.get_full_tree" title="categories.services.categories.get_full_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_full_tree()</span></code></a>
-or the <code class="docutils literal notranslate"><span class="pre">children</span></code> of some node).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Node dictionary (with <code class="docutils literal notranslate"><span class="pre">children</span></code> field) or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the node
-is not found.</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">full_tree</span> <span class="o">=</span> <span class="n">get_full_tree</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">find_node_in_tree</span><span class="p">(</span><span class="s2">&quot;video-walls&quot;</span><span class="p">,</span> <span class="n">full_tree</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">node</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-<span class="go">&#39;Video Walls&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.get_all_categories">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_all_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.get_all_categories" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves a flat list of all categories from Saleor (cached).</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">first</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the total count is obtained automatically
-(also cached) and all categories are loaded. The result is stored in
-Redis with a key that includes the <code class="docutils literal notranslate"><span class="pre">first</span></code> parameter.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>first</strong> – Maximum number of categories (<code class="docutils literal notranslate"><span class="pre">None</span></code> to fetch all).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dictionaries, each containing <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">slug</span></code>,
-and <code class="docutils literal notranslate"><span class="pre">parent</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> or a dict with <code class="docutils literal notranslate"><span class="pre">id</span></code>).</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cats</span> <span class="o">=</span> <span class="n">get_all_categories</span><span class="p">(</span><span class="n">first</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-<span class="go">&#39;Catalog&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.get_category_by_slug">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_by_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_by_slug" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves a single category by its slug (cached for 30 minutes).</p>
-<p>Executes the <code class="docutils literal notranslate"><span class="pre">category_by_slug.graphql</span></code> query, passing the <code class="docutils literal notranslate"><span class="pre">slug</span></code>
-variable. The result is stored in Redis under a slug‑specific key.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>slug</strong> – URL identifier of the category (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;video-walls&quot;</span></code>).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Category dictionary, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the category is not found.
-<code class="docutils literal notranslate"><span class="pre">None</span></code> values are <strong>not</strong> cached.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>requests.HTTPError</strong> – If there is a problem with the request.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.get_category_count">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_count" title="Link to this definition">¶</a></dt>
-<dd><p>Returns the total number of categories (cached in Redis).</p>
-<p>The value is fetched from Saleor once every 10 minutes, or until the
-cache is explicitly invalidated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Total number of categories (int).</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>requests.HTTPError</strong> – If there is a connection error or an invalid
-    response from Saleor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.get_full_tree">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_full_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.get_full_tree" title="Link to this definition">¶</a></dt>
-<dd><p>Returns the full category tree (cached in Redis for 1 hour).</p>
-<p>Loads all categories via <a class="reference internal" href="#categories.services.categories.get_all_categories" title="categories.services.categories.get_all_categories"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_all_categories()</span></code></a> without a limit,
-builds the tree using <a class="reference internal" href="#categories.services.categories.build_category_tree" title="categories.services.categories.build_category_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_category_tree()</span></code></a>, and stores the
-result until it expires or is invalidated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Category tree (list of root nodes with nested <code class="docutils literal notranslate"><span class="pre">children</span></code>).</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.invalidate_category_cache">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">invalidate_category_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#categories.services.categories.invalidate_category_cache" title="Link to this definition">¶</a></dt>
-<dd><p>Invalidates all cached data related to categories.</p>
-<p>Removes specific keys as well as wildcard patterns, so that the next
-request to any of the cached functions will fetch fresh data from Saleor.
-Pattern deletion requires the Redis cache backend.</p>
-</dd></dl>
-
+          <section id="category-service">
+<h1>Category service<a class="headerlink" href="#category-service" title="Link to this heading">¶</a></h1>
 </section>
 
         </article>
@@ -411,33 +270,8 @@ Pattern deletion requires the Redis cache backend.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Category service</a><ul>
-<li><a class="reference internal" href="#categories.services.categories.build_category_tree"><code class="docutils literal notranslate"><span class="pre">build_category_tree()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.find_node_in_tree"><code class="docutils literal notranslate"><span class="pre">find_node_in_tree()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.get_all_categories"><code class="docutils literal notranslate"><span class="pre">get_all_categories()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.get_category_by_slug"><code class="docutils literal notranslate"><span class="pre">get_category_by_slug()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.get_category_count"><code class="docutils literal notranslate"><span class="pre">get_category_count()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.get_full_tree"><code class="docutils literal notranslate"><span class="pre">get_full_tree()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.invalidate_category_cache"><code class="docutils literal notranslate"><span class="pre">invalidate_category_cache()</span></code></a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

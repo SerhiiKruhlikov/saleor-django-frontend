@@ -14,8 +14,13 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
+    'unlumbering-ling-whiny.ngrok-free.dev',
+    '.ngrok-free.dev',
 ]
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://unlumbering-ling-whiny.ngrok-free.dev',
+    'https://*.ngrok-free.dev'
+]
 
 INSTALLED_APPS = [
     'shop',
@@ -37,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -111,7 +117,49 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SALEOR_API_URL = os.environ.get("SALEOR_API_URL", "")
 SALEOR_API_EMAIL = os.environ.get("SALEOR_API_EMAIL", "")
 SALEOR_API_PASSWORD = os.environ.get("SALEOR_API_PASSWORD", "")
+SALEOR_WEBHOOK_SECRET = os.environ.get("SALEOR_WEBHOOK_SECRET", "")
 
 
 # SPHINX
 DOCS = True
+
+
+# REDIS
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/1"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "test_techpro_dev"
+    }
+}
+
+
+# =============================================================================
+# Cache Time-to-Live Settings (in seconds)
+# =============================================================================
+# These values control how long data lives in the Redis cache.
+# Once a TTL expires, the corresponding data is automatically re-fetched
+# from Saleor.
+#
+# Dictionary keys match the service functions:
+#   FULL_TREE            – get_full_tree()           (full category tree)
+#   CATEGORY_COUNT       – get_category_count()      (total number of categories)
+#   ALL_CATEGORIES       – get_all_categories()      (flat list of categories)
+#   CATEGORY_BY_SLUG     – get_category_by_slug()    (single category by slug)
+#   PRODUCT_BY_SLUG      – get_product_by_slug()     (single product – later)
+#   PRODUCTS_BY_CATEGORY – get_products_by_category()(products of a category – later)
+#
+# Values can be overridden via .env or a separate settings file.
+# -----------------------------------------------------------------------------
+CACHE_TIMEOUTS = {
+    'FULL_TREE': 3600,            # 1 hour
+    'CATEGORY_COUNT': 600,        # 10 minutes
+    'ALL_CATEGORIES': 600,        # 10 minutes
+    'CATEGORY_BY_SLUG': 1800,     # 30 minutes
+    # For products (to be added later)
+    'PRODUCT_BY_SLUG': 1800,
+    'PRODUCTS_BY_CATEGORY': 600,
+}

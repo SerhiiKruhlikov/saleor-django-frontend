@@ -3,6 +3,10 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+os.environ['DJANGO_SETTINGS_MODULE'] = 'app.settings'
+import django
+django.setup()
+
 project = 'saleor-django-frontend'
 copyright = '2026, serhii.kruhlikov@gmail.com'
 author = 'serhii.kruhlikov@gmail.com'

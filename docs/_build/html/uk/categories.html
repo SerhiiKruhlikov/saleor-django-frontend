@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Індекс" href="genindex.html"><link rel="search" title="Пошук" href="search.html"><link rel="prev" title="Документація saleor-django-frontend" href="index.html">
+<link rel="index" title="Індекс" href="genindex.html"><link rel="search" title="Пошук" href="search.html"><link rel="next" title="Вебхуки" href="webhooks.html"><link rel="prev" title="Документація saleor-django-frontend" href="index.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Сервіс категорій - saleor-django-frontend 1 documentation</title>
@@ -193,6 +193,7 @@
   <p class="caption" role="heading"><span class="caption-text">Зміст:</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Сервіс категорій</a></li>
+<li class="toctree-l1"><a class="reference internal" href="webhooks.html">Вебхуки</a></li>
 </ul>
 
 </div>
@@ -353,7 +354,10 @@
 <dt class="sig sig-object py" id="categories.services.categories.invalidate_category_cache">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">invalidate_category_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#categories.services.categories.invalidate_category_cache" title="Link to this definition">¶</a></dt>
 <dd><p>Скидає всі кешовані дані, пов’язані з категоріями.</p>
-<p>Видаляє конкретні ключі, а також шаблони, тому наступний виклик будь-якої з кешованих функцій отримає свіжі дані з Saleor. Видалення за шаблоном потребує Redis-бекенду для кешу.</p>
+<p>Called from the webhook handler in <a class="reference internal" href="webhooks.html#module-categories.webhooks" title="categories.webhooks"><code class="xref py py-mod docutils literal notranslate"><span class="pre">categories.webhooks</span></code></a>.
+Removes specific keys as well as wildcard patterns, so that the next
+request to any of the cached functions will fetch fresh data from
+Saleor.  Pattern deletion requires the Redis cache backend.</p>
 </dd></dl>
 
 </section>
@@ -363,7 +367,15 @@
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="webhooks.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Вебхуки</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
