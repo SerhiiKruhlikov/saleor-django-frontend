@@ -1,20 +1,34 @@
 {# categories/templates/categories/index.html #}
 {% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Catalog" %}{% endblock %}
 
 {% block content %}
-  <h1>{{ category.name }}</h1>
-
-  {% if subcategories and subcategories.children %}
-    <h2>Розділи каталогу</h2>
-    <ul>
-      {% for child in subcategories.children %}
-        {% include "categories/partials/category_node.html" with category=child %}
-      {% endfor %}
-    </ul>
+  {% if category_error %}
+    {# Saleor is unreachable or data is missing #}
+    <h1>{% trans "Catalog temporarily unavailable" %}</h1>
+    <p>
+      {% trans "Something went wrong. Please try again later or go to the" %}
+      <a href="{% url 'shop:index' %}">{% trans "home page" %}</a>.
+    </p>
   {% else %}
-    <p>Немає розділів</p>
+    <h1>{{ category.name }}</h1>
+
+    {% if subcategories and subcategories.children %}
+      <h2>{% trans "Sections" %}</h2>
+      <ul>
+        {% for child in subcategories.children %}
+          {% include "categories/partials/category_node.html" with category=child %}
+        {% endfor %}
+      </ul>
+    {% elif subcategories is None %}
+      <p>{% trans "Sections are temporarily unavailable." %}</p>
+    {% else %}
+      <p>{% trans "No sections yet." %}</p>
+    {% endif %}
+
+    <a href="{% url 'shop:index' %}">← {% trans "Home" %}</a>
   {% endif %}
 
-  {# Возврата на родителя нет, можно добавить ссылку на главную сайта #}
-  <a href="{% url 'shop:index' %}">← На головну</a>
 {% endblock %}

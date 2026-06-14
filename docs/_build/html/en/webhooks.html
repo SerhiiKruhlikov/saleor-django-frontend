@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="Category service" href="categories.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Testing" href="testing.html"><link rel="prev" title="Category service" href="categories.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Webhooks - saleor-django-frontend 1 documentation</title>
@@ -194,6 +194,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="categories.html">Category service</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Webhooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 </ul>
 
 </div>
@@ -318,7 +319,7 @@ mechanism is deprecated in recent Saleor versions).</p>
 <dt class="sig sig-object py" id="categories.webhooks.handle_category_event">
 <span class="sig-prename descclassname"><span class="pre">categories.webhooks.</span></span><span class="sig-name descname"><span class="pre">handle_category_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#categories.webhooks.handle_category_event" title="Link to this definition">¶</a></dt>
 <dd><p>Handle Saleor webhook events related to categories.</p>
-<p>Calls <a class="reference internal" href="categories.html#categories.services.categories.invalidate_category_cache" title="categories.services.categories.invalidate_category_cache"><code class="xref py py-func docutils literal notranslate"><span class="pre">invalidate_category_cache()</span></code></a>,
+<p>Calls <code class="xref py py-func docutils literal notranslate"><span class="pre">invalidate_category_cache()</span></code>,
 which <strong>removes every cached key</strong> belonging to categories.  This is
 intentionally broad: a change in one category can affect the full
 tree, parent/child relationships, or counts.  The next request to any
@@ -336,7 +337,15 @@ can be used to delete only affected keys.</p>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="testing.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Testing</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="categories.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">

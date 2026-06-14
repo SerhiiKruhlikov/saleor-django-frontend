@@ -1,7 +1,7 @@
 # categories/services/categories.py
 from django.conf import settings
 from gateway.saleor.loader import load_query
-from gateway.saleor.client import execute_query
+from gateway.saleor.client import safe_execute_query, SaleorUnavailable
 from django.core.cache import cache
 
 APP_NAME = "categories"
@@ -16,33 +16,34 @@ TIMEOUT_ALL_CATEGORIES = CACHE_TIMEOUTS.get('ALL_CATEGORIES', 600)
 TIMEOUT_CATEGORY_BY_SLUG = CACHE_TIMEOUTS.get('CATEGORY_BY_SLUG', 1800)
 TIMEOUT_FULL_TREE = CACHE_TIMEOUTS.get('FULL_TREE', 3600)
 
+# Short TTL for caching "not found" results (e.g., non-existent slugs)
+TIMEOUT_NONE = 60
+
 
 def get_category_count() -> int:
     """
     Returns the total number of categories (cached in Redis).
 
-    The value is fetched from Saleor once every 10 minutes, or until the
-    cache is explicitly invalidated.
-
-    Returns:
-        Total number of categories (int).
-
-    Raises:
-        requests.HTTPError: If there is a connection error or an invalid
-            response from Saleor.
+    If Saleor is unreachable, returns 0 so the page can still render.
+    The error is logged by the client layer.
     """
     return cache.get_or_set(
         "category_total_count",
-        _fetch_category_count,
+        _fetch_category_count_safe,
         timeout=TIMEOUT_CATEGORY_COUNT,
     )
 
 
-def _fetch_category_count() -> int:
-    """Executes the GraphQL query to obtain the number of categories."""
-    query = load_query(APP_NAME, "queries/category_count.graphql")
-    data = execute_query(query)
-    return data["categories"]["totalCount"]
+def _fetch_category_count_safe() -> int:
+    """Fetch the category count, returning 0 on any error."""
+    try:
+        query = load_query(APP_NAME, "queries/category_count.graphql")
+        data = safe_execute_query(query)
+        if data is None:
+            return 0
+        return data.get("categories", {}).get("totalCount", 0)
+    except SaleorUnavailable:
+        return 0
 
 
 def get_all_categories(first: int | None = None) -> list[dict]:
@@ -50,15 +51,15 @@ def get_all_categories(first: int | None = None) -> list[dict]:
     Retrieves a flat list of all categories from Saleor (cached).
 
     When ``first`` is ``None``, the total count is obtained automatically
-    (also cached) and all categories are loaded. The result is stored in
-    Redis with a key that includes the ``first`` parameter.
+    (also cached) and all categories are loaded.  On failure an empty
+    list is returned, and the error is logged.
 
     Args:
         first: Maximum number of categories (``None`` to fetch all).
 
     Returns:
         List of dictionaries, each containing ``id``, ``name``, ``slug``,
-        and ``parent`` (``None`` or a dict with ``id``).
+        and ``parent`` (``None`` or a dict with ``id``).  Empty list on error.
 
     Example:
         >>> cats = get_all_categories(first=10)
@@ -67,44 +68,63 @@ def get_all_categories(first: int | None = None) -> list[dict]:
     """
     if first is None:
         first = get_category_count()
+        if first == 0:
+            return []
 
     cache_key = f"all_categories_first_{first}"
     categories = cache.get(cache_key)
     if categories is None:
-        query = load_query(APP_NAME, "queries/all_categories.graphql")
-        variables = {"first": first}
-        data = execute_query(query, variables)
-        categories = [edge["node"] for edge in data["categories"]["edges"]]
-        cache.set(cache_key, categories, timeout=TIMEOUT_ALL_CATEGORIES)
-    return categories
+        try:
+            query = load_query(APP_NAME, "queries/all_categories.graphql")
+            variables = {"first": first}
+            data = safe_execute_query(query, variables)
+            if data is None:
+                return []
+            categories = [
+                edge["node"] for edge in data.get("categories", {}).get("edges", [])
+            ]
+            if categories:
+                cache.set(cache_key, categories, timeout=TIMEOUT_ALL_CATEGORIES)
+        except SaleorUnavailable:
+            return []
+    return categories or []
 
 
-def get_category_by_slug(slug: str) -> dict:
+def get_category_by_slug(slug: str) -> dict | None:
     """
-    Retrieves a single category by its slug (cached for 30 minutes).
+    Retrieves a single category by its slug (cached).
 
-    Executes the ``category_by_slug.graphql`` query, passing the ``slug``
-    variable. The result is stored in Redis under a slug‑specific key.
+    If Saleor returns ``null`` for the slug, ``None`` is returned and
+    **cached with a short TTL** to avoid repeated queries.
+    If Saleor is unreachable, ``None`` is returned **without caching**,
+    so the next request can retry.
 
     Args:
         slug: URL identifier of the category (e.g. ``"video-walls"``).
 
     Returns:
-        Category dictionary, or ``None`` if the category is not found.
-        ``None`` values are **not** cached.
-
-    Raises:
-        requests.HTTPError: If there is a problem with the request.
+        Category dictionary, or ``None`` if the category is not found
+        or an error occurs.
     """
     cache_key = f"category_slug_{slug}"
     category = cache.get(cache_key)
     if category is None:
-        query = load_query(APP_NAME, "queries/category_by_slug.graphql")
-        variables = {"slug": slug}
-        data = execute_query(query, variables)
-        category = data.get("category")
-        if category is not None:
-            cache.set(cache_key, category, timeout=TIMEOUT_CATEGORY_BY_SLUG)
+        try:
+            query = load_query(APP_NAME, "queries/category_by_slug.graphql")
+            variables = {"slug": slug}
+            data = safe_execute_query(query, variables)
+            if data is None:
+                # Entity not found – cache the None result briefly
+                cache.set(cache_key, None, timeout=TIMEOUT_NONE)
+                return None
+            category = data.get("category")
+            if category is not None:
+                cache.set(cache_key, category, timeout=TIMEOUT_CATEGORY_BY_SLUG)
+            else:
+                cache.set(cache_key, None, timeout=TIMEOUT_NONE)
+        except SaleorUnavailable:
+            # Do not cache on error – allow a retry on the next request
+            return None
     return category
 
 
@@ -112,24 +132,29 @@ def get_full_tree() -> list[dict]:
     """
     Returns the full category tree (cached in Redis for 1 hour).
 
-    Loads all categories via :func:`get_all_categories` without a limit,
-    builds the tree using :func:`build_category_tree`, and stores the
-    result until it expires or is invalidated.
+    If Saleor cannot be reached, returns an empty list so the menu
+    can degrade gracefully.  The error is logged by the client layer.
 
     Returns:
-        Category tree (list of root nodes with nested ``children``).
+        Category tree (list of root nodes with nested ``children``),
+        or an empty list on failure.
     """
     return cache.get_or_set(
         "full_category_tree",
-        _compute_full_tree,
+        _compute_full_tree_safe,
         timeout=TIMEOUT_FULL_TREE,
-    )
+    ) or []
 
 
-def _compute_full_tree() -> list[dict]:
-    """Builds the complete category tree without caching."""
-    flat = get_all_categories()
-    return build_category_tree(flat)
+def _compute_full_tree_safe() -> list[dict]:
+    """Builds the complete category tree, returning [] on error."""
+    try:
+        flat = get_all_categories()
+        if not flat:
+            return []
+        return build_category_tree(flat)
+    except SaleorUnavailable:
+        return []
 
 
 def build_category_tree(categories: list[dict]) -> list[dict]:
@@ -208,16 +233,13 @@ def find_node_in_tree(slug: str, nodes: list[dict]) -> dict | None:
 # Cache invalidation
 # ----------------------------------------------------------------------
 
-def invalidate_category_cache():
+def invalidate_global_category_cache():
     """
-    Invalidates all cached data related to categories.
+    Invalidates shared category cache keys: total count, full tree,
+    and all flat lists.
 
-    Called from the webhook handler in :mod:`categories.webhooks`.
-    Removes specific keys as well as wildcard patterns, so that the next
-    request to any of the cached functions will fetch fresh data from
-    Saleor.  Pattern deletion requires the Redis cache backend.
+    Does **not** remove individual ``category_slug_*`` keys.
     """
     cache.delete("category_total_count")
     cache.delete("full_category_tree")
     cache.delete_pattern("all_categories_*")
-    cache.delete_pattern("category_slug_*")

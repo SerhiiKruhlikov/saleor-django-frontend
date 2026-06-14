@@ -1,9 +1,16 @@
 # shop/context_processors.py
 from categories.services.categories import get_full_tree
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def main_menu(request):
-    category_tree = get_full_tree()
+    try:
+        category_tree = get_full_tree()
+    except Exception as e:
+        logger.warning("Failed to load category tree for menu: %s", e)
+        category_tree = []
 
     menu_links = [
         {"name": "Головна", "url": "/", "slug": "home"},
@@ -11,9 +18,7 @@ def main_menu(request):
         {"name": "Контакти", "url": "/contacts/", "slug": "contacts"},
     ]
 
-    context = {
+    return {
         "menu_category_tree": category_tree,
         "menu_links": menu_links,
     }
-
-    return context

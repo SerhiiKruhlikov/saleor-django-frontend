@@ -1,5 +1,6 @@
 # categories/webhooks.py
-from .services.categories import invalidate_category_cache
+from django.core.cache import cache
+from .services.categories import invalidate_global_category_cache
 
 
 def handle_category_event(event_type: str, payload: dict):
@@ -16,6 +17,13 @@ def handle_category_event(event_type: str, payload: dict):
     argument (which currently contains ``{"category": {"slug": "..."}}``)
     can be used to delete only affected keys.
     """
-    invalidate_category_cache()
-    # Logging can stay here or be moved to a separate utility
-    print(f"Category cache invalidated due to event: {event_type}")
+    slug = payload.get("category", {}).get("slug")
+
+    # 1. Invalidate the specific category page (if slug is known)
+    if slug:
+        cache.delete(f"category_slug_{slug}")
+        print(f"Invalidated cache for category slug: {slug}")
+
+    # 2. Invalidate shared data that depends on any category change
+    invalidate_global_category_cache()
+    print(f"Global category cache invalidated due to event: {event_type}")

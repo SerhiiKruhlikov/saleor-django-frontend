@@ -1,40 +1,48 @@
 {# categories/templates/categories/detail.html #}
 {% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ category.name }}{% endblock %}
 
 {% block content %}
   <h1>{{ category.name }}</h1>
 
-  {% if subcategories and subcategories.children %}
-    <h2>Підкатегорії</h2>
-    <ul>
-      {% for child in subcategories.children %}
-        {% include "categories/partials/category_node.html" with category=child %}
-      {% endfor %}
-    </ul>
+  {% if tree_error %}
+    <p>{% trans "Subcategories are temporarily unavailable." %}</p>
   {% else %}
-    <p>Немає підкатегорій</p>
+    {% if subcategories and subcategories.children %}
+      <h2>{% trans "Subcategories" %}</h2>
+      <ul>
+        {% for child in subcategories.children %}
+          {% include "categories/partials/category_node.html" with category=child %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>{% trans "No subcategories." %}</p>
+    {% endif %}
   {% endif %}
 
-  {# Блок товаров (будет добавлен позже) #}
+  {# Products block – will be filled later #}
   {% if products %}
-    <h2>Товари</h2>
+    <h2>{% trans "Products" %}</h2>
     <div class="products-grid">
       {% for product in products %}
-        <!-- карточка товара -->
+        <!-- product card -->
       {% endfor %}
     </div>
   {% else %}
-    <p>У цій категорії поки немає товарів</p>
+    <p>{% trans "No products in this category yet." %}</p>
   {% endif %}
 
-  {# Ссылка возврата #}
+  {# Return link #}
   {% if parent %}
     {% if parent.slug == 'catalog' %}
-      <a href="{% url 'categories:root' %}">← Повернутися до {{ parent.name }}</a>
+      <a href="{% url 'categories:root' %}">← {% trans "Back to" %} {{ parent.name }}</a>
     {% else %}
-      <a href="{% url 'categories:detail' slug=parent.slug %}">← Повернутися до {{ parent.name }}</a>
+      <a href="{% url 'categories:detail' slug=parent.slug %}">← {% trans "Back to" %} {{ parent.name }}</a>
     {% endif %}
   {% else %}
-    <a href="{% url 'shop:index' %}">← На головну</a>
+    <a href="{% url 'shop:index' %}">← {% trans "Home" %}</a>
   {% endif %}
+
 {% endblock %}

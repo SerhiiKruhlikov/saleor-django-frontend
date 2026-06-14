@@ -1,0 +1,66 @@
+# Ukrainian translations for saleor-django-frontend testing.
+# Copyright (C) 2026, serhii.kruhlikov@gmail.com
+# This file is distributed under the same license as the
+# saleor-django-frontend package.
+# Serhii Kruhlikov <serhii.kruhlikov@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: saleor-django-frontend 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-15 00:35+0300\n"
+"PO-Revision-Date: 2026-06-15 01:00+0300\n"
+"Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../testing.rst:2
+msgid "Testing"
+msgstr "Тестування"
+
+#: ../../testing.rst:4
+msgid ""
+"The project uses **pytest** with the **pytest-django** plugin. Tests are "
+"located in the ``tests/`` directory at the project root."
+msgstr ""
+"У проекті використовується **pytest** з плагіном **pytest-django**. "
+"Тести знаходяться в директорії ``tests/`` у корені проекту."
+
+#: ../../testing.rst:8
+msgid "Test layout"
+msgstr "Структура тестів"
+
+#: ../../testing.rst:20
+msgid "Running tests"
+msgstr "Запуск тестів"
+
+#: ../../testing.rst:22
+msgid "Run all tests::"
+msgstr "Запустити всі тести::"
+
+#: ../../testing.rst:26
+msgid "Run a single test file::"
+msgstr "Запустити окремий файл тестів::"
+
+#: ../../testing.rst:30
+msgid "Run a specific test::"
+msgstr "Запустити конкретний тест::"
+
+#: ../../testing.rst:35
+msgid "Cache safety during tests"
+msgstr "Безпека кешу під час тестування"
+
+#: ../../testing.rst:37
+msgid ""
+"Tests use ``LocMemCache`` to avoid depending on Redis. The cache is "
+"automatically cleared before each test via the ``conftest.py`` fixture."
+msgstr ""
+"Тести використовують ``LocMemCache``, щоб не залежати від Redis. "
+"Кеш автоматично очищується перед кожним тестом за допомогою фікстури "
+"``conftest.py``."

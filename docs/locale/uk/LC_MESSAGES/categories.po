@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: saleor-django-frontend 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-13 22:55+0300\n"
+"POT-Creation-Date: 2026-06-15 00:35+0300\n"
 "PO-Revision-Date: 2026-05-22 13:00+0200\n"
 "Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language: uk\n"
@@ -109,10 +109,11 @@ msgid "Retrieves a flat list of all categories from Saleor (cached)."
 msgstr "Отримує плаский список усіх категорій з Saleor (кешовано)."
 
 #: categories.services.categories.get_all_categories:3 of
+#, fuzzy
 msgid ""
 "When ``first`` is ``None``, the total count is obtained automatically "
-"(also cached) and all categories are loaded. The result is stored in "
-"Redis with a key that includes the ``first`` parameter."
+"(also cached) and all categories are loaded.  On failure an empty list is"
+" returned, and the error is logged."
 msgstr ""
 "Коли ``first`` дорівнює ``None``, загальна кількість отримується "
 "автоматично (також кешовано) і завантажуються всі категорії. Результат "
@@ -123,44 +124,39 @@ msgid "Maximum number of categories (``None`` to fetch all)."
 msgstr "Максимальна кількість категорій (``None`` для отримання всіх)."
 
 #: categories.services.categories.get_all_categories:9 of
+#, fuzzy
 msgid ""
 "List of dictionaries, each containing ``id``, ``name``, ``slug``, and "
-"``parent`` (``None`` or a dict with ``id``)."
+"``parent`` (``None`` or a dict with ``id``).  Empty list on error."
 msgstr ""
 "Список словників, кожен з яких містить ``id``, ``name``, ``slug`` та "
 "``parent`` (``None`` або словник з ``id``)."
 
 #: categories.services.categories.get_category_by_slug:1 of
-msgid "Retrieves a single category by its slug (cached for 30 minutes)."
+#, fuzzy
+msgid "Retrieves a single category by its slug (cached)."
 msgstr "Отримує одну категорію за її слагом (кешується на 30 хвилин)."
 
 #: categories.services.categories.get_category_by_slug:3 of
 msgid ""
-"Executes the ``category_by_slug.graphql`` query, passing the ``slug`` "
-"variable. The result is stored in Redis under a slug‑specific key."
+"If Saleor returns ``null`` for the slug, ``None`` is returned and "
+"**cached with a short TTL** to avoid repeated queries. If Saleor is "
+"unreachable, ``None`` is returned **without caching**, so the next "
+"request can retry."
 msgstr ""
-"Виконує запит ``category_by_slug.graphql``, передаючи змінну ``slug``. "
-"Результат зберігається в Redis під ключем, що залежить від слагу."
 
-#: categories.services.categories.get_category_by_slug:6 of
+#: categories.services.categories.get_category_by_slug:8 of
 msgid "URL identifier of the category (e.g. ``\"video-walls\"``)."
 msgstr "URL-ідентифікатор категорії (наприклад, ``\"video-walls\"``)."
 
-#: categories.services.categories.get_category_by_slug:8 of
+#: categories.services.categories.get_category_by_slug:10 of
+#, fuzzy
 msgid ""
-"Category dictionary, or ``None`` if the category is not found. ``None`` "
-"values are **not** cached."
+"Category dictionary, or ``None`` if the category is not found or an error"
+" occurs."
 msgstr ""
 "Словник категорії або ``None``, якщо категорію не знайдено. Значення "
 "``None`` **не** кешуються."
-
-#: ../../categories.rst
-msgid "Raises"
-msgstr "Може викликати"
-
-#: categories.services.categories.get_category_by_slug:11 of
-msgid "If there is a problem with the request."
-msgstr "Якщо виникла проблема із запитом."
 
 #: categories.services.categories.get_category_count:1 of
 msgid "Returns the total number of categories (cached in Redis)."
@@ -168,19 +164,9 @@ msgstr "Повертає загальну кількість категорій 
 
 #: categories.services.categories.get_category_count:3 of
 msgid ""
-"The value is fetched from Saleor once every 10 minutes, or until the "
-"cache is explicitly invalidated."
+"If Saleor is unreachable, returns 0 so the page can still render. The "
+"error is logged by the client layer."
 msgstr ""
-"Значення отримується з Saleor один раз кожні 10 хвилин або до моменту "
-"явного скидання кешу."
-
-#: categories.services.categories.get_category_count:6 of
-msgid "Total number of categories (int)."
-msgstr "Загальна кількість категорій (ціле число)."
-
-#: categories.services.categories.get_category_count:8 of
-msgid "If there is a connection error or an invalid     response from Saleor."
-msgstr "У разі помилки з'єднання або некоректної відповіді від Saleor."
 
 #: categories.services.categories.get_full_tree:1 of
 msgid "Returns the full category tree (cached in Redis for 1 hour)."
@@ -188,31 +174,89 @@ msgstr "Повертає повне дерево категорій (кешує�
 
 #: categories.services.categories.get_full_tree:3 of
 msgid ""
-"Loads all categories via :func:`get_all_categories` without a limit, "
-"builds the tree using :func:`build_category_tree`, and stores the result "
-"until it expires or is invalidated."
+"If Saleor cannot be reached, returns an empty list so the menu can "
+"degrade gracefully.  The error is logged by the client layer."
 msgstr ""
-"Завантажує всі категорії через :func:`get_all_categories` без обмежень, "
-"будує дерево за допомогою :func:`build_category_tree` і зберігає "
-"результат до закінчення терміну дії або скидання."
 
-#: categories.services.categories.get_full_tree:7 of
-msgid "Category tree (list of root nodes with nested ``children``)."
-msgstr "Дерево категорій (список кореневих вузлів з вкладеними ``children``)."
-
-#: categories.services.categories.invalidate_category_cache:1 of
-msgid "Invalidates all cached data related to categories."
-msgstr "Скидає всі кешовані дані, пов'язані з категоріями."
-
-#: categories.services.categories.invalidate_category_cache:3 of
+#: categories.services.categories.get_full_tree:6 of
 #, fuzzy
 msgid ""
-"Called from the webhook handler in :mod:`categories.webhooks`. Removes "
-"specific keys as well as wildcard patterns, so that the next request to "
-"any of the cached functions will fetch fresh data from Saleor.  Pattern "
-"deletion requires the Redis cache backend."
+"Category tree (list of root nodes with nested ``children``), or an empty "
+"list on failure."
+msgstr "Дерево категорій (список кореневих вузлів з вкладеними ``children``)."
+
+#: categories.services.categories.invalidate_global_category_cache:1 of
+msgid ""
+"Invalidates shared category cache keys: total count, full tree, and all "
+"flat lists."
 msgstr ""
-"Видаляє конкретні ключі, а також шаблони, тому наступний виклик будь-якої"
-" з кешованих функцій отримає свіжі дані з Saleor. Видалення за шаблоном "
-"потребує Redis-бекенду для кешу."
+
+#: categories.services.categories.invalidate_global_category_cache:4 of
+msgid "Does **not** remove individual ``category_slug_*`` keys."
+msgstr ""
+
+#~ msgid ""
+#~ "Executes the ``category_by_slug.graphql`` query, "
+#~ "passing the ``slug`` variable. The "
+#~ "result is stored in Redis under a"
+#~ " slug‑specific key."
+#~ msgstr ""
+#~ "Виконує запит ``category_by_slug.graphql``, "
+#~ "передаючи змінну ``slug``. Результат "
+#~ "зберігається в Redis під ключем, що "
+#~ "залежить від слагу."
+
+#~ msgid "Raises"
+#~ msgstr "Може викликати"
+
+#~ msgid "If there is a problem with the request."
+#~ msgstr "Якщо виникла проблема із запитом."
+
+#~ msgid ""
+#~ "The value is fetched from Saleor "
+#~ "once every 10 minutes, or until "
+#~ "the cache is explicitly invalidated."
+#~ msgstr ""
+#~ "Значення отримується з Saleor один раз"
+#~ " кожні 10 хвилин або до моменту "
+#~ "явного скидання кешу."
+
+#~ msgid "Total number of categories (int)."
+#~ msgstr "Загальна кількість категорій (ціле число)."
+
+#~ msgid "If there is a connection error or an invalid     response from Saleor."
+#~ msgstr "У разі помилки з'єднання або некоректної відповіді від Saleor."
+
+#~ msgid ""
+#~ "Loads all categories via "
+#~ ":func:`get_all_categories` without a limit, "
+#~ "builds the tree using "
+#~ ":func:`build_category_tree`, and stores the "
+#~ "result until it expires or is "
+#~ "invalidated."
+#~ msgstr ""
+#~ "Завантажує всі категорії через "
+#~ ":func:`get_all_categories` без обмежень, будує "
+#~ "дерево за допомогою :func:`build_category_tree` "
+#~ "і зберігає результат до закінчення "
+#~ "терміну дії або скидання."
+
+#~ msgid "Invalidates all cached data related to categories."
+#~ msgstr "Скидає всі кешовані дані, пов'язані з категоріями."
+
+#~ msgid ""
+#~ "Called from the webhook handler in "
+#~ ":mod:`categories.webhooks`. Removes specific keys"
+#~ " as well as wildcard patterns, so "
+#~ "that the next request to any of"
+#~ " the cached functions will fetch "
+#~ "fresh data from Saleor.  Pattern "
+#~ "deletion requires the Redis cache "
+#~ "backend."
+#~ msgstr ""
+#~ "Видаляє конкретні ключі, а також "
+#~ "шаблони, тому наступний виклик будь-якої "
+#~ "з кешованих функцій отримає свіжі дані"
+#~ " з Saleor. Видалення за шаблоном "
+#~ "потребує Redis-бекенду для кешу."
 

@@ -194,6 +194,7 @@
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Category service</a></li>
 <li class="toctree-l1"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 </ul>
 
 </div>
@@ -296,15 +297,15 @@ is not found.</p>
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_all_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.get_all_categories" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves a flat list of all categories from Saleor (cached).</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">first</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the total count is obtained automatically
-(also cached) and all categories are loaded. The result is stored in
-Redis with a key that includes the <code class="docutils literal notranslate"><span class="pre">first</span></code> parameter.</p>
+(also cached) and all categories are loaded.  On failure an empty
+list is returned, and the error is logged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>first</strong> – Maximum number of categories (<code class="docutils literal notranslate"><span class="pre">None</span></code> to fetch all).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of dictionaries, each containing <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">slug</span></code>,
-and <code class="docutils literal notranslate"><span class="pre">parent</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> or a dict with <code class="docutils literal notranslate"><span class="pre">id</span></code>).</p>
+and <code class="docutils literal notranslate"><span class="pre">parent</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> or a dict with <code class="docutils literal notranslate"><span class="pre">id</span></code>).  Empty list on error.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -317,20 +318,19 @@ and <code class="docutils literal notranslate"><span class="pre">parent</span></
 
 <dl class="py function">
 <dt class="sig sig-object py" id="categories.services.categories.get_category_by_slug">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_by_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_by_slug" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves a single category by its slug (cached for 30 minutes).</p>
-<p>Executes the <code class="docutils literal notranslate"><span class="pre">category_by_slug.graphql</span></code> query, passing the <code class="docutils literal notranslate"><span class="pre">slug</span></code>
-variable. The result is stored in Redis under a slug‑specific key.</p>
+<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_by_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_by_slug" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a single category by its slug (cached).</p>
+<p>If Saleor returns <code class="docutils literal notranslate"><span class="pre">null</span></code> for the slug, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned and
+<strong>cached with a short TTL</strong> to avoid repeated queries.
+If Saleor is unreachable, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned <strong>without caching</strong>,
+so the next request can retry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>slug</strong> – URL identifier of the category (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;video-walls&quot;</span></code>).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Category dictionary, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the category is not found.
-<code class="docutils literal notranslate"><span class="pre">None</span></code> values are <strong>not</strong> cached.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>requests.HTTPError</strong> – If there is a problem with the request.</p>
+<dd class="field-even"><p>Category dictionary, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the category is not found
+or an error occurs.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -339,41 +339,30 @@ variable. The result is stored in Redis under a slug‑specific key.</p>
 <dt class="sig sig-object py" id="categories.services.categories.get_category_count">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_count" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the total number of categories (cached in Redis).</p>
-<p>The value is fetched from Saleor once every 10 minutes, or until the
-cache is explicitly invalidated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Total number of categories (int).</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>requests.HTTPError</strong> – If there is a connection error or an invalid
-    response from Saleor.</p>
-</dd>
-</dl>
+<p>If Saleor is unreachable, returns 0 so the page can still render.
+The error is logged by the client layer.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="categories.services.categories.get_full_tree">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_full_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.get_full_tree" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the full category tree (cached in Redis for 1 hour).</p>
-<p>Loads all categories via <a class="reference internal" href="#categories.services.categories.get_all_categories" title="categories.services.categories.get_all_categories"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_all_categories()</span></code></a> without a limit,
-builds the tree using <a class="reference internal" href="#categories.services.categories.build_category_tree" title="categories.services.categories.build_category_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_category_tree()</span></code></a>, and stores the
-result until it expires or is invalidated.</p>
+<p>If Saleor cannot be reached, returns an empty list so the menu
+can degrade gracefully.  The error is logged by the client layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Category tree (list of root nodes with nested <code class="docutils literal notranslate"><span class="pre">children</span></code>).</p>
+<dd class="field-odd"><p>Category tree (list of root nodes with nested <code class="docutils literal notranslate"><span class="pre">children</span></code>),
+or an empty list on failure.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="categories.services.categories.invalidate_category_cache">
-<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">invalidate_category_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#categories.services.categories.invalidate_category_cache" title="Link to this definition">¶</a></dt>
-<dd><p>Invalidates all cached data related to categories.</p>
-<p>Called from the webhook handler in <a class="reference internal" href="webhooks.html#module-categories.webhooks" title="categories.webhooks"><code class="xref py py-mod docutils literal notranslate"><span class="pre">categories.webhooks</span></code></a>.
-Removes specific keys as well as wildcard patterns, so that the next
-request to any of the cached functions will fetch fresh data from
-Saleor.  Pattern deletion requires the Redis cache backend.</p>
+<dt class="sig sig-object py" id="categories.services.categories.invalidate_global_category_cache">
+<span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">invalidate_global_category_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#categories.services.categories.invalidate_global_category_cache" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidates shared category cache keys: total count, full tree,
+and all flat lists.</p>
+<p>Does <strong>not</strong> remove individual <code class="docutils literal notranslate"><span class="pre">category_slug_*</span></code> keys.</p>
 </dd></dl>
 
 </section>
@@ -440,7 +429,7 @@ Saleor.  Pattern deletion requires the Redis cache backend.</p>
 <li><a class="reference internal" href="#categories.services.categories.get_category_by_slug"><code class="docutils literal notranslate"><span class="pre">get_category_by_slug()</span></code></a></li>
 <li><a class="reference internal" href="#categories.services.categories.get_category_count"><code class="docutils literal notranslate"><span class="pre">get_category_count()</span></code></a></li>
 <li><a class="reference internal" href="#categories.services.categories.get_full_tree"><code class="docutils literal notranslate"><span class="pre">get_full_tree()</span></code></a></li>
-<li><a class="reference internal" href="#categories.services.categories.invalidate_category_cache"><code class="docutils literal notranslate"><span class="pre">invalidate_category_cache()</span></code></a></li>
+<li><a class="reference internal" href="#categories.services.categories.invalidate_global_category_cache"><code class="docutils literal notranslate"><span class="pre">invalidate_global_category_cache()</span></code></a></li>
 </ul>
 </li>
 </ul>
