@@ -14,13 +14,17 @@ To add support for a new entity:
 3. Import the handler here and add an entry to ``EVENT_HANDLERS``.
 """
 from categories.webhooks import handle_category_event
+from products.webhooks import handle_product_event
+
 
 # Map Saleor event types to application handler functions
 EVENT_HANDLERS = {
+    # Categories
     "CategoryCreated": handle_category_event,
     "CategoryUpdated": handle_category_event,
     "CategoryDeleted": handle_category_event,
-    # Future additions:
-    # "ProductCreated": handle_product_event,
-    # ...
+    # Products
+    "ProductCreated": handle_product_event,
+    "ProductUpdated": handle_product_event,
+    "ProductDeleted": handle_product_event,
 }

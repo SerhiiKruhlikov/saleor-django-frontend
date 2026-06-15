@@ -1,11 +1,11 @@
 # app/urls.py
 from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.views.static import serve as static_serve
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 from webhooks import views as webhooks_views
+from shop.views import custom_404
 
+handler404 = custom_404
 
 urlpatterns = [
     path('admin/', admin.site.urls),

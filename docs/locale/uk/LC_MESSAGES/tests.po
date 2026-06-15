@@ -1,0 +1,231 @@
+# Ukrainian translations for saleor-django-frontend tests.
+# Copyright (C) 2026, serhii.kruhlikov@gmail.com
+# This file is distributed under the same license as the
+# saleor-django-frontend package.
+# Serhii Kruhlikov <serhii.kruhlikov@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: saleor-django-frontend 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-15 03:48+0300\n"
+"PO-Revision-Date: 2026-06-15 04:10+0300\n"
+"Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../tests.rst:2
+msgid "Tests Reference"
+msgstr "Довідник тестів"
+
+#: ../../tests.rst:4
+msgid "This section documents the unit tests for each application."
+msgstr "Цей розділ документує модульні тести для кожного додатку."
+
+#: ../../tests.rst:7
+msgid "Categories Tests"
+msgstr "Тести категорій"
+
+#: ../../tests.rst:10 ../../tests.rst:37
+msgid "Services"
+msgstr "Сервіси"
+
+#: of
+#: tests.categories.test_services.test_build_category_tree_creates_nested_structure:1
+msgid "Converts a flat list into a tree with children."
+msgstr "Перетворює плаский список на дерево з дочірніми елементами."
+
+#: of
+#: tests.categories.test_services.test_find_node_in_tree_finds_existing_node:1
+msgid "Returns the node when the slug exists in the tree."
+msgstr "Повертає вузол, коли слаг існує в дереві."
+
+#: of
+#: tests.categories.test_services.test_find_node_in_tree_returns_none_for_missing_slug:1
+msgid "Returns None when the slug is not found."
+msgstr "Повертає None, коли слаг не знайдено."
+
+#: of
+#: tests.categories.test_services.test_get_all_categories_returns_empty_list_on_error:1
+msgid "Returns an empty list when Saleor is unavailable."
+msgstr "Повертає порожній список, коли Saleor недоступний."
+
+#: of tests.categories.test_services.test_get_all_categories_returns_list:1
+msgid "Returns a flat list of categories on success."
+msgstr "Повертає плаский список категорій у разі успіху."
+
+#: of
+#: tests.categories.test_services.test_get_category_by_slug_returns_category:1
+msgid "Returns a category when Saleor responds with valid data."
+msgstr "Повертає категорію, коли Saleor відповідає коректними даними."
+
+#: of
+#: tests.categories.test_services.test_get_category_by_slug_returns_none_on_error:1
+#: tests.products.test_services.test_get_product_by_slug_returns_none_on_error:1
+msgid "Returns None (without caching) when Saleor is unavailable."
+msgstr "Повертає None (без кешування), коли Saleor недоступний."
+
+#: of
+#: tests.categories.test_services.test_get_category_by_slug_returns_none_when_not_found:1
+msgid "Returns None when Saleor returns null for the category."
+msgstr "Повертає None, коли Saleor повертає null для категорії."
+
+#: of tests.categories.test_services.test_get_category_count_returns_value:1
+msgid ""
+"Test that get_category_count returns the number from Saleor when the "
+"query succeeds."
+msgstr ""
+"Перевіряє, що get_category_count повертає число з Saleor, коли запит "
+"виконується успішно."
+
+#: of
+#: tests.categories.test_services.test_get_category_count_returns_zero_on_error:1
+msgid "Test that get_category_count returns 0 when Saleor is unavailable."
+msgstr "Перевіряє, що get_category_count повертає 0, коли Saleor недоступний."
+
+#: of
+#: tests.categories.test_services.test_get_full_tree_returns_empty_list_when_no_data:1
+msgid "Returns an empty list when get_all_categories returns nothing."
+msgstr "Повертає порожній список, коли get_all_categories нічого не повертає."
+
+#: of tests.categories.test_services.test_get_full_tree_returns_tree:1
+msgid "Returns a category tree when flat data is available."
+msgstr "Повертає дерево категорій, коли доступні пласкі дані."
+
+#: of
+#: tests.categories.test_services.test_invalidate_global_category_cache_deletes_keys:1
+msgid "Test that global cache keys and patterns are deleted."
+msgstr "Перевіряє, що глобальні ключі кешу та шаблони видаляються."
+
+#: ../../tests.rst:18 ../../tests.rst:45
+msgid "Webhooks"
+msgstr "Вебхуки"
+
+#: of
+#: tests.categories.test_webhooks.test_handle_category_event_invalidates_specific_and_global_cache:1
+msgid ""
+"Test that handle_category_event deletes the specific category slug key "
+"and calls invalidate_global_category_cache."
+msgstr ""
+"Перевіряє, що handle_category_event видаляє конкретний ключ слагу "
+"категорії та викликає invalidate_global_category_cache."
+
+#: of tests.categories.test_webhooks.test_handle_category_event_without_slug:1
+msgid ""
+"Test that handle_category_event still invalidates global cache even when "
+"the payload does not contain a category slug."
+msgstr ""
+"Перевіряє, що handle_category_event все одно інвалідовує глобальний кеш, "
+"навіть якщо payload не містить слагу категорії."
+
+#: ../../tests.rst:26 ../../tests.rst:53
+msgid "Views"
+msgstr "Представлення"
+
+#: of
+#: tests.categories.test_views.test_detail_renders_category_and_subcategories:1
+msgid ""
+"A valid category with subcategories renders successfully, showing the "
+"category name, parent link, and breadcrumbs."
+msgstr ""
+"Коректна категорія з підкатегоріями успішно рендериться, показуючи "
+"назву категорії, посилання на батьківську категорію та хлібні крихти."
+
+#: of tests.categories.test_views.test_detail_returns_404_when_not_found:1
+msgid "A non-existent category slug results in a 404 error."
+msgstr "Неіснуючий слаг категорії призводить до помилки 404."
+
+#: of
+#: tests.categories.test_views.test_detail_shows_error_when_saleor_unavailable:1
+msgid ""
+"When Saleor is unavailable, the detail view renders a friendly error page"
+" without a 404."
+msgstr ""
+"Коли Saleor недоступний, представлення деталей рендерить дружню сторінку "
+"помилки без 404."
+
+#: of tests.categories.test_views.test_index_renders_with_category_and_tree:1
+msgid ""
+"When Saleor returns a valid root category and tree, the index page "
+"renders without error flags and includes the category name."
+msgstr ""
+"Коли Saleor повертає коректну кореневу категорію та дерево, індексна "
+"сторінка рендериться без прапорців помилок і містить назву категорії."
+
+#: of
+#: tests.categories.test_views.test_index_shows_error_when_category_unavailable:1
+msgid ""
+"When get_category_by_slug returns None, the index page shows an error "
+"message and does not try to render the category tree."
+msgstr ""
+"Коли get_category_by_slug повертає None, індексна сторінка показує "
+"повідомлення про помилку і не намагається рендерити дерево категорій."
+
+#: ../../tests.rst:34
+msgid "Products Tests"
+msgstr "Тести товарів"
+
+#: of
+#: tests.products.test_services.test_get_product_by_slug_converts_description:1
+msgid "Editor.js description is converted to HTML when present."
+msgstr "Опис Editor.js конвертується в HTML, коли він присутній."
+
+#: of
+#: tests.products.test_services.test_get_product_by_slug_returns_none_when_data_is_none:1
+msgid "Returns None when safe_execute_query itself returns None (no data key)."
+msgstr "Повертає None, коли safe_execute_query сам повертає None (немає ключа даних)."
+
+#: of
+#: tests.products.test_services.test_get_product_by_slug_returns_none_when_not_found:1
+msgid "Returns None when Saleor returns null for the product."
+msgstr "Повертає None, коли Saleor повертає null для товару."
+
+#: of tests.products.test_services.test_get_product_by_slug_returns_product:1
+msgid "Returns a product dictionary when Saleor responds with valid data."
+msgstr "Повертає словник товару, коли Saleor відповідає коректними даними."
+
+#: of tests.products.test_webhooks.test_handle_product_event_invalidates_slug:1
+msgid ""
+"When the payload contains product.slug, the corresponding cache key is "
+"deleted."
+msgstr "Коли payload містить product.slug, відповідний ключ кешу видаляється."
+
+#: of tests.products.test_webhooks.test_handle_product_event_without_slug:1
+msgid ""
+"When the payload does not contain a usable slug, nothing is invalidated "
+"and a warning is logged."
+msgstr ""
+"Коли payload не містить придатного слагу, нічого не інвалідовується, "
+"і логується попередження."
+
+#: of tests.products.test_views.test_detail_handles_missing_description:1
+msgid "A product without description still renders without errors."
+msgstr "Товар без опису все одно рендериться без помилок."
+
+#: of tests.products.test_views.test_detail_renders_product:1
+msgid "A valid product renders with its name, description and breadcrumbs."
+msgstr "Коректний товар рендериться з його назвою, описом і хлібними крихтами."
+
+#: of tests.products.test_views.test_detail_returns_404_when_not_found:1
+msgid "A non-existent product slug results in a 404 error."
+msgstr "Неіснуючий слаг товару призводить до помилки 404."
+
+#: of
+#: tests.products.test_views.test_detail_shows_error_when_saleor_unavailable:1
+msgid "When Saleor is unavailable, a friendly error message is shown."
+msgstr "Коли Saleor недоступний, показується дружнє повідомлення про помилку."
+
+#: of tests.products.test_views.test_detail_uses_custom_404_page:1
+msgid ""
+"When a product is not found, the custom 404 page is used (detected via "
+"the \"Product not found\" message)."
+msgstr ""
+"Коли товар не знайдено, використовується кастомна сторінка 404 "
+"(визначається за повідомленням \"Product not found\")."
+

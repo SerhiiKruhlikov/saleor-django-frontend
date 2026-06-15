@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Індекс" href="genindex.html"><link rel="search" title="Пошук" href="search.html"><link rel="next" title="Вебхуки" href="webhooks.html"><link rel="prev" title="Документація saleor-django-frontend" href="index.html">
+<link rel="index" title="Індекс" href="genindex.html"><link rel="search" title="Пошук" href="search.html"><link rel="next" title="Товари" href="products.html"><link rel="prev" title="Документація saleor-django-frontend" href="index.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Сервіс категорій - saleor-django-frontend 1 documentation</title>
@@ -193,6 +193,7 @@
   <p class="caption" role="heading"><span class="caption-text">Зміст:</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Сервіс категорій</a></li>
+<li class="toctree-l1"><a class="reference internal" href="products.html">Товари</a></li>
 <li class="toctree-l1"><a class="reference internal" href="webhooks.html">Вебхуки</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Тестування</a></li>
 </ul>
@@ -289,16 +290,13 @@
 <dt class="sig sig-object py" id="categories.services.categories.get_all_categories">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_all_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.get_all_categories" title="Link to this definition">¶</a></dt>
 <dd><p>Отримує плаский список усіх категорій з Saleor (кешовано).</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">first</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the total count is obtained automatically
-(also cached) and all categories are loaded.  On failure an empty
-list is returned, and the error is logged.</p>
+<p>Коли <code class="docutils literal notranslate"><span class="pre">first</span></code> дорівнює <code class="docutils literal notranslate"><span class="pre">None</span></code>, загальна кількість отримується автоматично (також кешовано) і завантажуються всі категорії. У разі помилки повертається порожній список, а помилка логується.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметри<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>first</strong> – Максимальна кількість категорій (<code class="docutils literal notranslate"><span class="pre">None</span></code> для отримання всіх).</p>
 </dd>
 <dt class="field-even">Повертає<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dictionaries, each containing <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">slug</span></code>,
-and <code class="docutils literal notranslate"><span class="pre">parent</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> or a dict with <code class="docutils literal notranslate"><span class="pre">id</span></code>).  Empty list on error.</p>
+<dd class="field-even"><p>Список словників, кожен з яких містить <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">slug</span></code> та <code class="docutils literal notranslate"><span class="pre">parent</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> або словник з <code class="docutils literal notranslate"><span class="pre">id</span></code>). Порожній список у разі помилки.</p>
 </dd>
 </dl>
 <p class="rubric">Приклад</p>
@@ -312,18 +310,14 @@ and <code class="docutils literal notranslate"><span class="pre">parent</span></
 <dl class="py function">
 <dt class="sig sig-object py" id="categories.services.categories.get_category_by_slug">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_by_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_by_slug" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves a single category by its slug (cached).</p>
-<p>If Saleor returns <code class="docutils literal notranslate"><span class="pre">null</span></code> for the slug, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned and
-<strong>cached with a short TTL</strong> to avoid repeated queries.
-If Saleor is unreachable, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned <strong>without caching</strong>,
-so the next request can retry.</p>
+<dd><p>Отримує одну категорію за її слагом (кешується).</p>
+<p>Якщо Saleor повертає <code class="docutils literal notranslate"><span class="pre">null</span></code> для слагу, повертається <code class="docutils literal notranslate"><span class="pre">None</span></code> і <strong>кешується з коротким TTL</strong>, щоб уникнути повторних запитів. Якщо Saleor недоступний, <code class="docutils literal notranslate"><span class="pre">None</span></code> повертається <strong>без кешування</strong>, тому наступний запит може повторити спробу.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметри<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>slug</strong> – URL-ідентифікатор категорії (наприклад, <code class="docutils literal notranslate"><span class="pre">&quot;video-walls&quot;</span></code>).</p>
 </dd>
 <dt class="field-even">Повертає<span class="colon">:</span></dt>
-<dd class="field-even"><p>Category dictionary, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the category is not found
-or an error occurs.</p>
+<dd class="field-even"><p>Словник категорії або <code class="docutils literal notranslate"><span class="pre">None</span></code>, якщо категорію не знайдено або сталася помилка.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -332,20 +326,17 @@ or an error occurs.</p>
 <dt class="sig sig-object py" id="categories.services.categories.get_category_count">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_category_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#categories.services.categories.get_category_count" title="Link to this definition">¶</a></dt>
 <dd><p>Повертає загальну кількість категорій (кешується в Redis).</p>
-<p>If Saleor is unreachable, returns 0 so the page can still render.
-The error is logged by the client layer.</p>
+<p>Якщо Saleor недоступний, повертає 0, щоб сторінка все одно могла відобразитися. Помилка логується клієнтським шаром.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="categories.services.categories.get_full_tree">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">get_full_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#categories.services.categories.get_full_tree" title="Link to this definition">¶</a></dt>
 <dd><p>Повертає повне дерево категорій (кешується в Redis на 1 годину).</p>
-<p>If Saleor cannot be reached, returns an empty list so the menu
-can degrade gracefully.  The error is logged by the client layer.</p>
+<p>Якщо Saleor недоступний, повертає порожній список, щоб меню могло коректно деградувати. Помилка логується клієнтським шаром.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Повертає<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Category tree (list of root nodes with nested <code class="docutils literal notranslate"><span class="pre">children</span></code>),
-or an empty list on failure.</p>
+<dd class="field-odd"><p>Дерево категорій (список кореневих вузлів з вкладеними <code class="docutils literal notranslate"><span class="pre">children</span></code>) або порожній список у разі помилки.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -353,9 +344,8 @@ or an empty list on failure.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="categories.services.categories.invalidate_global_category_cache">
 <span class="sig-prename descclassname"><span class="pre">categories.services.categories.</span></span><span class="sig-name descname"><span class="pre">invalidate_global_category_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#categories.services.categories.invalidate_global_category_cache" title="Link to this definition">¶</a></dt>
-<dd><p>Invalidates shared category cache keys: total count, full tree,
-and all flat lists.</p>
-<p>Does <strong>not</strong> remove individual <code class="docutils literal notranslate"><span class="pre">category_slug_*</span></code> keys.</p>
+<dd><p>Інвалідовує загальні ключі кешу категорій: загальну кількість, повне дерево та всі пласкі списки.</p>
+<p><strong>Не</strong> видаляє окремі ключі <code class="docutils literal notranslate"><span class="pre">category_slug_*</span></code>.</p>
 </dd></dl>
 
 </section>
@@ -365,12 +355,12 @@ and all flat lists.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="webhooks.html">
+          <a class="next-page" href="products.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Вебхуки</div>
+                <div class="title">Товари</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

@@ -16,5 +16,7 @@ documentation for details.
    :caption: Contents:
 
    categories
+   products
    webhooks
    testing
+   tests

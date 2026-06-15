@@ -1,27 +1,50 @@
-{% extends 'base.html' %}
+{# products/templates/products/detail.html #}
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if product %}{{ product.name }}{% else %}{% trans "Product unavailable" %}{% endif %}
+{% endblock %}
 
 {% block content %}
+  {% if product_error %}
+    {# Saleor недоступен — показываем ошибку #}
+    <h1>{% trans "Product temporarily unavailable" %}</h1>
+    <p>{% trans "Something went wrong while loading the product. Please try again later." %}</p>
+    <a href="{% url 'categories:root' %}">← {% trans "Go to catalog" %}</a>
+    <br>
+    <a href="{% url 'shop:index' %}">← {% trans "Go to home page" %}</a>
 
-  <h1>{% if product %}{{ product.name }}{% endif %}</h1>
+  {% elif product %}
+    {# Товар загружен успешно #}
+    <h1>{{ product.name }}</h1>
 
-  {# Блок товару #}
-  {% if product %}
     {% if product.description %}
-    	 {{ product.description|safe }}
-    {% endif %}
-  {% else %}
-    <p>Немає товару</p>
-  {% endif %}
-
-  {# Ссылка возврата #}
-  {% if parent %}
-    {% if parent.slug == 'catalog' %}
-      <a href="{% url 'categories:root' %}">← Повернутися до {{ parent.name }}</a>
+      <div class="product-description">
+        {{ product.description|safe }}
+      </div>
     {% else %}
-      <a href="{% url 'categories:detail' slug=parent.slug %}">← Повернутися до {{ parent.name }}</a>
+      <p>{% trans "No description available." %}</p>
     {% endif %}
+
+    {# Ссылка возврата в категорию #}
+    {% if parent %}
+      {% if parent.slug == 'catalog' %}
+        <a href="{% url 'categories:root' %}">← {% trans "Back to" %} {{ parent.name }}</a>
+      {% else %}
+        <a href="{% url 'categories:detail' slug=parent.slug %}">← {% trans "Back to" %} {{ parent.name }}</a>
+      {% endif %}
+    {% else %}
+      <a href="{% url 'shop:index' %}">← {% trans "Home" %}</a>
+    {% endif %}
+
   {% else %}
-    <a href="{% url 'shop:index' %}">← На головну</a>
+    {# На всякий случай: товар не передан и ошибки нет #}
+    <h1>{% trans "Product not found" %}</h1>
+    <p>{% trans "The product you are looking for does not exist or has been removed." %}</p>
+    <a href="{% url 'categories:root' %}">← {% trans "Go to catalog" %}</a>
+    <br>
+    <a href="{% url 'shop:index' %}">← {% trans "Go to home page" %}</a>
   {% endif %}
 
 {% endblock %}

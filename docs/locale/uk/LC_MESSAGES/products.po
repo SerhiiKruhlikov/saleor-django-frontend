@@ -1,0 +1,134 @@
+# Ukrainian translations for saleor-django-frontend products.
+# Copyright (C) 2026, serhii.kruhlikov@gmail.com
+# This file is distributed under the same license as the
+# saleor-django-frontend package.
+# Serhii Kruhlikov <serhii.kruhlikov@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: saleor-django-frontend 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-15 03:34+0300\n"
+"PO-Revision-Date: 2026-06-15 03:45+0300\n"
+"Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../products.rst:2
+msgid "Products"
+msgstr "Товари"
+
+#: ../../products.rst:5
+msgid "Services"
+msgstr "Сервіси"
+
+#: of products.services.products.editorjs_to_html:1
+msgid "Convert Editor.js JSON description into safe HTML."
+msgstr "Перетворює JSON-опис Editor.js на безпечний HTML."
+
+#: of products.services.products.editorjs_to_html:3
+msgid ""
+"Supports ``paragraph`` and ``header`` blocks.  Returns the original "
+"string if it is not valid JSON."
+msgstr ""
+"Підтримує блоки ``paragraph`` та ``header``. Повертає оригінальний "
+"рядок, якщо він не є коректним JSON."
+
+#: of products.services.products.get_product_by_slug:1
+msgid "Return a single product by its slug (cached)."
+msgstr "Повертає один товар за його слагом (кешується)."
+
+#: of products.services.products.get_product_by_slug:3
+msgid ""
+"If Saleor returns ``null`` for the slug, ``None`` is returned and "
+"**cached with a short TTL** to avoid repeated queries. If Saleor is "
+"unreachable, ``None`` is returned **without caching**, so the next "
+"request can retry."
+msgstr ""
+"Якщо Saleor повертає ``null`` для слагу, повертається ``None`` і "
+"**кешується з коротким TTL**, щоб уникнути повторних запитів. Якщо "
+"Saleor недоступний, ``None`` повертається **без кешування**, тому "
+"наступний запит може повторити спробу."
+
+#: ../../products.rst
+msgid "Parameters"
+msgstr "Параметри"
+
+#: of products.services.products.get_product_by_slug:8
+msgid "URL identifier of the product."
+msgstr "URL-ідентифікатор товару."
+
+#: ../../products.rst
+msgid "Returns"
+msgstr "Повертає"
+
+#: of products.services.products.get_product_by_slug:10
+msgid ""
+"Product dictionary, or ``None`` if the product is not found or an error "
+"occurs."
+msgstr ""
+"Словник товару або ``None``, якщо товар не знайдено або сталася помилка."
+
+#: of products.services.products.invalidate_product_cache_by_slug:1
+msgid "Remove the cached entry for a single product."
+msgstr "Видаляє кешований запис для одного товару."
+
+#: of products.services.products.invalidate_product_cache_by_slug:3
+msgid ""
+"Should be called from the product webhook handler whenever a product is "
+"created, updated, or deleted."
+msgstr ""
+"Повинна викликатися з обробника вебхуків товарів щоразу, коли товар "
+"створюється, оновлюється або видаляється."
+
+#: ../../products.rst:13
+msgid "Webhooks"
+msgstr "Вебхуки"
+
+#: of products.webhooks.handle_product_event:1
+msgid "Handle Saleor webhook events related to products."
+msgstr "Обробляє події вебхуків Saleor, пов'язані з товарами."
+
+#: of products.webhooks.handle_product_event:3
+msgid ""
+"Extracts the product slug from the payload and invalidates the "
+"corresponding cache entry."
+msgstr ""
+"Видобуває слаг товару з payload та інвалідовує відповідний запис кешу."
+
+#: of products.webhooks.handle_product_event:6
+msgid "``\"ProductCreated\"``, ``\"ProductUpdated\"``, etc."
+msgstr "``\"ProductCreated\"``, ``\"ProductUpdated\"`` тощо."
+
+#: of products.webhooks.handle_product_event:7
+msgid "Full JSON payload from Saleor."
+msgstr "Повний JSON payload від Saleor."
+
+#: ../../products.rst:21
+msgid "Views"
+msgstr "Представлення"
+
+#: of products.views.detail:1
+msgid "Product detail page."
+msgstr "Сторінка детальної інформації про товар."
+
+#: of products.views.detail:3
+msgid ""
+"If Saleor is unavailable, a friendly error message is shown. If the "
+"product does not exist, a 404 is raised (which will use the custom "
+"``products/404.html`` template)."
+msgstr ""
+"Якщо Saleor недоступний, показується дружнє повідомлення про помилку. "
+"Якщо товар не існує, генерується 404 (використовується кастомний шаблон "
+"``products/404.html``)."
+
+#: ../../products.rst:29
+msgid "URLs"
+msgstr "URL-адреси"
+

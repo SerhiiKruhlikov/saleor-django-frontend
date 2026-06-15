@@ -1,4 +1,4 @@
-# Ukrainian translations for saleor-django-frontend.
+# Ukrainian translations for saleor-django-frontend categories.
 # Copyright (C) 2026, serhii.kruhlikov@gmail.com
 # This file is distributed under the same license as the
 # saleor-django-frontend package.
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: saleor-django-frontend 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-15 00:35+0300\n"
-"PO-Revision-Date: 2026-05-22 13:00+0200\n"
+"PO-Revision-Date: 2026-06-15 04:00+0300\n"
 "Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language: uk\n"
 "Language-Team: uk <LL@li.org>\n"
@@ -109,33 +109,30 @@ msgid "Retrieves a flat list of all categories from Saleor (cached)."
 msgstr "Отримує плаский список усіх категорій з Saleor (кешовано)."
 
 #: categories.services.categories.get_all_categories:3 of
-#, fuzzy
 msgid ""
 "When ``first`` is ``None``, the total count is obtained automatically "
 "(also cached) and all categories are loaded.  On failure an empty list is"
 " returned, and the error is logged."
 msgstr ""
 "Коли ``first`` дорівнює ``None``, загальна кількість отримується "
-"автоматично (також кешовано) і завантажуються всі категорії. Результат "
-"зберігається в Redis з ключем, який містить параметр ``first``."
+"автоматично (також кешовано) і завантажуються всі категорії. У разі "
+"помилки повертається порожній список, а помилка логується."
 
 #: categories.services.categories.get_all_categories:7 of
 msgid "Maximum number of categories (``None`` to fetch all)."
 msgstr "Максимальна кількість категорій (``None`` для отримання всіх)."
 
 #: categories.services.categories.get_all_categories:9 of
-#, fuzzy
 msgid ""
 "List of dictionaries, each containing ``id``, ``name``, ``slug``, and "
 "``parent`` (``None`` or a dict with ``id``).  Empty list on error."
 msgstr ""
 "Список словників, кожен з яких містить ``id``, ``name``, ``slug`` та "
-"``parent`` (``None`` або словник з ``id``)."
+"``parent`` (``None`` або словник з ``id``). Порожній список у разі помилки."
 
 #: categories.services.categories.get_category_by_slug:1 of
-#, fuzzy
 msgid "Retrieves a single category by its slug (cached)."
-msgstr "Отримує одну категорію за її слагом (кешується на 30 хвилин)."
+msgstr "Отримує одну категорію за її слагом (кешується)."
 
 #: categories.services.categories.get_category_by_slug:3 of
 msgid ""
@@ -144,19 +141,22 @@ msgid ""
 "unreachable, ``None`` is returned **without caching**, so the next "
 "request can retry."
 msgstr ""
+"Якщо Saleor повертає ``null`` для слагу, повертається ``None`` і "
+"**кешується з коротким TTL**, щоб уникнути повторних запитів. Якщо "
+"Saleor недоступний, ``None`` повертається **без кешування**, тому "
+"наступний запит може повторити спробу."
 
 #: categories.services.categories.get_category_by_slug:8 of
 msgid "URL identifier of the category (e.g. ``\"video-walls\"``)."
 msgstr "URL-ідентифікатор категорії (наприклад, ``\"video-walls\"``)."
 
 #: categories.services.categories.get_category_by_slug:10 of
-#, fuzzy
 msgid ""
 "Category dictionary, or ``None`` if the category is not found or an error"
 " occurs."
 msgstr ""
-"Словник категорії або ``None``, якщо категорію не знайдено. Значення "
-"``None`` **не** кешуються."
+"Словник категорії або ``None``, якщо категорію не знайдено або сталася "
+"помилка."
 
 #: categories.services.categories.get_category_count:1 of
 msgid "Returns the total number of categories (cached in Redis)."
@@ -167,6 +167,8 @@ msgid ""
 "If Saleor is unreachable, returns 0 so the page can still render. The "
 "error is logged by the client layer."
 msgstr ""
+"Якщо Saleor недоступний, повертає 0, щоб сторінка все одно могла "
+"відобразитися. Помилка логується клієнтським шаром."
 
 #: categories.services.categories.get_full_tree:1 of
 msgid "Returns the full category tree (cached in Redis for 1 hour)."
@@ -177,86 +179,26 @@ msgid ""
 "If Saleor cannot be reached, returns an empty list so the menu can "
 "degrade gracefully.  The error is logged by the client layer."
 msgstr ""
+"Якщо Saleor недоступний, повертає порожній список, щоб меню могло "
+"коректно деградувати. Помилка логується клієнтським шаром."
 
 #: categories.services.categories.get_full_tree:6 of
-#, fuzzy
 msgid ""
 "Category tree (list of root nodes with nested ``children``), or an empty "
 "list on failure."
-msgstr "Дерево категорій (список кореневих вузлів з вкладеними ``children``)."
+msgstr ""
+"Дерево категорій (список кореневих вузлів з вкладеними ``children``) або "
+"порожній список у разі помилки."
 
 #: categories.services.categories.invalidate_global_category_cache:1 of
 msgid ""
 "Invalidates shared category cache keys: total count, full tree, and all "
 "flat lists."
 msgstr ""
+"Інвалідовує загальні ключі кешу категорій: загальну кількість, повне "
+"дерево та всі пласкі списки."
 
 #: categories.services.categories.invalidate_global_category_cache:4 of
 msgid "Does **not** remove individual ``category_slug_*`` keys."
-msgstr ""
-
-#~ msgid ""
-#~ "Executes the ``category_by_slug.graphql`` query, "
-#~ "passing the ``slug`` variable. The "
-#~ "result is stored in Redis under a"
-#~ " slug‑specific key."
-#~ msgstr ""
-#~ "Виконує запит ``category_by_slug.graphql``, "
-#~ "передаючи змінну ``slug``. Результат "
-#~ "зберігається в Redis під ключем, що "
-#~ "залежить від слагу."
-
-#~ msgid "Raises"
-#~ msgstr "Може викликати"
-
-#~ msgid "If there is a problem with the request."
-#~ msgstr "Якщо виникла проблема із запитом."
-
-#~ msgid ""
-#~ "The value is fetched from Saleor "
-#~ "once every 10 minutes, or until "
-#~ "the cache is explicitly invalidated."
-#~ msgstr ""
-#~ "Значення отримується з Saleor один раз"
-#~ " кожні 10 хвилин або до моменту "
-#~ "явного скидання кешу."
-
-#~ msgid "Total number of categories (int)."
-#~ msgstr "Загальна кількість категорій (ціле число)."
-
-#~ msgid "If there is a connection error or an invalid     response from Saleor."
-#~ msgstr "У разі помилки з'єднання або некоректної відповіді від Saleor."
-
-#~ msgid ""
-#~ "Loads all categories via "
-#~ ":func:`get_all_categories` without a limit, "
-#~ "builds the tree using "
-#~ ":func:`build_category_tree`, and stores the "
-#~ "result until it expires or is "
-#~ "invalidated."
-#~ msgstr ""
-#~ "Завантажує всі категорії через "
-#~ ":func:`get_all_categories` без обмежень, будує "
-#~ "дерево за допомогою :func:`build_category_tree` "
-#~ "і зберігає результат до закінчення "
-#~ "терміну дії або скидання."
-
-#~ msgid "Invalidates all cached data related to categories."
-#~ msgstr "Скидає всі кешовані дані, пов'язані з категоріями."
-
-#~ msgid ""
-#~ "Called from the webhook handler in "
-#~ ":mod:`categories.webhooks`. Removes specific keys"
-#~ " as well as wildcard patterns, so "
-#~ "that the next request to any of"
-#~ " the cached functions will fetch "
-#~ "fresh data from Saleor.  Pattern "
-#~ "deletion requires the Redis cache "
-#~ "backend."
-#~ msgstr ""
-#~ "Видаляє конкретні ключі, а також "
-#~ "шаблони, тому наступний виклик будь-якої "
-#~ "з кешованих функцій отримає свіжі дані"
-#~ " з Saleor. Видалення за шаблоном "
-#~ "потребує Redis-бекенду для кешу."
+msgstr "**Не** видаляє окремі ключі ``category_slug_*``."
 

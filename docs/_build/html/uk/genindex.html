@@ -191,8 +191,10 @@
   <p class="caption" role="heading"><span class="caption-text">Зміст:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="categories.html">Сервіс категорій</a></li>
+<li class="toctree-l1"><a class="reference internal" href="products.html">Товари</a></li>
 <li class="toctree-l1"><a class="reference internal" href="webhooks.html">Вебхуки</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Тестування</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Довідник тестів</a></li>
 </ul>
 
 </div>
@@ -228,7 +230,7 @@
           
 <section class="genindex-section">
   <h1 id="index">Індекс</h1>
-  <div class="genindex-jumpbox"><a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
 </section>
 <section id="B" class="genindex-section">
   <h2>B</h2>
@@ -264,6 +266,26 @@
   </tr></table>
 </section>
 
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="products.html#products.views.detail">detail() (в модулі products.views)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="products.html#products.services.products.editorjs_to_html">editorjs_to_html() (в модулі products.services.products)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="F" class="genindex-section">
   <h2>F</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
@@ -288,6 +310,8 @@
 </li>
         <li><a href="categories.html#categories.services.categories.get_full_tree">get_full_tree() (в модулі categories.services.categories)</a>
 </li>
+        <li><a href="products.html#products.services.products.get_product_by_slug">get_product_by_slug() (в модулі products.services.products)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -299,6 +323,10 @@
         <li><a href="webhooks.html#categories.webhooks.handle_category_event">handle_category_event() (в модулі categories.webhooks)</a>
 </li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="products.html#products.webhooks.handle_product_event">handle_product_event() (в модулі products.webhooks)</a>
+</li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -307,6 +335,10 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="categories.html#categories.services.categories.invalidate_global_category_cache">invalidate_global_category_cache() (в модулі categories.services.categories)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="products.html#products.services.products.invalidate_product_cache_by_slug">invalidate_product_cache_by_slug() (в модулі products.services.products)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -324,6 +356,26 @@
 </li>
           <li><a href="webhooks.html#module-categories.webhooks">categories.webhooks</a>
 </li>
+          <li><a href="products.html#module-products.services.products">products.services.products</a>
+</li>
+          <li><a href="products.html#module-products.urls">products.urls</a>
+</li>
+          <li><a href="products.html#module-products.views">products.views</a>
+</li>
+          <li><a href="products.html#module-products.webhooks">products.webhooks</a>
+</li>
+          <li><a href="tests.html#module-tests.categories.test_services">tests.categories.test_services</a>
+</li>
+          <li><a href="tests.html#module-tests.categories.test_views">tests.categories.test_views</a>
+</li>
+          <li><a href="tests.html#module-tests.categories.test_webhooks">tests.categories.test_webhooks</a>
+</li>
+          <li><a href="tests.html#module-tests.products.test_services">tests.products.test_services</a>
+</li>
+          <li><a href="tests.html#module-tests.products.test_views">tests.products.test_views</a>
+</li>
+          <li><a href="tests.html#module-tests.products.test_webhooks">tests.products.test_webhooks</a>
+</li>
           <li><a href="webhooks.html#module-webhooks">webhooks</a>
 </li>
           <li><a href="webhooks.html#module-webhooks.handlers">webhooks.handlers</a>
@@ -339,12 +391,170 @@
   </tr></table>
 </section>
 
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    products.services.products
+
+        <ul>
+          <li><a href="products.html#module-products.services.products">module</a>
+</li>
+        </ul></li>
+        <li>
+    products.urls
+
+        <ul>
+          <li><a href="products.html#module-products.urls">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    products.views
+
+        <ul>
+          <li><a href="products.html#module-products.views">module</a>
+</li>
+        </ul></li>
+        <li>
+    products.webhooks
+
+        <ul>
+          <li><a href="products.html#module-products.webhooks">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="S" class="genindex-section">
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="webhooks.html#webhooks.views.saleor_webhook">saleor_webhook() (в модулі webhooks.views)</a>
 </li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="tests.html#tests.categories.test_services.test_build_category_tree_creates_nested_structure">test_build_category_tree_creates_nested_structure() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_views.test_detail_handles_missing_description">test_detail_handles_missing_description() (в модулі tests.products.test_views)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_views.test_detail_renders_category_and_subcategories">test_detail_renders_category_and_subcategories() (в модулі tests.categories.test_views)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_views.test_detail_renders_product">test_detail_renders_product() (в модулі tests.products.test_views)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_views.test_detail_returns_404_when_not_found">test_detail_returns_404_when_not_found() (в модулі tests.categories.test_views)</a>
+
+        <ul>
+          <li><a href="tests.html#tests.products.test_views.test_detail_returns_404_when_not_found">(в модулі tests.products.test_views)</a>
+</li>
+        </ul></li>
+        <li><a href="tests.html#tests.categories.test_views.test_detail_shows_error_when_saleor_unavailable">test_detail_shows_error_when_saleor_unavailable() (в модулі tests.categories.test_views)</a>
+
+        <ul>
+          <li><a href="tests.html#tests.products.test_views.test_detail_shows_error_when_saleor_unavailable">(в модулі tests.products.test_views)</a>
+</li>
+        </ul></li>
+        <li><a href="tests.html#tests.products.test_views.test_detail_uses_custom_404_page">test_detail_uses_custom_404_page() (в модулі tests.products.test_views)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_find_node_in_tree_finds_existing_node">test_find_node_in_tree_finds_existing_node() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_find_node_in_tree_returns_none_for_missing_slug">test_find_node_in_tree_returns_none_for_missing_slug() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_all_categories_returns_empty_list_on_error">test_get_all_categories_returns_empty_list_on_error() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_all_categories_returns_list">test_get_all_categories_returns_list() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_category_by_slug_returns_category">test_get_category_by_slug_returns_category() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_category_by_slug_returns_none_on_error">test_get_category_by_slug_returns_none_on_error() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_category_by_slug_returns_none_when_not_found">test_get_category_by_slug_returns_none_when_not_found() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_category_count_returns_value">test_get_category_count_returns_value() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_category_count_returns_zero_on_error">test_get_category_count_returns_zero_on_error() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_full_tree_returns_empty_list_when_no_data">test_get_full_tree_returns_empty_list_when_no_data() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_get_full_tree_returns_tree">test_get_full_tree_returns_tree() (в модулі tests.categories.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_services.test_get_product_by_slug_converts_description">test_get_product_by_slug_converts_description() (в модулі tests.products.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_services.test_get_product_by_slug_returns_none_on_error">test_get_product_by_slug_returns_none_on_error() (в модулі tests.products.test_services)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="tests.html#tests.products.test_services.test_get_product_by_slug_returns_none_when_data_is_none">test_get_product_by_slug_returns_none_when_data_is_none() (в модулі tests.products.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_services.test_get_product_by_slug_returns_none_when_not_found">test_get_product_by_slug_returns_none_when_not_found() (в модулі tests.products.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_services.test_get_product_by_slug_returns_product">test_get_product_by_slug_returns_product() (в модулі tests.products.test_services)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_webhooks.test_handle_category_event_invalidates_specific_and_global_cache">test_handle_category_event_invalidates_specific_and_global_cache() (в модулі tests.categories.test_webhooks)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_webhooks.test_handle_category_event_without_slug">test_handle_category_event_without_slug() (в модулі tests.categories.test_webhooks)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_webhooks.test_handle_product_event_invalidates_slug">test_handle_product_event_invalidates_slug() (в модулі tests.products.test_webhooks)</a>
+</li>
+        <li><a href="tests.html#tests.products.test_webhooks.test_handle_product_event_without_slug">test_handle_product_event_without_slug() (в модулі tests.products.test_webhooks)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_views.test_index_renders_with_category_and_tree">test_index_renders_with_category_and_tree() (в модулі tests.categories.test_views)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_views.test_index_shows_error_when_category_unavailable">test_index_shows_error_when_category_unavailable() (в модулі tests.categories.test_views)</a>
+</li>
+        <li><a href="tests.html#tests.categories.test_services.test_invalidate_global_category_cache_deletes_keys">test_invalidate_global_category_cache_deletes_keys() (в модулі tests.categories.test_services)</a>
+</li>
+        <li>
+    tests.categories.test_services
+
+        <ul>
+          <li><a href="tests.html#module-tests.categories.test_services">module</a>
+</li>
+        </ul></li>
+        <li>
+    tests.categories.test_views
+
+        <ul>
+          <li><a href="tests.html#module-tests.categories.test_views">module</a>
+</li>
+        </ul></li>
+        <li>
+    tests.categories.test_webhooks
+
+        <ul>
+          <li><a href="tests.html#module-tests.categories.test_webhooks">module</a>
+</li>
+        </ul></li>
+        <li>
+    tests.products.test_services
+
+        <ul>
+          <li><a href="tests.html#module-tests.products.test_services">module</a>
+</li>
+        </ul></li>
+        <li>
+    tests.products.test_views
+
+        <ul>
+          <li><a href="tests.html#module-tests.products.test_views">module</a>
+</li>
+        </ul></li>
+        <li>
+    tests.products.test_webhooks
+
+        <ul>
+          <li><a href="tests.html#module-tests.products.test_webhooks">module</a>
+</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
