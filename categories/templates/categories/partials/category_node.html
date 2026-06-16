@@ -1,11 +1,15 @@
 {# categories/templates/categories/partials/category_node.html #}
 <li>
-    <a href="{% url 'categories:detail' slug=category.slug %}">{{ category.name }}</a>
-    {% if category.children %}
-        <ul>
-            {% for child in category.children %}
-                {% include "categories/partials/category_node.html" with category=child %}
-            {% endfor %}
-        </ul>
-    {% endif %}
+  {% if category.slug == 'catalog' %}
+    <a href="{% url 'router:dynamic_router' slug='catalog' %}">{{ category.name }}</a>
+  {% else %}
+    <a href="{% url 'router:dynamic_router' slug=category.slug %}">{{ category.name }}</a>
+  {% endif %}
+  {% if category.children %}
+    <ul>
+      {% for child in category.children %}
+        {% include "categories/partials/category_node.html" with category=child %}
+      {% endfor %}
+    </ul>
+  {% endif %}
 </li>

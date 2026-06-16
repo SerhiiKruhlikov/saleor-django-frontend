@@ -1,4 +1,6 @@
 # categories/views.py
+from django.utils.translation import gettext as _
+
 from django.shortcuts import render
 from django.http import Http404
 
@@ -23,10 +25,10 @@ def index(request, slug='catalog'):
         "subcategories": None,
         "breadcrumbs": [],
         "category_error": False,
-        "parent": None,                 # для единообразия, не обязательно
+        "parent": None,
     }
 
-    category = get_category_by_slug(slug)
+    category = get_category_by_slug(slug, language=request.LANGUAGE_CODE)
     if category is None:
         context["category_error"] = True
         return render(request, "categories/index.html", context)
@@ -34,7 +36,7 @@ def index(request, slug='catalog'):
     context["category"] = category
     context["parent"] = category.get("parent")
 
-    full_tree = get_full_tree()
+    full_tree = get_full_tree(language=request.LANGUAGE_CODE)
     if full_tree:
         subcategories = find_node_in_tree(slug, full_tree)
         context["subcategories"] = subcategories
@@ -57,7 +59,7 @@ def detail(request, slug):
     If the category does not exist, a 404 is raised.
     """
     try:
-        category = get_category_by_slug(slug)
+        category = get_category_by_slug(slug, language=request.LANGUAGE_CODE)
     except SaleorUnavailable:
         return render(request, "categories/detail.html", {
             "category": None,
@@ -68,17 +70,17 @@ def detail(request, slug):
         })
 
     if category is None:
-        raise Http404("Категорію не знайдено")
+        raise Http404(_("Category not found"))
 
     context = {
         "category": category,
         "subcategories": None,
         "breadcrumbs": [],
         "tree_error": False,
-        "parent": category.get("parent"),   # ← теперь передаётся!
+        "parent": category.get("parent"),
     }
 
-    full_tree = get_full_tree()
+    full_tree = get_full_tree(language=request.LANGUAGE_CODE)
     if full_tree:
         subcategories = find_node_in_tree(slug, full_tree)
         context["subcategories"] = subcategories

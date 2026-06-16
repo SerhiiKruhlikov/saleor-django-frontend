@@ -1,11 +1,6 @@
-{# categories/templates/categories/partials/category_node.html #}
-
+{# shop/templates/shop/partials/menu_node.html #}
 <li>
-  {% if category.slug == 'catalog' %}
-    <a href="{% url 'categories:root' %}">{{ category.name }}</a>
-  {% else %}
-    <a href="{% url 'categories:detail' slug=category.slug %}">{{ category.name }}</a>
-  {% endif %}
+  <a href="{% url 'router:dynamic_router' slug=category.slug %}">{{ category.name }}</a>
   {% if category.children %}
     <ul>
       {% for child in category.children %}

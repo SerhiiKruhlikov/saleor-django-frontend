@@ -1,0 +1,146 @@
+# Russian translations for saleor-django-frontend.
+# Copyright (C) 2026, serhii.kruhlikov@gmail.com
+# This file is distributed under the same license as the
+# saleor-django-frontend package.
+# Serhii Kruhlikov <serhii.kruhlikov@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-16 04:08+0300\n"
+"PO-Revision-Date: 2026-06-16 05:00+0300\n"
+"Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
+"Language-Team: Russian <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: categories/templates/categories/404.html:5
+#: categories/templates/categories/404.html:8 categories/views.py:73
+msgid "Category not found"
+msgstr "Категория не найдена"
+
+#: categories/templates/categories/404.html:9
+msgid "The category you are looking for does not exist or has been removed."
+msgstr "Категория, которую вы ищете, не существует или была удалена."
+
+#: categories/templates/categories/404.html:10
+#: products/templates/products/404.html:10
+#: products/templates/products/detail.html:14
+#: products/templates/products/detail.html:45
+msgid "Go to catalog"
+msgstr "Перейти в каталог"
+
+#: categories/templates/categories/404.html:12
+#: products/templates/products/404.html:12
+#: products/templates/products/detail.html:16
+#: products/templates/products/detail.html:47 templates/404.html:10
+msgid "Go to home page"
+msgstr "На главную"
+
+#: categories/templates/categories/detail.html:11
+msgid "Subcategories are temporarily unavailable."
+msgstr "Подкатегории временно недоступны."
+
+#: categories/templates/categories/detail.html:14
+msgid "Subcategories"
+msgstr "Подкатегории"
+
+#: categories/templates/categories/detail.html:21
+msgid "No subcategories."
+msgstr "Нет подкатегорий."
+
+#: categories/templates/categories/detail.html:27
+msgid "Products"
+msgstr "Товары"
+
+#: categories/templates/categories/detail.html:34
+msgid "No products in this category yet."
+msgstr "В этой категории пока нет товаров."
+
+#: categories/templates/categories/detail.html:40
+#: categories/templates/categories/detail.html:42
+#: products/templates/products/detail.html:33
+#: products/templates/products/detail.html:35
+msgid "Back to"
+msgstr "Вернуться к"
+
+#: categories/templates/categories/detail.html:45
+#: categories/templates/categories/index.html:31
+#: products/templates/products/detail.html:38
+msgid "Home"
+msgstr "Главная"
+
+#: categories/templates/categories/index.html:5
+msgid "Catalog"
+msgstr "Каталог"
+
+#: categories/templates/categories/index.html:10
+msgid "Catalog temporarily unavailable"
+msgstr "Каталог временно недоступен"
+
+#: categories/templates/categories/index.html:12
+msgid "Something went wrong. Please try again later or go to the"
+msgstr "Что-то пошло не так. Пожалуйста, попробуйте позже или перейдите на"
+
+#: categories/templates/categories/index.html:13
+msgid "home page"
+msgstr "главную страницу"
+
+#: categories/templates/categories/index.html:19
+msgid "Sections"
+msgstr "Разделы"
+
+#: categories/templates/categories/index.html:26
+msgid "Sections are temporarily unavailable."
+msgstr "Разделы временно недоступны."
+
+#: categories/templates/categories/index.html:28
+msgid "No sections yet."
+msgstr "Пока нет разделов."
+
+#: products/templates/products/404.html:5
+#: products/templates/products/404.html:8
+#: products/templates/products/detail.html:43 products/views.py:31
+msgid "Product not found"
+msgstr "Товар не найден"
+
+#: products/templates/products/404.html:9
+#: products/templates/products/detail.html:44
+msgid "The product you are looking for does not exist or has been removed."
+msgstr "Товар, который вы ищете, не существует или был удалён."
+
+#: products/templates/products/detail.html:6
+msgid "Product unavailable"
+msgstr "Товар недоступен"
+
+#: products/templates/products/detail.html:12
+msgid "Product temporarily unavailable"
+msgstr "Товар временно недоступен"
+
+#: products/templates/products/detail.html:13
+msgid "Something went wrong while loading the product. Please try again later."
+msgstr "При загрузке товара что-то пошло не так. Пожалуйста, попробуйте позже."
+
+#: products/templates/products/detail.html:27
+msgid "No description available."
+msgstr "Описание отсутствует."
+
+#: templates/404.html:5 templates/404.html:8
+msgid "Page not found"
+msgstr "Страница не найдена"
+
+#: templates/404.html:9
+msgid "The page you are looking for does not exist."
+msgstr "Страница, которую вы ищете, не существует."
+
+#: templates/base.html:10
+msgid "Site name"
+msgstr "Название сайта"
+
+msgid "Show more"
+msgstr "Показать ещё"

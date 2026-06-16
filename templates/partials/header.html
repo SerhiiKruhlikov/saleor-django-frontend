@@ -1,4 +1,6 @@
 {# templates/partials/header.html #}
+{% load i18n %}
+
 <header>
   <nav>
     <ul class="menu">
@@ -18,6 +20,23 @@
         {% endfor %}
       {% endif %}
     </ul>
+
+    {# Переключатель языков #}
+    {% load i18n_utils %}
+    {% get_available_languages as LANGUAGES %}
+    {% get_current_language as CURRENT_LANGUAGE %}
+    <ul class="languages">
+      {% for lang_code, lang_name in LANGUAGES %}
+        <li>
+          {% if lang_code == CURRENT_LANGUAGE %}
+            <span>{{ lang_code|upper }}</span>
+          {% else %}
+            <a href="{% change_lang_url lang_code %}">{{ lang_code|upper }}</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
   </nav>
+
   {% include "shop/partials/breadcrumbs.html" %}
 </header>

@@ -1,0 +1,28 @@
+# products/graphql/queries/products_by_category.graphql
+query ProductsByCategory($slug: String!, $first: Int!, $after: String, $channel: String!) {
+  category(slug: $slug) {
+    products(first: $first, after: $after, channel: $channel) {
+      totalCount
+      edges {
+        node {
+          id
+          name
+          slug
+          thumbnail { url alt }
+          pricing {
+            priceRange {
+              start {
+                gross { amount currency }
+              }
+            }
+          }
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}

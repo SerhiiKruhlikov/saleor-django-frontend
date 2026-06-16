@@ -1,0 +1,6 @@
+# router/graphql/queries/resolve_category.graphql
+query ResolveCategory($slug: String!) {
+  category(slug: $slug) {
+    id
+  }
+}

@@ -1,0 +1,40 @@
+{# products/templates/products/product_list_fragment.html #}
+{% load i18n %}
+
+{% if products %}
+  {% for product_edge in products %}
+    {% with product=product_edge.node %}
+      <div class="product-card">
+        <a href="{% url 'router:dynamic_router' slug=product.slug %}">
+          {% if product.thumbnail %}
+            <img src="{{ product.thumbnail.url }}" alt="{{ product.thumbnail.alt|default:product.name }}">
+          {% endif %}
+          <h3>{{ product.name }}</h3>
+        </a>
+        {% if product.pricing.priceRange.start.gross %}
+          <p class="price">{{ product.pricing.priceRange.start.gross.amount|floatformat:2 }} {{ product.pricing.priceRange.start.gross.currency }}</p>
+        {% endif %}
+      </div>
+    {% endwith %}
+  {% endfor %}
+
+  {% if page_info.hasNextPage %}
+    <div id="pagination-control" hx-swap-oob="true">
+      <button
+          hx-get="{% url 'products_fragment' slug=category_slug %}?after={{ page_info.endCursor|urlencode }}&lang={{ request.GET.lang|default:request.LANGUAGE_CODE }}"
+          hx-target=".products-grid"
+          hx-swap="beforeend"
+          class="load-more">
+        {% trans "Show more" %}
+      </button>
+    </div>
+  {% else %}
+    <div id="pagination-control" hx-swap-oob="true"></div>
+  {% endif %}
+{% else %}
+  {# No products found – show full-width message and clear pagination #}
+  <div class="no-products-message">
+    <p>{% trans "No products in this category yet." %}</p>
+  </div>
+  <div id="pagination-control" hx-swap-oob="true"></div>
+{% endif %}

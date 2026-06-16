@@ -1,15 +1,15 @@
 {# shop/templates/shop/partials/breadcrumbs.html #}
 {% if breadcrumbs %}
-<nav aria-label="breadcrumb">
-  <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'shop:index' %}">Головна</a></li>
-    {% for crumb in breadcrumbs %}
-      {% if crumb.url %}
-        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
-      {% else %}
-        <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-</nav>
+  <nav aria-label="breadcrumb">
+    <ul class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:index' %}">Головна</a></li>
+      {% for crumb in breadcrumbs %}
+        {% if crumb.url %}
+          <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+        {% else %}
+          <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
 {% endif %}

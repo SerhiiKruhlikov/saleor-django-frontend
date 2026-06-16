@@ -1,0 +1,6 @@
+# router/graphql/queries/resolve_product.graphql
+query ResolveProduct($slug: String!) {
+  product(slug: $slug) {
+    id
+  }
+}

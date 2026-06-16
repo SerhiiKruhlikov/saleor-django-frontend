@@ -2,6 +2,7 @@
 import logging
 from django.core.cache import cache
 from products.services.products import invalidate_product_cache_by_slug
+from router.services import invalidate_router_cache
 
 logger = logging.getLogger(__name__)
 
@@ -28,16 +29,13 @@ def handle_product_event(event_type: str, payload: dict):
     """
     Handle Saleor webhook events related to products.
 
-    Extracts the product slug from the payload and invalidates
-    the corresponding cache entry.
-
-    Args:
-        event_type: ``"ProductCreated"``, ``"ProductUpdated"``, etc.
-        payload: Full JSON payload from Saleor.
+    Extracts the product slug from the payload, invalidates the product
+    cache entry and the router cache for the affected slug.
     """
     slug = _extract_product_slug(payload)
     if slug:
         invalidate_product_cache_by_slug(slug)
+        invalidate_router_cache(slug)
         logger.info("Invalidated cache for product slug=%s due to event: %s", slug, event_type)
     else:
         logger.warning(

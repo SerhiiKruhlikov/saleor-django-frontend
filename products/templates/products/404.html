@@ -7,7 +7,7 @@
 {% block content %}
   <h1>{% trans "Product not found" %}</h1>
   <p>{% trans "The product you are looking for does not exist or has been removed." %}</p>
-  <a href="{% url 'categories:root' %}">← {% trans "Go to catalog" %}</a>
+  <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Go to catalog" %}</a>
   <br>
   <a href="{% url 'shop:index' %}">← {% trans "Go to home page" %}</a>
 {% endblock %}

@@ -12,7 +12,7 @@
   {% else %}
     {% if subcategories and subcategories.children %}
       <h2>{% trans "Subcategories" %}</h2>
-      <ul>
+      <ul class="category-tree">
         {% for child in subcategories.children %}
           {% include "categories/partials/category_node.html" with category=child %}
         {% endfor %}
@@ -22,27 +22,36 @@
     {% endif %}
   {% endif %}
 
-  {# Products block – will be filled later #}
-  {% if products %}
-    <h2>{% trans "Products" %}</h2>
-    <div class="products-grid">
-      {% for product in products %}
-        <!-- product card -->
+  {# Products section – loaded dynamically via HTMX #}
+  <h2>{% trans "Products" %}</h2>
+  <div id="products-container">
+    <div class="products-grid"
+         hx-get="{% url 'products_fragment' slug=category.slug %}?lang={{ request.LANGUAGE_CODE }}"
+         hx-trigger="load"
+         hx-swap="innerHTML">
+      {# Skeleton placeholders shown until the real response arrives #}
+      {% for i in "123456"|make_list %}
+        <div class="skeleton product-card">
+          <div class="skeleton img"></div>
+          <div class="skeleton title"></div>
+          <div class="skeleton price"></div>
+        </div>
       {% endfor %}
     </div>
-  {% else %}
-    <p>{% trans "No products in this category yet." %}</p>
-  {% endif %}
+    {# Pagination button placeholder (filled by HTMX OOB swap) #}
+    <div id="pagination-control"></div>
+  </div>
 
   {# Return link #}
   {% if parent %}
     {% if parent.slug == 'catalog' %}
-      <a href="{% url 'categories:root' %}">← {% trans "Back to" %} {{ parent.name }}</a>
+      <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Back to" %} {{ parent.name }}</a>
     {% else %}
-      <a href="{% url 'categories:detail' slug=parent.slug %}">← {% trans "Back to" %} {{ parent.name }}</a>
+      <a href="{% url 'router:dynamic_router' slug=parent.slug %}">← {% trans "Back to" %} {{ parent.name }}</a>
     {% endif %}
   {% else %}
     <a href="{% url 'shop:index' %}">← {% trans "Home" %}</a>
   {% endif %}
 
+  {% include "shop/partials/breadcrumbs.html" %}
 {% endblock %}

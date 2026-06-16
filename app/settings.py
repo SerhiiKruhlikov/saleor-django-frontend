@@ -56,6 +56,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'shop.context_processors.main_menu',
@@ -101,6 +102,9 @@ TIME_ZONE = "Europe/Kyiv"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 STATICFILES_DIRS = [
     BASE_DIR / "assets",
@@ -118,6 +122,9 @@ SALEOR_API_URL = os.environ.get("SALEOR_API_URL", "")
 SALEOR_API_EMAIL = os.environ.get("SALEOR_API_EMAIL", "")
 SALEOR_API_PASSWORD = os.environ.get("SALEOR_API_PASSWORD", "")
 SALEOR_WEBHOOK_SECRET = os.environ.get("SALEOR_WEBHOOK_SECRET", "")
+SALEOR_CHANNEL = os.environ.get("SALEOR_CHANNEL", "uk-store")
+SALEOR_DEFAULT_CURRENCY = os.environ.get("SALEOR_DEFAULT_CURRENCY", "UAH")
+SALEOR_PAGINATION_PRODUCTS_PER_PAGE = os.environ.get("SALEOR_PAGINATION_PRODUCTS_PER_PAGE", 12)
 
 
 # SPHINX
@@ -155,13 +162,13 @@ CACHES = {
 # Values can be overridden via .env or a separate settings file.
 # -----------------------------------------------------------------------------
 CACHE_TIMEOUTS = {
-    'FULL_TREE': 3600,            # 1 hour
-    'CATEGORY_COUNT': 600,        # 10 minutes
-    'ALL_CATEGORIES': 600,        # 10 minutes
-    'CATEGORY_BY_SLUG': 1800,     # 30 minutes
-    # For products (to be added later)
+    'FULL_TREE': 3600,              # 1 hour
+    'CATEGORY_COUNT': 600,          # 10 minutes
+    'ALL_CATEGORIES': 600,          # 10 minutes
+    'CATEGORY_BY_SLUG': 1800,       # 30 minutes
     'PRODUCT_BY_SLUG': 1800,
     'PRODUCTS_BY_CATEGORY': 600,
+    'ROUTER_SLUG_TYPE': 86400,      # 24 hours – how long a slug type is cached
 }
 
 

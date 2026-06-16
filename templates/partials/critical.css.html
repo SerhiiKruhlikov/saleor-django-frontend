@@ -8,6 +8,8 @@ html,
 body {
     height: 100%;
     width: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 html {
@@ -32,6 +34,7 @@ footer {
 
 header {
     flex-direction: column;
+    row-gap: 1rem;
 }
 
 main {
@@ -45,19 +48,19 @@ footer {
 /* Navigation */
 nav {
     width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
-.menu {
+
+.menu,
+.languages {
     display: flex;
     flex-direction: row;
     list-style: none;
     position: relative;
     margin: 0;
     padding: 0;
-}
-
-.menu > li {
-    padding: .5rem;
-
+    column-gap: .5rem;
 }
 
 .menu > li > ul {
@@ -78,11 +81,12 @@ nav {
     flex: 1 0 auto;
 }
 
-.menu > li > a {
-    padding: .25rem .5rem;
+.menu > li > a,
+.languages > li > a {
     transition: .3s color;
     cursor: pointer;
     color: #0000ee;
+    user-select: none;
 }
 
 .menu > li > ul ul {
@@ -96,11 +100,7 @@ nav {
 
 .menu > li.open > ul {
     display: flex;
-}
-
-.menu > li > a {
-    cursor: pointer;
-    user-select: none;
+    width: max-content;
 }
 
 /* Breadcrumb */
@@ -110,6 +110,6 @@ nav {
     margin: 0;
     display: flex;
     column-gap: .5rem;
-
+    font-size: 14px;
 }
 </style>

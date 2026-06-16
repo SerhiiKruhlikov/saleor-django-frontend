@@ -16,8 +16,7 @@ TIMEOUT_ALL_CATEGORIES = CACHE_TIMEOUTS.get('ALL_CATEGORIES', 600)
 TIMEOUT_CATEGORY_BY_SLUG = CACHE_TIMEOUTS.get('CATEGORY_BY_SLUG', 1800)
 TIMEOUT_FULL_TREE = CACHE_TIMEOUTS.get('FULL_TREE', 3600)
 
-# Short TTL for caching "not found" results (e.g., non-existent slugs)
-TIMEOUT_NONE = 60
+TIMEOUT_NONE = 60   # Short TTL for caching “not found” results
 
 
 def get_category_count() -> int:
@@ -28,7 +27,7 @@ def get_category_count() -> int:
     The error is logged by the client layer.
     """
     return cache.get_or_set(
-        "category_total_count",
+        "categories:count",
         _fetch_category_count_safe,
         timeout=TIMEOUT_CATEGORY_COUNT,
     )
@@ -46,7 +45,7 @@ def _fetch_category_count_safe() -> int:
         return 0
 
 
-def get_all_categories(first: int | None = None) -> list[dict]:
+def get_all_categories(first: int | None = None, language: str | None = None) -> list[dict]:
     """
     Retrieves a flat list of all categories from Saleor (cached).
 
@@ -56,6 +55,8 @@ def get_all_categories(first: int | None = None) -> list[dict]:
 
     Args:
         first: Maximum number of categories (``None`` to fetch all).
+        language: Language code for cache key prefix.  Defaults to
+            ``settings.LANGUAGE_CODE`` when ``None``.
 
     Returns:
         List of dictionaries, each containing ``id``, ``name``, ``slug``,
@@ -66,12 +67,15 @@ def get_all_categories(first: int | None = None) -> list[dict]:
         >>> cats[0]["name"]
         'Catalog'
     """
+    if language is None:
+        language = settings.LANGUAGE_CODE
+
     if first is None:
         first = get_category_count()
         if first == 0:
             return []
 
-    cache_key = f"all_categories_first_{first}"
+    cache_key = f"categories:{language}:raw"
     categories = cache.get(cache_key)
     if categories is None:
         try:
@@ -90,7 +94,7 @@ def get_all_categories(first: int | None = None) -> list[dict]:
     return categories or []
 
 
-def get_category_by_slug(slug: str) -> dict | None:
+def get_category_by_slug(slug: str, language: str | None = None) -> dict | None:
     """
     Retrieves a single category by its slug (cached).
 
@@ -100,13 +104,18 @@ def get_category_by_slug(slug: str) -> dict | None:
     so the next request can retry.
 
     Args:
-        slug: URL identifier of the category (e.g. ``"video-walls"``).
+        slug: URL identifier of the category.
+        language: Language code for cache key prefix.  Defaults to
+            ``settings.LANGUAGE_CODE`` when ``None``.
 
     Returns:
         Category dictionary, or ``None`` if the category is not found
         or an error occurs.
     """
-    cache_key = f"category_slug_{slug}"
+    if language is None:
+        language = settings.LANGUAGE_CODE
+
+    cache_key = f"categories:{language}:{slug}"
     category = cache.get(cache_key)
     if category is None:
         try:
@@ -114,7 +123,6 @@ def get_category_by_slug(slug: str) -> dict | None:
             variables = {"slug": slug}
             data = safe_execute_query(query, variables)
             if data is None:
-                # Entity not found – cache the None result briefly
                 cache.set(cache_key, None, timeout=TIMEOUT_NONE)
                 return None
             category = data.get("category")
@@ -123,33 +131,43 @@ def get_category_by_slug(slug: str) -> dict | None:
             else:
                 cache.set(cache_key, None, timeout=TIMEOUT_NONE)
         except SaleorUnavailable:
-            # Do not cache on error – allow a retry on the next request
             return None
     return category
 
 
-def get_full_tree() -> list[dict]:
+def get_full_tree(language: str | None = None) -> list[dict]:
     """
     Returns the full category tree (cached in Redis for 1 hour).
 
     If Saleor cannot be reached, returns an empty list so the menu
     can degrade gracefully.  The error is logged by the client layer.
 
+    Args:
+        language: Language code for cache key prefix.  Defaults to
+            ``settings.LANGUAGE_CODE`` when ``None``.
+
     Returns:
         Category tree (list of root nodes with nested ``children``),
         or an empty list on failure.
     """
+    if language is None:
+        language = settings.LANGUAGE_CODE
+
+    cache_key = f"categories:{language}:tree"
     return cache.get_or_set(
-        "full_category_tree",
-        _compute_full_tree_safe,
+        cache_key,
+        lambda: _compute_full_tree_safe(language),
         timeout=TIMEOUT_FULL_TREE,
     ) or []
 
 
-def _compute_full_tree_safe() -> list[dict]:
+def _compute_full_tree_safe(language: str | None = None) -> list[dict]:
     """Builds the complete category tree, returning [] on error."""
+    if language is None:
+        language = settings.LANGUAGE_CODE
+
     try:
-        flat = get_all_categories()
+        flat = get_all_categories(language=language)
         if not flat:
             return []
         return build_category_tree(flat)
@@ -235,11 +253,10 @@ def find_node_in_tree(slug: str, nodes: list[dict]) -> dict | None:
 
 def invalidate_global_category_cache():
     """
-    Invalidates shared category cache keys: total count, full tree,
-    and all flat lists.
-
-    Does **not** remove individual ``category_slug_*`` keys.
+    Invalidates shared category cache keys for all languages:
+    total count, full tree, and raw lists.
     """
-    cache.delete("category_total_count")
-    cache.delete("full_category_tree")
-    cache.delete_pattern("all_categories_*")
+    cache.delete("categories:count")
+    for lang_code, _ in settings.LANGUAGES:
+        cache.delete(f"categories:{lang_code}:tree")
+        cache.delete(f"categories:{lang_code}:raw")

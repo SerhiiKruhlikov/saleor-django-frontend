@@ -30,9 +30,9 @@
     {# Ссылка возврата в категорию #}
     {% if parent %}
       {% if parent.slug == 'catalog' %}
-        <a href="{% url 'categories:root' %}">← {% trans "Back to" %} {{ parent.name }}</a>
+        <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Back to" %} {{ parent.name }}</a>
       {% else %}
-        <a href="{% url 'categories:detail' slug=parent.slug %}">← {% trans "Back to" %} {{ parent.name }}</a>
+        <a href="{% url 'router:dynamic_router' slug=parent.slug %}">← {% trans "Back to" %} {{ parent.name }}</a>
       {% endif %}
     {% else %}
       <a href="{% url 'shop:index' %}">← {% trans "Home" %}</a>
