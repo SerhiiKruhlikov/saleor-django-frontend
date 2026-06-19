@@ -22,27 +22,38 @@
     {% endif %}
   {% endif %}
 
-  {# Products section – loaded dynamically via HTMX #}
-  <h2>{% trans "Products" %}</h2>
-  <div id="products-container">
-    <div class="products-grid"
-         hx-get="{% url 'products_fragment' slug=category.slug %}?lang={{ request.LANGUAGE_CODE }}"
-         hx-trigger="load"
-         hx-swap="innerHTML">
-      {# Skeleton placeholders shown until the real response arrives #}
-      {% for i in "123456"|make_list %}
-        <div class="skeleton product-card">
-          <div class="skeleton img"></div>
-          <div class="skeleton title"></div>
-          <div class="skeleton price"></div>
+  {# Category content: filters + products, loaded via HTMX #}
+  <div id="category-content"
+       hx-get="{% url 'category_fragment' slug=category.slug %}?lang={{ request.LANGUAGE_CODE }}{% if filter_query_string %}&{{ filter_query_string }}{% endif %}"
+       hx-trigger="load"
+       hx-swap="none">
+
+    <div class="category-layout">
+
+      {% if show_filters %}
+        <aside id="filters-panel"></aside>
+      {% endif %}
+
+      <div class="products-area">
+        <div id="selected-filters"></div>
+
+        <div id="products-grid-container">
+          <div class="products-grid">
+            {% for i in "123456"|make_list %}
+              <div class="skeleton product-card">
+                <div class="skeleton img"></div>
+                <div class="skeleton title"></div>
+                <div class="skeleton price"></div>
+              </div>
+            {% endfor %}
+          </div>
         </div>
-      {% endfor %}
+      </div>
     </div>
-    {# Pagination button placeholder (filled by HTMX OOB swap) #}
-    <div id="pagination-control"></div>
   </div>
 
-  {# Return link #}
+  <div id="pagination-control"></div>
+
   {% if parent %}
     {% if parent.slug == 'catalog' %}
       <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Back to" %} {{ parent.name }}</a>
@@ -53,5 +64,56 @@
     <a href="{% url 'shop:index' %}">← {% trans "Home" %}</a>
   {% endif %}
 
-  {% include "shop/partials/breadcrumbs.html" %}
+  <script>
+      (function () {
+          const STORAGE_KEY = (window.SDF_PREFIX || 'sdf') + '_filter_open_groups';
+
+          // Сохраняем состояние открытых групп при клике на summary
+          document.body.addEventListener('click', function (e) {
+              const summary = e.target.closest('summary');
+              if (!summary) return;
+              const details = summary.parentElement;
+              if (!details || !details.classList.contains('filter-group') || !details.id.startsWith('filter-')) return;
+              setTimeout(function () {
+                  const openSlugs = [];
+                  document.querySelectorAll('details.filter-group[id^="filter-"]').forEach(function (d) {
+                      if (d.open) {
+                          openSlugs.push(d.id.slice(7));
+                      }
+                  });
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(openSlugs));
+              }, 10);
+          });
+
+          // Восстанавливаем после любого HTMX-обновления
+          function restoreOpenGroups() {
+              const saved = localStorage.getItem(STORAGE_KEY);
+              if (!saved) return;
+              const openSlugs = JSON.parse(saved);
+              document.querySelectorAll('details.filter-group[id^="filter-"]').forEach(function (d) {
+                  const slug = d.id.slice(7);
+                  d.open = openSlugs.includes(slug);
+              });
+          }
+
+          document.body.addEventListener('htmx:afterSettle', restoreOpenGroups);
+
+          // Сохраняем состояние в историю браузера
+          document.body.addEventListener('htmx:beforeHistorySave', function (e) {
+              const saved = localStorage.getItem(STORAGE_KEY);
+              if (saved) {
+                  e.detail.data = e.detail.data || {};
+                  e.detail.data.filterOpenGroups = JSON.parse(saved);
+              }
+          });
+
+          // Восстанавливаем из истории
+          document.body.addEventListener('htmx:historyRestore', function (e) {
+              if (e.detail.data && e.detail.data.filterOpenGroups) {
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(e.detail.data.filterOpenGroups));
+                  restoreOpenGroups();
+              }
+          });
+      })();
+  </script>
 {% endblock %}

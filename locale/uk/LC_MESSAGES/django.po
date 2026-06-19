@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-16 04:07+0300\n"
+"POT-Creation-Date: 2026-06-19 16:28+0300\n"
 "PO-Revision-Date: 2026-06-16 04:30+0300\n"
 "Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language-Team: Ukrainian <LL@li.org>\n"
@@ -54,22 +54,14 @@ msgstr "Підкатегорії"
 msgid "No subcategories."
 msgstr "Немає підкатегорій."
 
-#: categories/templates/categories/detail.html:27
-msgid "Products"
-msgstr "Товари"
-
-#: categories/templates/categories/detail.html:34
-msgid "No products in this category yet."
-msgstr "У цій категорії поки немає товарів."
-
-#: categories/templates/categories/detail.html:40
-#: categories/templates/categories/detail.html:42
+#: categories/templates/categories/detail.html:59
+#: categories/templates/categories/detail.html:61
 #: products/templates/products/detail.html:33
 #: products/templates/products/detail.html:35
 msgid "Back to"
 msgstr "Повернутися до"
 
-#: categories/templates/categories/detail.html:45
+#: categories/templates/categories/detail.html:64
 #: categories/templates/categories/index.html:31
 #: products/templates/products/detail.html:38
 msgid "Home"
@@ -105,7 +97,7 @@ msgstr "Поки немає розділів."
 
 #: products/templates/products/404.html:5
 #: products/templates/products/404.html:8
-#: products/templates/products/detail.html:43 products/views.py:31
+#: products/templates/products/detail.html:43 products/views.py:41
 msgid "Product not found"
 msgstr "Товар не знайдено"
 
@@ -113,6 +105,24 @@ msgstr "Товар не знайдено"
 #: products/templates/products/detail.html:44
 msgid "The product you are looking for does not exist or has been removed."
 msgstr "Товар, який ви шукаєте, не існує або був видалений."
+
+#: products/templates/products/category_fragment.html:6
+msgid "Filters"
+msgstr "Фільтри"
+
+#: products/templates/products/category_fragment.html:82
+#: products/templates/products/product_list_fragment.html:27
+msgid "Show more"
+msgstr "Показати ще"
+
+#: products/templates/products/category_fragment.html:82
+#: products/templates/products/product_list_fragment.html:27
+msgid "from"
+msgstr "від"
+
+#: products/templates/products/category_fragment.html:87
+msgid "No products in this category yet."
+msgstr "У цій категорії поки немає товарів."
 
 #: products/templates/products/detail.html:6
 msgid "Product unavailable"
@@ -124,7 +134,8 @@ msgstr "Товар тимчасово недоступний"
 
 #: products/templates/products/detail.html:13
 msgid "Something went wrong while loading the product. Please try again later."
-msgstr "Під час завантаження товару щось пішло не так. Будь ласка, спробуйте пізніше."
+msgstr ""
+"Під час завантаження товару щось пішло не так. Будь ласка, спробуйте пізніше."
 
 #: products/templates/products/detail.html:27
 msgid "No description available."
@@ -142,5 +153,5 @@ msgstr "Сторінка, яку ви шукаєте, не існує."
 msgid "Site name"
 msgstr "Назва сайту"
 
-msgid "Show more"
-msgstr "Показати ще"
+#~ msgid "Products"
+#~ msgstr "Товари"

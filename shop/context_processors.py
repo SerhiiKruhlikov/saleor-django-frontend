@@ -1,4 +1,6 @@
 # shop/context_processors.py
+from django.conf import settings
+
 from categories.services.categories import get_full_tree
 import logging
 
@@ -21,4 +23,5 @@ def main_menu(request):
     return {
         "menu_category_tree": category_tree,
         "menu_links": menu_links,
+        "LOCALSTORAGE_PREFIX": getattr(settings, "LOCALSTORAGE_PREFIX", "sdf"),
     }

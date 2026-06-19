@@ -32,13 +32,11 @@ def resolve_slug(slug: str, language: str | None = None) -> str | None:
         language = settings.LANGUAGE_CODE
 
     cache_key = f"router:type:{language}:{slug}"
-
-    # 1. Cache hit
     cached_type = cache.get(cache_key)
     if cached_type in ("product", "category"):
         return cached_type
 
-    # 2. Try product
+    # 1. Try product
     try:
         query = load_query(APP_NAME, "queries/resolve_product.graphql")
         data = safe_execute_query(query, {"slug": slug})
@@ -49,7 +47,7 @@ def resolve_slug(slug: str, language: str | None = None) -> str | None:
         logger.warning("Saleor unavailable while resolving product slug=%s", slug)
         return None
 
-    # 3. Try category
+    # 2. Try category
     try:
         query = load_query(APP_NAME, "queries/resolve_category.graphql")
         data = safe_execute_query(query, {"slug": slug})
@@ -60,7 +58,6 @@ def resolve_slug(slug: str, language: str | None = None) -> str | None:
         logger.warning("Saleor unavailable while resolving category slug=%s", slug)
         return None
 
-    # 4. Nothing found – do not cache, so later pages can be added dynamically
     return None
 
 
@@ -76,3 +73,30 @@ def invalidate_router_cache(slug: str):
     for lang_code, _ in settings.LANGUAGES:
         cache.delete(f"router:type:{lang_code}:{slug}")
     logger.info("Router cache invalidated for slug=%s", slug)
+
+
+def parse_filter_url(path: str) -> dict[str, list[str]] | None:
+    """
+    Parse a filter URL like /category/filter/attr1-value1-or-value2/attr2-value/
+    Returns a dict {attribute_slug: [value_slug, ...]} or None if not a filter URL.
+    """
+    parts = path.strip('/').split('/')
+    try:
+        filter_index = parts.index('filter')
+    except ValueError:
+        return None
+
+    filter_parts = parts[filter_index + 1:]
+    if not filter_parts:
+        return None
+
+    filters = {}
+    for part in filter_parts:
+        if not part or '-' not in part:
+            continue
+        attr_slug, values_str = part.split('-', 1)
+        values = values_str.split('-or-') if values_str else []
+        if attr_slug and values:
+            filters[attr_slug] = values
+
+    return filters if filters else None

@@ -92,4 +92,22 @@ def detail(request, slug):
     except Exception:
         context["breadcrumbs"] = []
 
+    # Parse filter params from the URL if present (e.g. /filter/status-.../)
+    filter_query_string = ''
+    if '/filter/' in request.path_info:
+        from router.services import parse_filter_url
+        filter_params = parse_filter_url(request.path_info)
+        if filter_params:
+            # Build a query string to pass to HTMX
+            filter_query_string = '&'.join(
+                f'attr_{k}={v}' for k, values in filter_params.items() for v in values
+            )
+    context['filter_query_string'] = filter_query_string
+
+    # Определяем, есть ли товары в категории, чтобы показывать панель фильтров
+    # Запрашиваем только количество товаров без загрузки всех
+    from products.services.products import get_category_product_count
+    product_count = get_category_product_count(slug, language=request.LANGUAGE_CODE)
+    context['show_filters'] = product_count > 0
+
     return render(request, "categories/detail.html", context)

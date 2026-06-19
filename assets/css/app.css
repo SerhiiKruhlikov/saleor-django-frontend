@@ -57,3 +57,168 @@
 .no-products-message {
   grid-column: 1 / -1;
 }
+
+
+/* ========================================
+   Filters Panel
+   ======================================== */
+
+.filters-panel {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.filters-panel h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+}
+
+.filter-group {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.filter-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.filter-group summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 4px 0;
+  list-style: none;
+}
+
+.filter-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter-group summary::before {
+  content: '+';
+  display: inline-block;
+  width: 16px;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.filter-group[open] summary::before {
+  content: '−';
+}
+
+.filter-group ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0 0 0 24px;
+}
+
+.filter-group li {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.filter-group li.disabled label {
+  color: #999;
+  cursor: not-allowed;
+}
+
+.filter-group input[type="checkbox"] {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.filter-group li.disabled input[type="checkbox"] {
+  cursor: not-allowed;
+}
+
+.filter-group input[type="checkbox"]:checked + span {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* ========================================
+   Skeletons (фильтры и товары)
+   ======================================== */
+
+.filters-skeleton {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.filters-skeleton .filter-title {
+  height: 24px;
+  width: 120px;
+  margin-bottom: 16px;
+}
+
+.filters-skeleton .filter-group {
+  height: 18px;
+  width: 200px;
+  margin-bottom: 12px;
+}
+
+.filters-skeleton .filter-group:last-child {
+  width: 160px;
+}
+
+
+/* Макет категории: фильтры слева, товары справа */
+.category-layout {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.filters-panel {
+  width: 250px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.products-area {
+  flex: 1;
+}
+
+.products-grid-container {
+  display: block;
+}
+
+/* Выбранные фильтры */
+#selected-filters {
+  margin-bottom: 16px;
+}
+
+.filter-tag {
+  display: inline-block;
+  background: #e9ecef;
+  border-radius: 16px;
+  padding: 4px 12px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.remove-filter {
+  margin-left: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.remove-filter:hover {
+  color: #333;
+}

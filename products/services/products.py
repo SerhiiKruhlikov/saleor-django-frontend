@@ -8,6 +8,8 @@ from django.core.cache import cache
 from gateway.saleor.client import safe_execute_query, SaleorUnavailable
 from gateway.saleor.loader import load_query
 
+from collections import defaultdict
+
 logger = logging.getLogger(__name__)
 
 APP_NAME = "products"
@@ -106,12 +108,7 @@ def editorjs_to_html(description_json) -> str:
     return "\n".join(html_parts)
 
 
-def get_products_by_category(
-    slug: str,
-    first: int = 12,
-    after: str | None = None,
-    language: str | None = None,
-) -> dict:
+def get_products_by_category(slug: str, first: int = 12, after: str | None = None, language: str | None = None) -> dict:
     """
     Return paginated products for a given category slug (cached).
 
@@ -164,6 +161,249 @@ def get_products_by_category(
     except SaleorUnavailable:
         logger.warning("Saleor unavailable while fetching products for category slug=%s", slug)
         return {"edges": [], "page_info": {}, "total_count": 0}
+
+
+def get_category_with_filters(
+    slug: str,
+    selected_filters: dict[str, list[str]] | None = None,
+    first: int = 12,
+    after: str | None = None,
+    language: str | None = None,
+) -> dict:
+    if language is None:
+        language = settings.LANGUAGE_CODE
+    if selected_filters is None:
+        selected_filters = {}
+
+    # Build cache key that includes filter state
+    filter_part = json.dumps(selected_filters, sort_keys=True) if selected_filters else "all"
+    cache_key = f"products:facet:{language}:{slug}:{filter_part}:{first}:{after or 'first'}"
+    result = cache.get(cache_key)
+    if result is not None:
+        return result
+
+    # 1. Get UNFILTERED attribute counts (original, always kept intact)
+    unfiltered_attrs = get_category_attributes(
+        slug, language=language, selected_filters=None, active_attr=None,
+    )
+
+    # If no filter selected, return unfiltered data as-is
+    if not selected_filters:
+        products = _fetch_products(slug, first, after, language, filter_dict=None)
+        if products["total_count"] == 0:
+            result = {"filters": None, "products": products}
+        else:
+            result = {"filters": unfiltered_attrs, "products": products}
+        cache.set(cache_key, result, timeout=TIMEOUT_PRODUCTS_BY_CATEGORY)
+        return result
+
+    # 2. Get FILTERED products (first page)
+    products = _fetch_products(slug, first, after, language, filter_dict=selected_filters)
+
+    # 3. Get ALL filtered products to calculate accurate counts for non‑active attrs
+    total_count = products["total_count"]
+    all_filtered = _fetch_products(slug, total_count, None, language, filter_dict=selected_filters)
+    filtered_attr_counts = _aggregate_attributes(all_filtered["edges"])
+
+    # 4. Determine the active attribute (the only one being filtered)
+    active_attr = None
+    if len(selected_filters) == 1:
+        active_attr = next(iter(selected_filters))
+
+    # 5. Build final filters array
+    filters = []
+    for attr in unfiltered_attrs:
+        attr_slug = attr["slug"]
+        selected = selected_filters.get(attr_slug, [])
+        new_values = []
+
+        if attr_slug == active_attr:
+            for value in attr["values"]:
+                new_values.append({
+                    "slug": value["slug"],
+                    "name": value.get("name", value["slug"]),
+                    "count": value["count"],
+                    "available": True,
+                    "selected": value["slug"] in selected,
+                })
+        else:
+            # Non‑active attributes: use filtered counts, keep names from unfiltered
+            filtered_values = filtered_attr_counts.get(attr_slug, {})
+            # Build a mapping slug -> name from unfiltered values
+            name_map = {v["slug"]: v.get("name", v["slug"]) for v in attr["values"]}
+            for value in attr["values"]:
+                slug_val = value["slug"]
+                cnt = filtered_values.get(slug_val, 0)
+                new_values.append({
+                    "slug": slug_val,
+                    "name": name_map.get(slug_val, slug_val),
+                    "count": cnt,
+                    "available": cnt > 0,
+                    "selected": slug_val in selected,
+                })
+            new_values.sort(key=lambda v: v["count"], reverse=True)
+
+        filters.append({
+            "slug": attr_slug,
+            "name": attr["name"],
+            "values": new_values,
+        })
+
+    result = {"filters": filters, "products": products}
+    cache.set(cache_key, result, timeout=TIMEOUT_PRODUCTS_BY_CATEGORY)
+    return result
+
+
+def _aggregate_attributes(edges: list) -> dict[str, dict[str, int]]:
+    """Return {attr_slug: {value_slug: count}} from product edges."""
+    counts: dict[str, dict[str, int]] = {}
+    for edge in edges:
+        for attr in edge["node"].get("attributes", []):
+            slug = attr["attribute"]["slug"]
+            if slug not in counts:
+                counts[slug] = defaultdict(int)
+            for value in attr["values"]:
+                counts[slug][value["slug"]] += 1
+    return counts
+
+
+def _fetch_products(slug, first, after, language, filter_dict):
+    try:
+        query = load_query(APP_NAME, "queries/products_by_category_with_attributes.graphql")
+        variables = {
+            "slug": slug,
+            "first": first,
+            "after": after,
+            "channel": settings.SALEOR_CHANNEL,
+        }
+        if filter_dict:
+            attributes_filter = [
+                {"slug": attr_slug, "values": values}
+                for attr_slug, values in filter_dict.items()
+            ]
+            variables["filter"] = {"attributes": attributes_filter}
+
+        data = safe_execute_query(query, variables)
+        if data:
+            category = data.get("category")
+            if category:
+                pdata = category.get("products", {})
+                return {
+                    "edges": pdata.get("edges", []),
+                    "page_info": pdata.get("pageInfo", {}),
+                    "total_count": pdata.get("totalCount", 0),
+                }
+    except SaleorUnavailable:
+        logger.warning("Saleor unavailable while fetching products for slug=%s", slug)
+    return {"edges": [], "page_info": {}, "total_count": 0}
+
+
+def get_category_product_count(slug: str, language: str | None = None) -> int:
+    """
+    Return the total number of products in a given category (cached).
+
+    Args:
+        slug: Category slug.
+        language: Language code for cache key.
+
+    Returns:
+        Number of products in the category, or 0 on error.
+    """
+    if language is None:
+        language = settings.LANGUAGE_CODE
+
+    cache_key = f"products:count:{language}:{slug}"
+    count = cache.get(cache_key)
+    if count is not None:
+        return count
+
+    try:
+        query = load_query(APP_NAME, "queries/products_by_category.graphql")
+        variables = {
+            "slug": slug,
+            "first": 1,
+            "after": None,
+            "channel": settings.SALEOR_CHANNEL,
+        }
+        data = safe_execute_query(query, variables)
+        if data is None:
+            return 0
+        count = data.get("category", {}).get("products", {}).get("totalCount", 0)
+        cache.set(cache_key, count, timeout=TIMEOUT_PRODUCTS_BY_CATEGORY)
+        return count
+    except SaleorUnavailable:
+        return 0
+
+
+def get_category_attributes(slug: str, language: str | None = None, selected_filters: dict[str, list[str]] | None = None, active_attr: str | None = None) -> list[dict]:
+    """
+    Return attribute facets with **unfiltered** counts for all products.
+    """
+    if language is None:
+        language = settings.LANGUAGE_CODE
+    if selected_filters is None:
+        selected_filters = {}
+
+    cache_key = f"products:attributes:unfiltered:{language}:{slug}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    try:
+        total = get_category_product_count(slug, language=language)
+        if total == 0:
+            return []
+
+        query = load_query(APP_NAME, "queries/products_by_category_with_attributes.graphql")
+        variables = {
+            "slug": slug,
+            "first": total,
+            "after": None,
+            "channel": settings.SALEOR_CHANNEL,
+        }
+        data = safe_execute_query(query, variables)
+        if data is None:
+            return []
+
+        products_data = data.get("category", {}).get("products", {})
+        edges = products_data.get("edges", [])
+
+        # Collect attribute names and value counts
+        attr_names: dict[str, str] = {}
+        attr_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        value_names: dict[str, dict[str, str]] = defaultdict(dict)
+        for edge in edges:
+            for attr in edge["node"].get("attributes", []):
+                attr_slug = attr["attribute"]["slug"]
+                attr_names[attr_slug] = attr["attribute"]["name"]
+                for value in attr["values"]:
+                    val_slug = value["slug"]
+                    attr_counts[attr_slug][val_slug] += 1
+                    value_names[attr_slug][val_slug] = value.get("name", val_slug)
+
+        filters = []
+        for attr_slug, value_counts in attr_counts.items():
+            values_list = []
+            for value_slug, count in value_counts.items():
+                values_list.append({
+                    "slug": value_slug,
+                    "name": value_names[attr_slug].get(value_slug, value_slug),
+                    "count": count,
+                    "available": True,
+                    "selected": False,
+                })
+            values_list.sort(key=lambda v: v["count"], reverse=True)
+            filters.append({
+                "slug": attr_slug,
+                "name": attr_names.get(attr_slug, attr_slug),
+                "values": values_list,
+            })
+
+        cache.set(cache_key, filters, timeout=TIMEOUT_PRODUCTS_BY_CATEGORY)
+        return filters
+
+    except SaleorUnavailable:
+        return []
 
 
 # ----------------------------------------------------------------------

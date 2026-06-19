@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-16 04:08+0300\n"
+"POT-Creation-Date: 2026-06-19 16:28+0300\n"
 "PO-Revision-Date: 2026-06-16 05:00+0300\n"
 "Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language-Team: Russian <LL@li.org>\n"
@@ -54,22 +54,14 @@ msgstr "Подкатегории"
 msgid "No subcategories."
 msgstr "Нет подкатегорий."
 
-#: categories/templates/categories/detail.html:27
-msgid "Products"
-msgstr "Товары"
-
-#: categories/templates/categories/detail.html:34
-msgid "No products in this category yet."
-msgstr "В этой категории пока нет товаров."
-
-#: categories/templates/categories/detail.html:40
-#: categories/templates/categories/detail.html:42
+#: categories/templates/categories/detail.html:59
+#: categories/templates/categories/detail.html:61
 #: products/templates/products/detail.html:33
 #: products/templates/products/detail.html:35
 msgid "Back to"
 msgstr "Вернуться к"
 
-#: categories/templates/categories/detail.html:45
+#: categories/templates/categories/detail.html:64
 #: categories/templates/categories/index.html:31
 #: products/templates/products/detail.html:38
 msgid "Home"
@@ -105,7 +97,7 @@ msgstr "Пока нет разделов."
 
 #: products/templates/products/404.html:5
 #: products/templates/products/404.html:8
-#: products/templates/products/detail.html:43 products/views.py:31
+#: products/templates/products/detail.html:43 products/views.py:41
 msgid "Product not found"
 msgstr "Товар не найден"
 
@@ -113,6 +105,24 @@ msgstr "Товар не найден"
 #: products/templates/products/detail.html:44
 msgid "The product you are looking for does not exist or has been removed."
 msgstr "Товар, который вы ищете, не существует или был удалён."
+
+#: products/templates/products/category_fragment.html:6
+msgid "Filters"
+msgstr "Фильтры"
+
+#: products/templates/products/category_fragment.html:82
+#: products/templates/products/product_list_fragment.html:27
+msgid "Show more"
+msgstr "Показать ещё"
+
+#: products/templates/products/category_fragment.html:82
+#: products/templates/products/product_list_fragment.html:27
+msgid "from"
+msgstr "от"
+
+#: products/templates/products/category_fragment.html:87
+msgid "No products in this category yet."
+msgstr "В этой категории пока нет товаров."
 
 #: products/templates/products/detail.html:6
 msgid "Product unavailable"
@@ -142,5 +152,5 @@ msgstr "Страница, которую вы ищете, не существу�
 msgid "Site name"
 msgstr "Название сайта"
 
-msgid "Show more"
-msgstr "Показать ещё"
+#~ msgid "Products"
+#~ msgstr "Товары"

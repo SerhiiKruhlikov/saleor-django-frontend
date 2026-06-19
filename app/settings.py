@@ -103,18 +103,21 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 LOCALE_PATHS = [
-    BASE_DIR / 'locale',
+    BASE_DIR / "locale",
 ]
 
 STATICFILES_DIRS = [
     BASE_DIR / "assets",
 ]
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# FRONTEND SETTINGS
+LOCALSTORAGE_PREFIX = "sdf"
 
 
 # SALEOR
@@ -124,7 +127,7 @@ SALEOR_API_PASSWORD = os.environ.get("SALEOR_API_PASSWORD", "")
 SALEOR_WEBHOOK_SECRET = os.environ.get("SALEOR_WEBHOOK_SECRET", "")
 SALEOR_CHANNEL = os.environ.get("SALEOR_CHANNEL", "uk-store")
 SALEOR_DEFAULT_CURRENCY = os.environ.get("SALEOR_DEFAULT_CURRENCY", "UAH")
-SALEOR_PAGINATION_PRODUCTS_PER_PAGE = os.environ.get("SALEOR_PAGINATION_PRODUCTS_PER_PAGE", 12)
+SALEOR_PAGINATION_PRODUCTS_PER_PAGE = int(os.environ.get("SALEOR_PAGINATION_PRODUCTS_PER_PAGE", 12))
 
 
 # SPHINX

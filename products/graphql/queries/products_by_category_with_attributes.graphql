@@ -1,0 +1,45 @@
+query ProductsByCategoryWithAttributes(
+  $slug: String!,
+  $first: Int!,
+  $after: String,
+  $channel: String!,
+  $filter: ProductFilterInput
+) {
+  category(slug: $slug) {
+    products(first: $first, after: $after, channel: $channel, filter: $filter) {
+      totalCount
+      edges {
+        node {
+          id
+          name
+          slug
+          thumbnail { url alt }
+          pricing {
+            priceRange {
+              start {
+                gross { amount currency }
+              }
+            }
+          }
+          attributes {
+            attribute {
+              id
+              slug
+              name
+            }
+            values {
+              id
+              slug
+              name
+            }
+          }
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
