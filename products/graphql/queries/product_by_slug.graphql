@@ -1,12 +1,39 @@
 # products/graphql/queries/product_by_slug.graphql
-query ProductBySlug($slug: String!) {
-  product(slug: $slug) {
+query ProductBySlug($slug: String!, $channel: String!, $lang: LanguageCodeEnum!) {
+  product(slug: $slug, channel: $channel) {
     id
     name
     slug
     description
+    availableForPurchase
+    translation(languageCode: $lang) {
+      name
+      description
+    }
+    pricing {
+      priceRange {
+        start {
+          gross { amount currency }
+        }
+      }
+      priceRangeUndiscounted {
+        start {
+          gross { amount currency }
+        }
+      }
+    }
     category {
-      id name slug
+      id
+      name
+      slug
+      translation(languageCode: $lang) {
+        name
+      }
+    }
+    variants {
+      id
+      name
+      sku
     }
   }
 }

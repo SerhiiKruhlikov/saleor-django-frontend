@@ -1,0 +1,65 @@
+{# compare/templates/compare/compare.html #}
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Product comparison" %}{% endblock %}
+
+{% block content %}
+  <h1>{% trans "Product comparison" %}</h1>
+
+  <div id="compare-wrapper"
+       hx-get="{% url 'compare_table_api' %}?lang={{ request.LANGUAGE_CODE }}"
+       hx-trigger="load"
+       hx-include="#compare-slugs-input"
+       hx-swap="innerHTML">
+    {# Skeleton placeholder – identical to product cards in the catalog #}
+    <div class="products-grid">
+      {% for i in "123"|make_list %}
+        <div class="skeleton product-card">
+          <div class="skeleton img"></div>
+          <div class="skeleton title"></div>
+          <div class="skeleton price"></div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Hidden input that stores the comma-separated list of slugs #}
+  <input type="hidden" id="compare-slugs-input" name="slugs" value="">
+
+  {# Return links #}
+  <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Go to catalog" %}</a>
+  <br>
+  <a href="{% url 'shop:index' %}">← {% trans "Go to home page" %}</a>
+
+  <script>
+      (function () {
+          const STORAGE_KEY = 'compare_products';
+          const slugsInput = document.getElementById('compare-slugs-input');
+          const wrapper = document.getElementById('compare-wrapper');
+
+          // Populate hidden input on page load
+          function updateSlugsInput() {
+              const stored = localStorage.getItem(STORAGE_KEY);
+              const slugs = stored ? JSON.parse(stored) : [];
+              slugsInput.value = slugs.join(',');
+              // If empty, manually trigger an HTMX request to show "no products" message
+              if (slugs.length === 0) {
+                  htmx.trigger(wrapper, 'htmx:load');
+              }
+          }
+
+          // Update slugs when localStorage changes
+          window.addEventListener('storage', function (e) {
+              if (e.key === STORAGE_KEY) {
+                  updateSlugsInput();
+              }
+          });
+
+          // Initialise on DOM ready
+          document.addEventListener('DOMContentLoaded', function () {
+              updateSlugsInput();
+          });
+      })();
+  </script>
+{% endblock %}

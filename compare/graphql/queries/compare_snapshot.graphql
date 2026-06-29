@@ -1,0 +1,46 @@
+# compare/graphql/queries/compare_snapshot.graphql
+query CompareSnapshot($slug: String!, $channel: String!, $lang: LanguageCodeEnum!) {
+  product(slug: $slug, channel: $channel) {
+    id
+    name
+    slug
+    thumbnail { url alt }
+    translation(languageCode: $lang) {
+      name
+    }
+    category {
+      id
+      name
+      slug
+      translation(languageCode: $lang) {
+        name
+      }
+    }
+    attributes {
+      attribute {
+        id
+        slug
+        name
+        translation(languageCode: $lang) { name }
+      }
+      values {
+        id
+        slug
+        name
+        translation(languageCode: $lang) { name }
+      }
+    }
+    pricing {
+      priceRange {
+        start {
+          gross { amount currency }
+        }
+      }
+      priceRangeUndiscounted {
+        start {
+          gross { amount currency }
+        }
+      }
+    }
+  }
+}

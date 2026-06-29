@@ -14,8 +14,7 @@ To add support for a new entity:
 3. Import the handler here and add an entry to ``EVENT_HANDLERS``.
 """
 from categories.webhooks import handle_category_event
-from products.webhooks import handle_product_event
-
+from products.webhooks import handle_product_event, handle_promotion_event
 
 # Map Saleor event types to application handler functions
 EVENT_HANDLERS = {
@@ -27,4 +26,13 @@ EVENT_HANDLERS = {
     "ProductCreated": handle_product_event,
     "ProductUpdated": handle_product_event,
     "ProductDeleted": handle_product_event,
+    # Promotional Events
+    "PromotionCreated": handle_promotion_event,
+    "PromotionUpdated": handle_promotion_event,
+    "PromotionDeleted": handle_promotion_event,
+    "PromotionRuleCreated": handle_promotion_event,
+    "PromotionRuleUpdated": handle_promotion_event,
+    "PromotionRuleDeleted": handle_promotion_event,
+    "PromotionStarted": handle_promotion_event,
+    "PromotionEnded": handle_promotion_event,
 }

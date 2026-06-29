@@ -1,3 +1,5 @@
+.. docs/categories.rst
+
 Category service
 =================
 

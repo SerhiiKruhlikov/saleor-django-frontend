@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-19 16:28+0300\n"
+"POT-Creation-Date: 2026-06-30 01:13+0300\n"
 "PO-Revision-Date: 2026-06-16 04:30+0300\n"
 "Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language-Team: Ukrainian <LL@li.org>\n"
@@ -19,8 +19,130 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: basket/templates/basket/basket.html:5 basket/templates/basket/basket.html:8
+msgid "Basket"
+msgstr "Кошик"
+
+#: basket/templates/basket/basket.html:29
+#: basket/templates/basket/basket_table.html:97
+#: basket/templates/basket/checkout_table.html:57
+#: categories/templates/categories/404.html:10
+#: compare/templates/compare/compare.html:31
+#: products/templates/products/404.html:10
+#: products/templates/products/detail.html:14
+#: products/templates/products/detail.html:63
+msgid "Go to catalog"
+msgstr "Перейти до каталогу"
+
+#: basket/templates/basket/basket_table.html:28
+#: basket/templates/basket/checkout_table.html:28
+msgid "SKU"
+msgstr "Артикул"
+
+#: basket/templates/basket/basket_table.html:45
+#: orders/templates/orders/order_detail.html:28
+msgid "Quantity"
+msgstr "Кількість"
+
+#: basket/templates/basket/basket_table.html:70
+msgid "Order summary"
+msgstr "Підсумок замовлення"
+
+#: basket/templates/basket/basket_table.html:72
+#: orders/templates/orders/order_detail.html:45
+msgid "Subtotal"
+msgstr "Проміжний підсумок"
+
+#: basket/templates/basket/basket_table.html:73
+msgid "Delivery"
+msgstr "Доставка"
+
+#: basket/templates/basket/basket_table.html:73
+msgid "Specified at contract conclusion"
+msgstr "Уточнюється при укладанні договору"
+
+#: basket/templates/basket/basket_table.html:74
+#: basket/templates/basket/checkout_table.html:53
+msgid "Order total"
+msgstr "Разом до сплати"
+
+#: basket/templates/basket/basket_table.html:78
+msgid "Proceed to checkout"
+msgstr "Оформити замовлення"
+
+#: basket/templates/basket/basket_table.html:85
+msgid "Unavailable products"
+msgstr "Недоступні товари"
+
+#: basket/templates/basket/basket_table.html:90
+msgid "Find replacement"
+msgstr "Знайти заміну"
+
+#: basket/templates/basket/basket_table.html:96
+#: basket/templates/basket/checkout_table.html:56
+msgid "Your basket is empty."
+msgstr "Ваш кошик порожній."
+
+#: basket/templates/basket/checkout.html:5
+#: basket/templates/basket/checkout.html:8
+msgid "Checkout"
+msgstr "Оформлення замовлення"
+
+#: basket/templates/basket/checkout.html:16
+msgid "Contact information"
+msgstr "Контактна інформація"
+
+#: basket/templates/basket/checkout.html:20
+msgid "First name"
+msgstr "Імʼя"
+
+#: basket/templates/basket/checkout.html:24
+msgid "Last name"
+msgstr "Призвіще"
+
+#: basket/templates/basket/checkout.html:31
+msgid "Phone"
+msgstr "Телефон"
+
+#: basket/templates/basket/checkout.html:35
+#: orders/templates/orders/order_detail.html:11
+msgid "Email"
+msgstr "Електронна пошта"
+
+#: basket/templates/basket/checkout.html:41
+msgid "City"
+msgstr "Місто"
+
+#: basket/templates/basket/checkout.html:46
+msgid "Street address"
+msgstr "Вулиця, будинок"
+
+#: basket/templates/basket/checkout.html:52
+msgid "Postal code"
+msgstr "Поштовий індекс"
+
+#: basket/templates/basket/checkout.html:56
+msgid "Country"
+msgstr "Країна"
+
+#: basket/templates/basket/checkout.html:58
+msgid "Ukraine"
+msgstr "Україна"
+
+#: basket/templates/basket/checkout.html:68
+msgid "Confirm order"
+msgstr "Підтвердити замовлення"
+
+#: basket/templates/basket/checkout.html:69
+msgid "Back to basket"
+msgstr "Повернутися до кошика"
+
+#: basket/templates/basket/checkout_table.html:5
+msgid "Order Summary"
+msgstr "Підсумок замовлення"
+
 #: categories/templates/categories/404.html:5
-#: categories/templates/categories/404.html:8 categories/views.py:73
+#: categories/templates/categories/404.html:8 categories/views.py:81
 msgid "Category not found"
 msgstr "Категорію не знайдено"
 
@@ -28,17 +150,11 @@ msgstr "Категорію не знайдено"
 msgid "The category you are looking for does not exist or has been removed."
 msgstr "Категорія, яку ви шукаєте, не існує або була видалена."
 
-#: categories/templates/categories/404.html:10
-#: products/templates/products/404.html:10
-#: products/templates/products/detail.html:14
-#: products/templates/products/detail.html:45
-msgid "Go to catalog"
-msgstr "Перейти до каталогу"
-
 #: categories/templates/categories/404.html:12
+#: compare/templates/compare/compare.html:33
 #: products/templates/products/404.html:12
 #: products/templates/products/detail.html:16
-#: products/templates/products/detail.html:47 templates/404.html:10
+#: products/templates/products/detail.html:65 templates/404.html:10
 msgid "Go to home page"
 msgstr "На головну"
 
@@ -56,14 +172,15 @@ msgstr "Немає підкатегорій."
 
 #: categories/templates/categories/detail.html:59
 #: categories/templates/categories/detail.html:61
-#: products/templates/products/detail.html:33
-#: products/templates/products/detail.html:35
+#: products/templates/products/detail.html:51
+#: products/templates/products/detail.html:53
 msgid "Back to"
 msgstr "Повернутися до"
 
 #: categories/templates/categories/detail.html:64
 #: categories/templates/categories/index.html:31
-#: products/templates/products/detail.html:38
+#: products/templates/products/detail.html:56
+#: shop/templates/shop/partials/breadcrumbs.html:7
 msgid "Home"
 msgstr "Головна"
 
@@ -95,14 +212,74 @@ msgstr "Розділи тимчасово недоступні."
 msgid "No sections yet."
 msgstr "Поки немає розділів."
 
+#: compare/templates/compare/compare.html:5
+#: compare/templates/compare/compare.html:8
+msgid "Product comparison"
+msgstr "Товар не знайдено"
+
+#: compare/templates/compare/compare_table.html:7
+msgid "No products to compare. Add products from catalog."
+msgstr "Немає товарів для порівняння. Додайте товари з каталогу."
+
+#: compare/templates/compare/compare_table.html:12
+msgid "Characteristic"
+msgstr "Характеристика"
+
+#: compare/templates/compare/compare_table.html:18
+msgid "Remove from comparison"
+msgstr "Видалити з порівняння"
+
+#: compare/templates/compare/compare_table.html:26
+#: orders/templates/orders/order_detail.html:9
+msgid "Status"
+msgstr "Статус"
+
+#: compare/templates/compare/compare_table.html:34
+msgid "Price"
+msgstr "Ціна"
+
+#: orders/templates/orders/order_detail.html:5
+#: orders/templates/orders/order_detail.html:8
+msgid "Order"
+msgstr "Замовлення"
+
+#: orders/templates/orders/order_detail.html:10
+msgid "Date"
+msgstr "Дата"
+
+#: orders/templates/orders/order_detail.html:13
+msgid "Shipping address"
+msgstr "Адреса доставки"
+
+#: orders/templates/orders/order_detail.html:23
+msgid "Order items"
+msgstr "Товари в замовленні"
+
+#: orders/templates/orders/order_detail.html:27
+msgid "Product"
+msgstr "Товари"
+
+#: orders/templates/orders/order_detail.html:29
+msgid "Unit price"
+msgstr "Ціна за одиницю"
+
+#: orders/templates/orders/order_detail.html:30
+#: orders/templates/orders/order_detail.html:49
+msgid "Total"
+msgstr "Всього"
+
+#: orders/templates/orders/order_detail.html:56
+msgid "Continue shopping"
+msgstr "Продовжити покупки"
+
 #: products/templates/products/404.html:5
 #: products/templates/products/404.html:8
-#: products/templates/products/detail.html:43 products/views.py:41
+#: products/templates/products/detail.html:61 products/views.py:40
 msgid "Product not found"
 msgstr "Товар не знайдено"
 
 #: products/templates/products/404.html:9
-#: products/templates/products/detail.html:44
+#: products/templates/products/detail.html:62
 msgid "The product you are looking for does not exist or has been removed."
 msgstr "Товар, який ви шукаєте, не існує або був видалений."
 
@@ -110,17 +287,30 @@ msgstr "Товар, який ви шукаєте, не існує або був 
 msgid "Filters"
 msgstr "Фільтри"
 
-#: products/templates/products/category_fragment.html:82
-#: products/templates/products/product_list_fragment.html:27
+#: products/templates/products/category_fragment.html:85
+#: products/templates/products/detail.html:39
+#: products/templates/products/product_list_fragment.html:28
+msgid "Add to comparison"
+msgstr "Додати до порівняння"
+
+#: products/templates/products/category_fragment.html:91
+#: products/templates/products/detail.html:45
+#: products/templates/products/product_list_fragment.html:34
+#: templates/partials/critical.js.html:9
+msgid "Compare"
+msgstr "Порівняти"
+
+#: products/templates/products/category_fragment.html:106
+#: products/templates/products/product_list_fragment.html:49
 msgid "Show more"
 msgstr "Показати ще"
 
-#: products/templates/products/category_fragment.html:82
-#: products/templates/products/product_list_fragment.html:27
+#: products/templates/products/category_fragment.html:106
+#: products/templates/products/product_list_fragment.html:49
 msgid "from"
 msgstr "від"
 
-#: products/templates/products/category_fragment.html:87
+#: products/templates/products/category_fragment.html:111
 msgid "No products in this category yet."
 msgstr "У цій категорії поки немає товарів."
 
@@ -141,6 +331,10 @@ msgstr ""
 msgid "No description available."
 msgstr "Опис відсутній."
 
+#: products/templates/products/detail.html:32
+msgid "Add to basket"
+msgstr "Додати до кошика"
+
 #: templates/404.html:5 templates/404.html:8
 msgid "Page not found"
 msgstr "Сторінку не знайдено"
@@ -153,5 +347,13 @@ msgstr "Сторінка, яку ви шукаєте, не існує."
 msgid "Site name"
 msgstr "Назва сайту"
 
-#~ msgid "Products"
-#~ msgstr "Товари"
+#: templates/partials/critical.js.html:10
+msgid "In comparison"
+msgstr "У порівнянні"
+
+#: templates/partials/header.html:32
+msgid "Comparison"
+msgstr "Порівняння"
+
+#~ msgid "Loading..."
+#~ msgstr "Завантаження..."

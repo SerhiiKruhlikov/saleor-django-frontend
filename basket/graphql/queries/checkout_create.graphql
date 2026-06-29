@@ -1,0 +1,12 @@
+# basket/graphql/queries/checkout_create.graphql
+mutation CheckoutCreate($input: CheckoutCreateInput!) {
+  checkoutCreate(input: $input) {
+    checkout {
+      id
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

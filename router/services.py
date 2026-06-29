@@ -4,10 +4,12 @@ from django.core.cache import cache
 from django.conf import settings
 from gateway.saleor.client import safe_execute_query, SaleorUnavailable
 from gateway.saleor.loader import load_query
+import gateway.saleor.client as saleor_client   # for the flag
+from gateway.redis_utils import delete_keys_by_pattern
 
 logger = logging.getLogger(__name__)
 
-APP_NAME = "router"                     # папка, где лежат .graphql запросы
+APP_NAME = "router"                     # folder where .graphql queries live
 CACHE_TIMEOUTS = getattr(settings, 'CACHE_TIMEOUTS', {})
 ROUTER_TTL = CACHE_TIMEOUTS.get('ROUTER_SLUG_TYPE', 86400)
 
@@ -19,6 +21,10 @@ def resolve_slug(slug: str, language: str | None = None) -> str | None:
     Checks the cache first, then queries Saleor for a product, then for a
     category.  If Saleor is unavailable, returns ``None`` (which will
     result in a friendly error page, not a crash).
+
+    When the ``_saleor_was_unavailable`` flag is set (Saleor was previously
+    down), the router cache is ignored so that a real request can be made
+    and trigger the reconnection logic.
 
     Args:
         slug: URL slug to resolve.
@@ -32,14 +38,19 @@ def resolve_slug(slug: str, language: str | None = None) -> str | None:
         language = settings.LANGUAGE_CODE
 
     cache_key = f"router:type:{language}:{slug}"
-    cached_type = cache.get(cache_key)
-    if cached_type in ("product", "category"):
-        return cached_type
+
+    # If Saleor was down, skip the cache to force a fresh lookup
+    if not saleor_client._saleor_was_unavailable:
+        cached_type = cache.get(cache_key)
+        if cached_type in ("product", "category"):
+            return cached_type
+
+    channel = settings.SALEOR_CHANNEL
 
     # 1. Try product
     try:
         query = load_query(APP_NAME, "queries/resolve_product.graphql")
-        data = safe_execute_query(query, {"slug": slug})
+        data = safe_execute_query(query, {"slug": slug, "channel": channel})
         if data and data.get("product"):
             cache.set(cache_key, "product", timeout=ROUTER_TTL)
             return "product"
@@ -69,10 +80,22 @@ def invalidate_router_cache(slug: str):
     or deleted, so the router re-evaluates the slug on the next
     request.
     """
-    # Удаляем ключи для всех поддерживаемых языков (uk, en, ru)
     for lang_code, _ in settings.LANGUAGES:
         cache.delete(f"router:type:{lang_code}:{slug}")
     logger.info("Router cache invalidated for slug=%s", slug)
+
+
+def invalidate_global_router_cache():
+    """
+    Remove **all** router type cache entries across all languages.
+    """
+    prefix = settings.CACHES['default'].get('KEY_PREFIX', '')
+    if prefix:
+        pattern = f"{prefix}:*router:type*"
+    else:
+        pattern = "router:type:*"
+    deleted = delete_keys_by_pattern(pattern)
+    logger.info("Global router cache invalidated, deleted %d keys", deleted)
 
 
 def parse_filter_url(path: str) -> dict[str, list[str]] | None:

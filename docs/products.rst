@@ -1,3 +1,5 @@
+.. docs/products.rst
+
 Products
 ========
 

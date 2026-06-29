@@ -1,0 +1,58 @@
+{# basket/templates/basket/checkout_table.html #}
+{% load i18n price_filters %}
+
+{% if items %}
+  <h2>{% trans "Order Summary" %}</h2>
+  <div class="checkout-items-list">
+    <table class="checkout-table">
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td colspan="4" class="checkout-item-row">
+              <div class="checkout-item">
+                <!-- Изображение -->
+                <div class="checkout-item-image">
+                  {% if item.thumbnail %}
+                    <img src="{{ item.thumbnail }}" alt="{{ item.name }}">
+                  {% else %}
+                    <svg width="100%" height="100%" viewBox="0 0 100 100" fill="#e5e7eb">
+                      <rect width="100" height="100" rx="4"/>
+                      <text x="50" y="55" font-size="12" text-anchor="middle" fill="#9ca3af">No image</text>
+                    </svg>
+                  {% endif %}
+                </div>
+
+                <!-- Информация о товаре -->
+                <div class="checkout-item-content">
+                  <div class="checkout-item-info">
+                    <div class="checkout-item-sku">{% trans "SKU" %}: {{ item.sku|default:"—" }}</div>
+                    <div class="checkout-item-name">{{ item.name }}</div>
+                    <div class="checkout-item-prices">
+                      {% if item.old_price and item.old_price.amount > item.price.amount %}
+                        <span class="checkout-item-old-price">{{ item.old_price.amount|price_format }} {{ item.old_price.currency }}</span>
+                        <span class="checkout-item-new-price">{{ item.price.amount|price_format }} {{ item.price.currency }}</span>
+                      {% else %}
+                        <span class="checkout-item-price">{{ item.price.amount|price_format }} {{ item.price.currency }}</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="checkout-item-meta">
+                    <span class="checkout-item-quantity">× {{ item.quantity }}</span>
+                    <span class="checkout-item-total">{{ item.price.amount|price_format }} {{ item.price.currency }}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="checkout-summary">
+    <p><strong>{% trans "Order total" %}: {{ subtotal|price_format }} {{ currency }}</strong></p>
+  </div>
+{% else %}
+  <p>{% trans "Your basket is empty." %}</p>
+  <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Go to catalog" %}</a>
+{% endif %}

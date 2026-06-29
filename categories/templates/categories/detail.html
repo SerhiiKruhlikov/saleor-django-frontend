@@ -23,7 +23,7 @@
   {% endif %}
 
   {# Category content: filters + products, loaded via HTMX #}
-  <div id="category-content"
+  <div id="category-content" class="category-content"
        hx-get="{% url 'category_fragment' slug=category.slug %}?lang={{ request.LANGUAGE_CODE }}{% if filter_query_string %}&{{ filter_query_string }}{% endif %}"
        hx-trigger="load"
        hx-swap="none">

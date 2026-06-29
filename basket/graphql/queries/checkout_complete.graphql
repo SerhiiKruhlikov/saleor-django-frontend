@@ -1,0 +1,12 @@
+# basket/graphql/queries/checkout_complete.graphql
+mutation CheckoutComplete($id: ID!) {
+  checkoutComplete(id: $id) {
+    order {
+      id
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

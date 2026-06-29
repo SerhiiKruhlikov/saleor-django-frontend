@@ -21,6 +21,30 @@
       {% endif %}
     </ul>
 
+    {# Comparison link + badge #}
+    <div class="compare-header" id="compare_selector">
+      <a href="{% url 'compare:compare_page' %}" class="menu__link--compare">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" viewBox="0 0 20 16"
+             style="vertical-align: middle; margin-right: 4px;">
+          <path
+              d="M10,3c-.29,0-.53-.09-.72-.28s-.28-.43-.28-.72.09-.53.28-.72.43-.28.72-.28.53.09.72.28.28.43.28.72-.09.53-.28.72-.43.28-.72.28ZM18.53,9h-5.06l2.56-4.06,2.5,4.06-2.5-4.06,2.5,4.06ZM13,10h6v.28l-1.72,1.72h-2.56l-1.72-1.72v-.28.28-.28ZM16.44,3.75l-.41-.69-.44.69-3.53,5.59-.06.12v1.25l.16.13,2,2,.12.16h3.44l.12-.16,2-2,.16-.13v-1.25l-.06-.12-3.5-5.59,3.5,5.59-3.5-5.59ZM6.53,9H1.47l2.56-4.06,2.5,4.06-2.5-4.06,2.5,4.06ZM1,10h6v.28l-1.72,1.72h-2.56l-1.72-1.72v-.28.28-.28ZM4.44,3.75l-.41-.69-.44.69L.09,9.34l-.09.12v1.25l.16.13,2,2,.13.16h3.44l.12-.16,2-2,.16-.13v-1.25l-.06-.12-3.5-5.59,3.5,5.59-3.5-5.59ZM16,2h.5v-1h-4.78c-.38-.62-.95-.96-1.72-1-.77.04-1.34.38-1.72,1H3v1h5c0,.48.15.9.44,1.25.27.33.62.56,1.06.69v11.06H3v1h14v-1h-6.5V3.94c.44-.12.79-.35,1.06-.69.29-.35.44-.77.44-1.25h4Z"/>
+        </svg>
+        {% trans "Comparison" %}
+      </a>
+      <span class="menu__badge"></span>
+    </div>
+
+    {# Basket #}
+    <div class="basket-header" id="basket-selector">
+      <a href="/basket/" class="basket-link disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="currentColor">
+          <path d="M15.75 1.5H2.25L1 6v9.5A1.25 1.25 0 0 0 2.25 16.75h13.5A1.25 1.25 0 0 0 17 15.5V6l-1.25-4.5zM2.25 2.5h13.5l.9 3.5H1.35l.9-3.5zM1.5 7h15v8.5a.25.25 0 0 1-.25.25H2.25A.25.25 0 0 1 2 15.5V7z"/>
+        </svg>
+        <span class="basket-total">0.00 грн</span>
+        <span class="basket-badge"></span>
+      </a>
+    </div>
+
     {# Переключатель языков #}
     {% load i18n_utils %}
     {% get_available_languages as LANGUAGES %}

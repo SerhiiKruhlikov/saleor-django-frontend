@@ -1,0 +1,50 @@
+# orders/graphql/queries/order_by_id.graphql
+query OrderById($id: ID!) {
+  order(id: $id) {
+    id
+    number
+    created
+    statusDisplay
+    userEmail
+    shippingAddress {
+      firstName
+      lastName
+      city
+      streetAddress1
+      postalCode
+      phone
+      country {
+        code
+        country
+      }
+    }
+    lines {
+      productName
+      quantity
+      unitPrice {
+        gross {
+          amount
+          currency
+        }
+      }
+      totalPrice {
+        gross {
+          amount
+          currency
+        }
+      }
+    }
+    subtotal {
+      gross {
+        amount
+        currency
+      }
+    }
+    total {
+      gross {
+        amount
+        currency
+      }
+    }
+  }
+}

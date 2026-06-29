@@ -1,5 +1,14 @@
 {# templates/partials/menu.js.html #}
-<script>window.SDF_PREFIX = "{{ LOCALSTORAGE_PREFIX }}";</script>
+{% load i18n %}
+
+<script>
+    window.SDF_PREFIX = "{{ LOCALSTORAGE_PREFIX }}";
+    window.DEFAULT_LANGUAGE = "{{ LANGUAGE_CODE }}";
+    window.CURRENCY = "{{ currency }}";
+    window.SUPPORTED_LANGUAGES = [{% for lang, _ in LANGUAGES %}"{{ lang }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+    window.LABEL_COMPARE_ADD = "{% trans 'Compare' %}";
+    window.LABEL_COMPARE_REMOVE = "{% trans 'In comparison' %}";
+</script>
 <script>
     (function () {
         if (document.readyState === 'loading') {

@@ -1,13 +1,19 @@
 # categories/graphql/queries/category_by_slug.graphql
-query CategoryBySlug($slug: String!) {
+query CategoryBySlug($slug: String!, $lang: LanguageCodeEnum!) {
   category(slug: $slug) {
     id
     name
     slug
+    translation(languageCode: $lang) {
+      name
+    }
     parent {
       id
       name
       slug
+      translation(languageCode: $lang) {
+        name
+      }
     }
   }
 }

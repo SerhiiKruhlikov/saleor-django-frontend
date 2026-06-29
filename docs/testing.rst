@@ -1,3 +1,5 @@
+.. docs/testing.rst
+
 Testing
 =======
 

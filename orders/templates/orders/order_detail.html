@@ -1,0 +1,58 @@
+{# orders/templates/orders/order_detail.html #}
+{% extends "base.html" %}
+{% load i18n price_filters %}
+
+{% block title %}{% trans "Order" %} #{{ order.number }}{% endblock %}
+
+{% block content %}
+  <h1>{% trans "Order" %} #{{ order.number }}</h1>
+  <p><strong>{% trans "Status" %}:</strong> {{ order.statusDisplay }}</p>
+  <p><strong>{% trans "Date" %}:</strong> {{ order.created }}</p>
+  <p><strong>{% trans "Email" %}:</strong> {{ order.userEmail }}</p>
+
+  <h2>{% trans "Shipping address" %}</h2>
+  {% if order.shippingAddress %}
+    <p>
+      {{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}<br>
+      {{ order.shippingAddress.streetAddress1 }}<br>
+      {{ order.shippingAddress.city }}, {{ order.shippingAddress.postalCode }}<br>
+      {{ order.shippingAddress.phone }}
+    </p>
+  {% endif %}
+
+  <h2>{% trans "Order items" %}</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>{% trans "Product" %}</th>
+        <th>{% trans "Quantity" %}</th>
+        <th>{% trans "Unit price" %}</th>
+        <th>{% trans "Total" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in order.lines %}
+        <tr>
+          <td>{{ line.productName }}</td>
+          <td>{{ line.quantity }}</td>
+          <td>{{ line.unitPrice.gross.amount|price_format }} {{ line.unitPrice.gross.currency }}</td>
+          <td>{{ line.totalPrice.gross.amount|price_format }} {{ line.totalPrice.gross.currency }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">{% trans "Subtotal" %}</td>
+        <td>{{ order.subtotal.gross.amount|price_format }} {{ order.subtotal.gross.currency }}</td>
+      </tr>
+      <tr>
+        <td colspan="3"><strong>{% trans "Total" %}</strong></td>
+        <td><strong>{{ order.total.gross.amount|price_format }} {{ order.total.gross.currency }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <p>
+    <a href="{% url 'shop:index' %}">← {% trans "Continue shopping" %}</a>
+  </p>
+{% endblock %}

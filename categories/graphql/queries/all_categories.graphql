@@ -1,11 +1,14 @@
 # categories/graphql/queries/all_categories.graphql
-query AllCategories($first: Int!) {
+query AllCategories($first: Int!, $lang: LanguageCodeEnum!) {
   categories(first: $first) {
     edges {
       node {
         id
         name
         slug
+        translation(languageCode: $lang) {
+          name
+        }
         parent { id }
       }
     }

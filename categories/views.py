@@ -11,6 +11,8 @@ from categories.services.categories import (
     get_category_by_slug,
     find_node_in_tree,
 )
+from router.services import parse_filter_url
+from products.services.products import get_category_product_count
 
 
 def index(request, slug='catalog'):
@@ -34,7 +36,13 @@ def index(request, slug='catalog'):
         return render(request, "categories/index.html", context)
 
     context["category"] = category
-    context["parent"] = category.get("parent")
+
+    parent = category.get("parent")
+    if parent:
+        translation = parent.get("translation")
+        if translation and translation.get("name"):
+            parent["name"] = translation["name"]
+    context["parent"] = parent
 
     full_tree = get_full_tree(language=request.LANGUAGE_CODE)
     if full_tree:
@@ -44,7 +52,7 @@ def index(request, slug='catalog'):
         context["subcategories"] = None
 
     try:
-        context["breadcrumbs"] = get_breadcrumbs_for_category(slug)
+        context["breadcrumbs"] = get_breadcrumbs_for_category(slug, request.LANGUAGE_CODE)
     except Exception:
         context["breadcrumbs"] = []
 
@@ -72,12 +80,18 @@ def detail(request, slug):
     if category is None:
         raise Http404(_("Category not found"))
 
+    parent = category.get("parent")
+    if parent:
+        translation = parent.get("translation")
+        if translation and translation.get("name"):
+            parent["name"] = translation["name"]
+
     context = {
         "category": category,
         "subcategories": None,
         "breadcrumbs": [],
         "tree_error": False,
-        "parent": category.get("parent"),
+        "parent": parent,
     }
 
     full_tree = get_full_tree(language=request.LANGUAGE_CODE)
@@ -88,14 +102,13 @@ def detail(request, slug):
         context["tree_error"] = True
 
     try:
-        context["breadcrumbs"] = get_breadcrumbs_for_category(slug)
+        context["breadcrumbs"] = get_breadcrumbs_for_category(slug, request.LANGUAGE_CODE)
     except Exception:
         context["breadcrumbs"] = []
 
     # Parse filter params from the URL if present (e.g. /filter/status-.../)
     filter_query_string = ''
     if '/filter/' in request.path_info:
-        from router.services import parse_filter_url
         filter_params = parse_filter_url(request.path_info)
         if filter_params:
             # Build a query string to pass to HTMX
@@ -106,7 +119,6 @@ def detail(request, slug):
 
     # Определяем, есть ли товары в категории, чтобы показывать панель фильтров
     # Запрашиваем только количество товаров без загрузки всех
-    from products.services.products import get_category_product_count
     product_count = get_category_product_count(slug, language=request.LANGUAGE_CODE)
     context['show_filters'] = product_count > 0
 

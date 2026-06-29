@@ -1,0 +1,170 @@
+{# basket/templates/basket/checkout.html #}
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Checkout" %}{% endblock %}
+
+{% block content %}
+  <h1>{% trans "Checkout" %}</h1>
+
+  <div class="checkout-layout">
+    <!-- Левая колонка: форма -->
+  <div class="checkout-form-wrapper">
+      <form id="checkout-form" class="checkout-form" method="post" action="#">
+        {% csrf_token %}
+
+        <h2>{% trans "Contact information" %}</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">{% trans "First name" %} *</label>
+            <input type="text" id="firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">{% trans "Last name" %} *</label>
+            <input type="text" id="lastName" name="lastName" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">{% trans "Phone" %} *</label>
+            <input type="tel" id="phone" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label for="email">{% trans "Email" %} *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="city">{% trans "City" %} *</label>
+          <input type="text" id="city" name="city" required>
+        </div>
+
+        <div class="form-group">
+          <label for="streetAddress1">{% trans "Street address" %} *</label>
+          <input type="text" id="streetAddress1" name="streetAddress1" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="postalCode">{% trans "Postal code" %}</label>
+            <input type="text" id="postalCode" name="postalCode">
+          </div>
+          <div class="form-group">
+            <label for="country">{% trans "Country" %}</label>
+            <select id="country" name="country">
+              <option value="UA">{% trans "Ukraine" %}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Скрытые поля -->
+        <input type="hidden" id="checkout-slugs-input" name="slugs" value="">
+        <input type="hidden" id="checkout-items-data" name="items" value="">
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">{% trans "Confirm order" %}</button>
+          <a href="{% url 'basket:basket_page' %}" class="btn btn-secondary">{% trans "Back to basket" %}</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Правая колонка: товары и итоги -->
+    <div class="checkout-info">
+      <div class="checkout-items" id="checkout-items">
+        <div hx-get="{% url 'basket_api:checkout_table_api' %}?lang={{ request.LANGUAGE_CODE }}"
+             hx-trigger="load"
+             hx-include="#checkout-slugs-input, #checkout-items-data"
+             hx-swap="innerHTML">
+          {# Скелетон #}
+          <div class="products-grid">
+            {% for i in "123"|make_list %}
+              <div class="skeleton product-card">
+                <div class="skeleton img"></div>
+                <div class="skeleton title"></div>
+                <div class="skeleton price"></div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Список товаров -->
+
+
+    <!-- Форма оформления -->
+
+  </div>
+
+  <script>
+      (function () {
+          const BASKET_KEY = (window.SDF_PREFIX || 'sdf') + '_basket';
+          const slugsInput = document.getElementById('checkout-slugs-input');
+          const itemsDataInput = document.getElementById('checkout-items-data');
+
+          function updateData() {
+              const stored = localStorage.getItem(BASKET_KEY);
+              const basket = stored ? JSON.parse(stored) : {items: []};
+              slugsInput.value = basket.items.map(item => item.slug).join(',');
+              itemsDataInput.value = JSON.stringify(
+                  basket.items.map(item => ({slug: item.slug, quantity: item.quantity}))
+              );
+          }
+
+          updateData();
+          window.addEventListener('storage', function (e) {
+              if (e.key === BASKET_KEY) updateData();
+          });
+      })();
+
+      document.getElementById('checkout-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData.entries());
+
+          // items уже в data, но это строка, парсим
+          try {
+              data.items = JSON.parse(data.items);
+          } catch {
+              data.items = [];
+          }
+
+          if (!data.items.length) {
+              alert('No products in basket');
+              return;
+          }
+
+          fetch('{% url "basket_api:checkout_create" %}', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+              },
+              body: JSON.stringify(data)
+          })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.status === 'ok') {
+                      // Очищаем корзину
+                      const BASKET_KEY = (window.SDF_PREFIX || 'sdf') + '_basket';
+                      localStorage.removeItem(BASKET_KEY);
+                      // Обновляем виджет в хедере, если функция доступна
+                      if (typeof window.updateBasketUI === 'function') {
+                          window.updateBasketUI();
+                      }
+                      // Редирект на страницу заказа
+                      window.location.href = '/order/' + data.order_id + '/';
+                  } else {
+                      alert('Error: ' + data.message);
+                  }
+              })
+              .catch(error => {
+                  alert('Network error: ' + error);
+              });
+      });
+  </script>
+{% endblock %}

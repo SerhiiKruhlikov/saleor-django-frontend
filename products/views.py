@@ -9,7 +9,6 @@ from django.http import Http404
 from gateway.saleor.client import SaleorUnavailable
 from products.services.products import (
     get_product_by_slug,
-    get_products_by_category,
     get_category_with_filters,
 )
 from shop.services.breadcrumbs import get_breadcrumbs_for_product
@@ -40,7 +39,7 @@ def detail(request, slug):
     if product is None:
         raise Http404(_("Product not found"))
 
-    breadcrumbs = get_breadcrumbs_for_product(product)
+    breadcrumbs = get_breadcrumbs_for_product(product, request.LANGUAGE_CODE)
 
     context = {
         "product": product,
@@ -68,19 +67,15 @@ def products_fragment(request, slug):
 
     activate(lang)
     try:
-        if selected_filters:
-            data = get_category_with_filters(
-                slug,
-                selected_filters=selected_filters,
-                first=first,
-                after=after,
-                language=lang,
-            )
-            products_data = data["products"]
-        else:
-            products_data = get_products_by_category(
-                slug, first=first, after=after, language=lang
-            )
+        # Always use the unified method that returns products with attributes and status
+        data = get_category_with_filters(
+            slug,
+            selected_filters=selected_filters if selected_filters else None,
+            first=first,
+            after=after,
+            language=lang,
+        )
+        products_data = data["products"]
 
         context = {
             "products": products_data["edges"],
@@ -144,13 +139,12 @@ def category_fragment(request, slug):
 
         # Build display-friendly structure for selected filters
         selected_filters_display = []
-        if data['filters']:
+        if data['filters'] is not None:               # avoid None for empty categories
             for attr in data['filters']:
                 attr_slug = attr['slug']
                 selected_vals = selected_filters.get(attr_slug, [])
                 if not selected_vals:
                     continue
-                # Собираем выбранные значения с их именами
                 values_display = []
                 for val in attr['values']:
                     if val['slug'] in selected_vals:
@@ -175,7 +169,7 @@ def category_fragment(request, slug):
             "request": request,
         }
 
-        # loaded: сколько товаров уже показано пользователю
+        # loaded: how many products are already shown to the user
         loaded_raw = request.GET.get('loaded', len(data['products']['edges']))
 
         try:

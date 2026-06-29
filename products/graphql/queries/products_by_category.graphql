@@ -1,5 +1,11 @@
 # products/graphql/queries/products_by_category.graphql
-query ProductsByCategory($slug: String!, $first: Int!, $after: String, $channel: String!) {
+query ProductsByCategory(
+  $slug: String!,
+  $first: Int!,
+  $after: String,
+  $channel: String!,
+  $lang: LanguageCodeEnum!
+) {
   category(slug: $slug) {
     products(first: $first, after: $after, channel: $channel) {
       totalCount
@@ -8,9 +14,15 @@ query ProductsByCategory($slug: String!, $first: Int!, $after: String, $channel:
           id
           name
           slug
+          translation(languageCode: $lang) { name }
           thumbnail { url alt }
           pricing {
             priceRange {
+              start {
+                gross { amount currency }
+              }
+            }
+            priceRangeUndiscounted {
               start {
                 gross { amount currency }
               }

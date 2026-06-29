@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-19 16:28+0300\n"
+"POT-Creation-Date: 2026-06-30 01:13+0300\n"
 "PO-Revision-Date: 2026-06-16 05:00+0300\n"
 "Last-Translator: Serhii Kruhlikov <serhii.kruhlikov@gmail.com>\n"
 "Language-Team: Russian <LL@li.org>\n"
@@ -19,8 +19,130 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
+#: basket/templates/basket/basket.html:5 basket/templates/basket/basket.html:8
+msgid "Basket"
+msgstr "Корзина"
+
+#: basket/templates/basket/basket.html:29
+#: basket/templates/basket/basket_table.html:97
+#: basket/templates/basket/checkout_table.html:57
+#: categories/templates/categories/404.html:10
+#: compare/templates/compare/compare.html:31
+#: products/templates/products/404.html:10
+#: products/templates/products/detail.html:14
+#: products/templates/products/detail.html:63
+msgid "Go to catalog"
+msgstr "Перейти в каталог"
+
+#: basket/templates/basket/basket_table.html:28
+#: basket/templates/basket/checkout_table.html:28
+msgid "SKU"
+msgstr "Артикул"
+
+#: basket/templates/basket/basket_table.html:45
+#: orders/templates/orders/order_detail.html:28
+msgid "Quantity"
+msgstr "Количество"
+
+#: basket/templates/basket/basket_table.html:70
+msgid "Order summary"
+msgstr "Итог заказа"
+
+#: basket/templates/basket/basket_table.html:72
+#: orders/templates/orders/order_detail.html:45
+msgid "Subtotal"
+msgstr "Промежуточный итог"
+
+#: basket/templates/basket/basket_table.html:73
+msgid "Delivery"
+msgstr "Доставка"
+
+#: basket/templates/basket/basket_table.html:73
+msgid "Specified at contract conclusion"
+msgstr "Уточняется при заключении договора"
+
+#: basket/templates/basket/basket_table.html:74
+#: basket/templates/basket/checkout_table.html:53
+msgid "Order total"
+msgstr "Итого к оплате"
+
+#: basket/templates/basket/basket_table.html:78
+msgid "Proceed to checkout"
+msgstr "Оформить заказ"
+
+#: basket/templates/basket/basket_table.html:85
+msgid "Unavailable products"
+msgstr "Недоступные товары"
+
+#: basket/templates/basket/basket_table.html:90
+msgid "Find replacement"
+msgstr "Найти замену"
+
+#: basket/templates/basket/basket_table.html:96
+#: basket/templates/basket/checkout_table.html:56
+msgid "Your basket is empty."
+msgstr "Ваша корзина пуста."
+
+#: basket/templates/basket/checkout.html:5
+#: basket/templates/basket/checkout.html:8
+msgid "Checkout"
+msgstr "Оформление заказа"
+
+#: basket/templates/basket/checkout.html:16
+msgid "Contact information"
+msgstr "Контактная информация"
+
+#: basket/templates/basket/checkout.html:20
+msgid "First name"
+msgstr "Имя"
+
+#: basket/templates/basket/checkout.html:24
+msgid "Last name"
+msgstr "Фамилия"
+
+#: basket/templates/basket/checkout.html:31
+msgid "Phone"
+msgstr "Телефон"
+
+#: basket/templates/basket/checkout.html:35
+#: orders/templates/orders/order_detail.html:11
+msgid "Email"
+msgstr "Электронная почта"
+
+#: basket/templates/basket/checkout.html:41
+msgid "City"
+msgstr "Город"
+
+#: basket/templates/basket/checkout.html:46
+msgid "Street address"
+msgstr "Улица, дом"
+
+#: basket/templates/basket/checkout.html:52
+msgid "Postal code"
+msgstr "Почтовый индекс"
+
+#: basket/templates/basket/checkout.html:56
+msgid "Country"
+msgstr "Страна"
+
+#: basket/templates/basket/checkout.html:58
+msgid "Ukraine"
+msgstr "Украина"
+
+#: basket/templates/basket/checkout.html:68
+msgid "Confirm order"
+msgstr "Подтвердить заказ"
+
+#: basket/templates/basket/checkout.html:69
+msgid "Back to basket"
+msgstr "Вернуться в корзину"
+
+#: basket/templates/basket/checkout_table.html:5
+msgid "Order Summary"
+msgstr "Итог заказа"
+
 #: categories/templates/categories/404.html:5
-#: categories/templates/categories/404.html:8 categories/views.py:73
+#: categories/templates/categories/404.html:8 categories/views.py:81
 msgid "Category not found"
 msgstr "Категория не найдена"
 
@@ -28,17 +150,11 @@ msgstr "Категория не найдена"
 msgid "The category you are looking for does not exist or has been removed."
 msgstr "Категория, которую вы ищете, не существует или была удалена."
 
-#: categories/templates/categories/404.html:10
-#: products/templates/products/404.html:10
-#: products/templates/products/detail.html:14
-#: products/templates/products/detail.html:45
-msgid "Go to catalog"
-msgstr "Перейти в каталог"
-
 #: categories/templates/categories/404.html:12
+#: compare/templates/compare/compare.html:33
 #: products/templates/products/404.html:12
 #: products/templates/products/detail.html:16
-#: products/templates/products/detail.html:47 templates/404.html:10
+#: products/templates/products/detail.html:65 templates/404.html:10
 msgid "Go to home page"
 msgstr "На главную"
 
@@ -56,14 +172,15 @@ msgstr "Нет подкатегорий."
 
 #: categories/templates/categories/detail.html:59
 #: categories/templates/categories/detail.html:61
-#: products/templates/products/detail.html:33
-#: products/templates/products/detail.html:35
+#: products/templates/products/detail.html:51
+#: products/templates/products/detail.html:53
 msgid "Back to"
-msgstr "Вернуться к"
+msgstr "Вернуться в"
 
 #: categories/templates/categories/detail.html:64
 #: categories/templates/categories/index.html:31
-#: products/templates/products/detail.html:38
+#: products/templates/products/detail.html:56
+#: shop/templates/shop/partials/breadcrumbs.html:7
 msgid "Home"
 msgstr "Главная"
 
@@ -95,14 +212,74 @@ msgstr "Разделы временно недоступны."
 msgid "No sections yet."
 msgstr "Пока нет разделов."
 
+#: compare/templates/compare/compare.html:5
+#: compare/templates/compare/compare.html:8
+msgid "Product comparison"
+msgstr "Товар не найден"
+
+#: compare/templates/compare/compare_table.html:7
+msgid "No products to compare. Add products from catalog."
+msgstr "Нет товаров для сравнения. Добавьте товары из каталога."
+
+#: compare/templates/compare/compare_table.html:12
+msgid "Characteristic"
+msgstr "Характеристика"
+
+#: compare/templates/compare/compare_table.html:18
+msgid "Remove from comparison"
+msgstr "Удалить из сравнения"
+
+#: compare/templates/compare/compare_table.html:26
+#: orders/templates/orders/order_detail.html:9
+msgid "Status"
+msgstr "Статус"
+
+#: compare/templates/compare/compare_table.html:34
+msgid "Price"
+msgstr "Цена"
+
+#: orders/templates/orders/order_detail.html:5
+#: orders/templates/orders/order_detail.html:8
+msgid "Order"
+msgstr "Заказ"
+
+#: orders/templates/orders/order_detail.html:10
+msgid "Date"
+msgstr "Дата"
+
+#: orders/templates/orders/order_detail.html:13
+msgid "Shipping address"
+msgstr "Адрес доставки"
+
+#: orders/templates/orders/order_detail.html:23
+msgid "Order items"
+msgstr "Товары в заказе"
+
+#: orders/templates/orders/order_detail.html:27
+msgid "Product"
+msgstr "Товары"
+
+#: orders/templates/orders/order_detail.html:29
+msgid "Unit price"
+msgstr "Цена за единицу"
+
+#: orders/templates/orders/order_detail.html:30
+#: orders/templates/orders/order_detail.html:49
+msgid "Total"
+msgstr "Итого"
+
+#: orders/templates/orders/order_detail.html:56
+msgid "Continue shopping"
+msgstr "Продолжить покупки"
+
 #: products/templates/products/404.html:5
 #: products/templates/products/404.html:8
-#: products/templates/products/detail.html:43 products/views.py:41
+#: products/templates/products/detail.html:61 products/views.py:40
 msgid "Product not found"
 msgstr "Товар не найден"
 
 #: products/templates/products/404.html:9
-#: products/templates/products/detail.html:44
+#: products/templates/products/detail.html:62
 msgid "The product you are looking for does not exist or has been removed."
 msgstr "Товар, который вы ищете, не существует или был удалён."
 
@@ -110,17 +287,30 @@ msgstr "Товар, который вы ищете, не существует и
 msgid "Filters"
 msgstr "Фильтры"
 
-#: products/templates/products/category_fragment.html:82
-#: products/templates/products/product_list_fragment.html:27
+#: products/templates/products/category_fragment.html:85
+#: products/templates/products/detail.html:39
+#: products/templates/products/product_list_fragment.html:28
+msgid "Add to comparison"
+msgstr "Добавить в сравнение"
+
+#: products/templates/products/category_fragment.html:91
+#: products/templates/products/detail.html:45
+#: products/templates/products/product_list_fragment.html:34
+#: templates/partials/critical.js.html:9
+msgid "Compare"
+msgstr "Сравнить"
+
+#: products/templates/products/category_fragment.html:106
+#: products/templates/products/product_list_fragment.html:49
 msgid "Show more"
 msgstr "Показать ещё"
 
-#: products/templates/products/category_fragment.html:82
-#: products/templates/products/product_list_fragment.html:27
+#: products/templates/products/category_fragment.html:106
+#: products/templates/products/product_list_fragment.html:49
 msgid "from"
 msgstr "от"
 
-#: products/templates/products/category_fragment.html:87
+#: products/templates/products/category_fragment.html:111
 msgid "No products in this category yet."
 msgstr "В этой категории пока нет товаров."
 
@@ -140,6 +330,10 @@ msgstr "При загрузке товара что-то пошло не так.
 msgid "No description available."
 msgstr "Описание отсутствует."
 
+#: products/templates/products/detail.html:32
+msgid "Add to basket"
+msgstr "Добавить в корзину"
+
 #: templates/404.html:5 templates/404.html:8
 msgid "Page not found"
 msgstr "Страница не найдена"
@@ -152,5 +346,13 @@ msgstr "Страница, которую вы ищете, не существу�
 msgid "Site name"
 msgstr "Название сайта"
 
-#~ msgid "Products"
-#~ msgstr "Товары"
+#: templates/partials/critical.js.html:10
+msgid "In comparison"
+msgstr "В сравнении"
+
+#: templates/partials/header.html:32
+msgid "Comparison"
+msgstr "Сравнение"
+
+#~ msgid "Loading..."
+#~ msgstr "Загрузка..."

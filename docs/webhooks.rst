@@ -1,3 +1,5 @@
+.. docs/webhooks.rst
+
 Webhooks
 ========
 

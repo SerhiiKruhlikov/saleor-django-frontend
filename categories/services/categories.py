@@ -1,8 +1,12 @@
 # categories/services/categories.py
+import logging
 from django.conf import settings
 from gateway.saleor.loader import load_query
 from gateway.saleor.client import safe_execute_query, SaleorUnavailable
 from django.core.cache import cache
+from gateway.redis_utils import delete_keys_by_pattern
+
+logger = logging.getLogger(__name__)
 
 APP_NAME = "categories"
 
@@ -80,13 +84,17 @@ def get_all_categories(first: int | None = None, language: str | None = None) ->
     if categories is None:
         try:
             query = load_query(APP_NAME, "queries/all_categories.graphql")
-            variables = {"first": first}
+            variables = {"first": first, "lang": language.upper()}
             data = safe_execute_query(query, variables)
             if data is None:
                 return []
-            categories = [
-                edge["node"] for edge in data.get("categories", {}).get("edges", [])
-            ]
+            raw = [edge["node"] for edge in data.get("categories", {}).get("edges", [])]
+            categories = []
+            for cat in raw:
+                translation = cat.get("translation")
+                if translation and translation.get("name"):
+                    cat["name"] = translation["name"]
+                categories.append(cat)
             if categories:
                 cache.set(cache_key, categories, timeout=TIMEOUT_ALL_CATEGORIES)
         except SaleorUnavailable:
@@ -120,13 +128,16 @@ def get_category_by_slug(slug: str, language: str | None = None) -> dict | None:
     if category is None:
         try:
             query = load_query(APP_NAME, "queries/category_by_slug.graphql")
-            variables = {"slug": slug}
+            variables = {"slug": slug, "lang": language.upper()}
             data = safe_execute_query(query, variables)
             if data is None:
                 cache.set(cache_key, None, timeout=TIMEOUT_NONE)
                 return None
             category = data.get("category")
             if category is not None:
+                translation = category.get("translation")
+                if translation and translation.get("name"):
+                    category["name"] = translation["name"]
                 cache.set(cache_key, category, timeout=TIMEOUT_CATEGORY_BY_SLUG)
             else:
                 cache.set(cache_key, None, timeout=TIMEOUT_NONE)
@@ -251,12 +262,27 @@ def find_node_in_tree(slug: str, nodes: list[dict]) -> dict | None:
 # Cache invalidation
 # ----------------------------------------------------------------------
 
-def invalidate_global_category_cache():
+def invalidate_category_cache():
     """
     Invalidates shared category cache keys for all languages:
     total count, full tree, and raw lists.
+    Does **not** remove individual ``categories:{lang}:{slug}`` keys.
     """
     cache.delete("categories:count")
     for lang_code, _ in settings.LANGUAGES:
         cache.delete(f"categories:{lang_code}:tree")
         cache.delete(f"categories:{lang_code}:raw")
+
+
+def invalidate_global_category_cache():
+    """
+    Invalidates **all** cached data related to categories (for all languages):
+    total count, full trees, raw lists, and individual category pages.
+    """
+    prefix = settings.CACHES['default'].get('KEY_PREFIX', '')
+    if prefix:
+        pattern = f"{prefix}:*categories*"
+    else:
+        pattern = "categories:*"
+    deleted = delete_keys_by_pattern(pattern)
+    logger.info("All category caches invalidated, deleted %d keys", deleted)

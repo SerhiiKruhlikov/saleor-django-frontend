@@ -1,0 +1,55 @@
+{# compare/templates/compare/compare_table.html #}
+{% load i18n %}
+
+{% if error %}
+  <p>{{ error }}</p>
+{% elif not snapshots %}
+  <p>{% trans "No products to compare. Add products from catalog." %}</p>
+{% else %}
+  <table class="compare-table">
+    <thead>
+    <tr>
+      <th>{% trans "Characteristic" %}</th>
+      {% for snap in snapshots %}
+        <th>
+          {{ snap.name }}
+          <button class="compare-remove"
+                  data-remove-slug="{{ snap.slug }}"
+                  aria-label="{% trans 'Remove from comparison' %}">✕</button>
+        </th>
+      {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {# Status row #}
+    <tr>
+      <td>{% trans "Status" %}</td>
+      {% for snap in snapshots %}
+        <td>{{ snap.status.name|default:"—" }}</td>
+      {% endfor %}
+    </tr>
+
+    {# Price row #}
+    <tr>
+      <td>{% trans "Price" %}</td>
+      {% for snap in snapshots %}
+        <td>{{ snap.price.amount|floatformat:2 }} {{ snap.price.currency }}</td>
+      {% endfor %}
+    </tr>
+
+    {# Attribute rows – use the attributes of the first snapshot as the reference #}
+    {% for attr in snapshots.0.attributes %}
+      <tr>
+        <td>{{ attr.name }}</td>
+        {% for snap in snapshots %}
+          <td>
+            {% for other_attr in snap.attributes %}
+              {% if other_attr.slug == attr.slug %}{{ other_attr.value }}{% endif %}
+            {% endfor %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}

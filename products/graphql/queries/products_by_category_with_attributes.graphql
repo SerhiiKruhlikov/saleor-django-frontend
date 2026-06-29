@@ -1,9 +1,11 @@
+# products/graphql/queries/products_by_category_with_attributes.graphql
 query ProductsByCategoryWithAttributes(
   $slug: String!,
   $first: Int!,
   $after: String,
   $channel: String!,
-  $filter: ProductFilterInput
+  $filter: ProductFilterInput,
+  $lang: LanguageCodeEnum!
 ) {
   category(slug: $slug) {
     products(first: $first, after: $after, channel: $channel, filter: $filter) {
@@ -13,9 +15,15 @@ query ProductsByCategoryWithAttributes(
           id
           name
           slug
+          translation(languageCode: $lang) { name }
           thumbnail { url alt }
           pricing {
             priceRange {
+              start {
+                gross { amount currency }
+              }
+            }
+            priceRangeUndiscounted {
               start {
                 gross { amount currency }
               }
@@ -26,11 +34,13 @@ query ProductsByCategoryWithAttributes(
               id
               slug
               name
+              translation(languageCode: $lang) { name }
             }
             values {
               id
               slug
               name
+              translation(languageCode: $lang) { name }
             }
           }
         }

@@ -7,6 +7,7 @@ from django.core.cache import cache
 
 from gateway.saleor.client import safe_execute_query, SaleorUnavailable
 from gateway.saleor.loader import load_query
+from gateway.redis_utils import delete_keys_by_pattern
 
 from collections import defaultdict
 
@@ -22,6 +23,96 @@ CACHE_TIMEOUTS = getattr(settings, "CACHE_TIMEOUTS", {})
 TIMEOUT_PRODUCT_BY_SLUG = CACHE_TIMEOUTS.get("PRODUCT_BY_SLUG", 1800)
 TIMEOUT_PRODUCTS_BY_CATEGORY = CACHE_TIMEOUTS.get("PRODUCTS_BY_CATEGORY", 600)
 TIMEOUT_NONE = 60  # Short TTL for caching “not found” results
+TIMEOUT_SNAPSHOT = getattr(settings, 'BASKET_CACHE_TTL', 864000)
+
+
+def _apply_product_translations(edges: list):
+    """
+    Replace name (and any other translatable fields) with their translated
+    versions for each product, its category, attributes, and attribute values.
+    """
+    for edge in edges:
+        node = edge.get("node", {})
+        # --- Товар ---
+        _apply_translation(node)
+
+        # --- Категория (для хлебных крошек и ссылок) ---
+        category = node.get("category")
+        if category:
+            _apply_translation(category)
+
+        # --- Атрибуты ---
+        for attr in node.get("attributes", []):
+            # Сам атрибут
+            _apply_translation(attr.get("attribute", {}))
+            # Значения атрибута
+            for value in attr.get("values", []):
+                _apply_translation(value)
+
+
+def _apply_translation(obj: dict):
+    """
+    If *obj* contains a ``translation`` dict, copy its contents into *obj*
+    (overwriting existing keys).  This makes the translated fields
+    directly accessible as obj['name'], obj['description'], etc.
+    """
+    translation = obj.get("translation")
+    if translation:
+        for key, val in translation.items():
+            if val is not None:          # не перезаписываем None'ами
+                obj[key] = val
+
+
+def _extract_status(edges: list):
+    """
+    For each product, find the attribute with slug 'status' and store its
+    first value as ``product['status']`` (dict with ``name`` and ``slug``).
+    If the attribute is missing or empty, ``status`` is set to ``None``.
+    """
+    for edge in edges:
+        node = edge.get("node", {})
+        status_value = None
+        for attr in node.get("attributes", []):
+            if attr.get("attribute", {}).get("slug") == "status":
+                values = attr.get("values", [])
+                if values:
+                    val = values[0]
+                    status_value = {
+                        "name": val.get("name", ""),
+                        "slug": val.get("slug", ""),
+                    }
+                break
+        node["status"] = status_value
+
+
+def _extract_prices(edges: list):
+    for edge in edges:
+        node = edge.get("node", {})
+        pricing = node.get("pricing", {})
+        price_range = pricing.get("priceRange", {})
+        undiscounted_range = pricing.get("priceRangeUndiscounted", {})
+
+        new_price = None
+        old_price = None
+
+        if price_range:
+            start = price_range.get("start", {})
+            gross = start.get("gross", {})
+            new_price = {
+                "amount": gross.get("amount"),
+                "currency": gross.get("currency"),
+            } if gross.get("amount") is not None else None
+
+        if undiscounted_range:
+            start = undiscounted_range.get("start", {})
+            gross = start.get("gross", {})
+            old_price = {
+                "amount": gross.get("amount"),
+                "currency": gross.get("currency"),
+            } if gross.get("amount") is not None else None
+
+        node["new_price"] = new_price
+        node["old_price"] = old_price if old_price != new_price else None
 
 
 def get_product_by_slug(slug: str, language: str | None = None) -> dict | None:
@@ -53,7 +144,7 @@ def get_product_by_slug(slug: str, language: str | None = None) -> dict | None:
 
     try:
         query = load_query(APP_NAME, "queries/product_by_slug.graphql")
-        variables = {"slug": slug}
+        variables = {"slug": slug, "channel": settings.SALEOR_CHANNEL, "lang": language.upper()}
         data = safe_execute_query(query, variables)
         if data is None:
             # Product not found – cache the None result briefly
@@ -62,8 +153,29 @@ def get_product_by_slug(slug: str, language: str | None = None) -> dict | None:
 
         product = data.get("product")
         if product is not None:
-            if product.get("description"):
-                product["description"] = editorjs_to_html(product["description"])
+            # Преобразуем availableForPurchase в булево
+            available = product.get("availableForPurchase")
+            product["available_for_purchase"] = bool(available) if available else False
+
+            translation = product.get("translation")
+            if translation and translation.get("name"):
+                product["name"] = translation["name"]
+
+            # Применяем перевод названия категории
+            category = product.get("category")
+            if category:
+                cat_trans = category.get("translation")
+                if cat_trans and cat_trans.get("name"):
+                    category["name"] = cat_trans["name"]
+
+            description = None
+            if translation and translation.get("description"):
+                description = translation["description"]
+            elif product.get("description"):
+                description = product["description"]
+            if description:
+                product["description"] = editorjs_to_html(description)
+
             cache.set(cache_key, product, timeout=TIMEOUT_PRODUCT_BY_SLUG)
         else:
             cache.set(cache_key, None, timeout=TIMEOUT_NONE)
@@ -139,6 +251,7 @@ def get_products_by_category(slug: str, first: int = 12, after: str | None = Non
             "first": first,
             "after": after,
             "channel": settings.SALEOR_CHANNEL,
+            "lang": language.upper(),
         }
         data = safe_execute_query(query, variables)
         if data is None:
@@ -154,6 +267,9 @@ def get_products_by_category(slug: str, first: int = 12, after: str | None = Non
             "page_info": products.get("pageInfo", {}),
             "total_count": products.get("totalCount", 0),
         }
+        _apply_product_translations(result["edges"])
+        _extract_status(result["edges"])
+        _extract_prices(result["edges"])
         if result["edges"]:
             cache.set(cache_key, result, timeout=TIMEOUT_PRODUCTS_BY_CATEGORY)
         return result
@@ -275,6 +391,7 @@ def _fetch_products(slug, first, after, language, filter_dict):
             "first": first,
             "after": after,
             "channel": settings.SALEOR_CHANNEL,
+            "lang": language.upper(),
         }
         if filter_dict:
             attributes_filter = [
@@ -288,11 +405,15 @@ def _fetch_products(slug, first, after, language, filter_dict):
             category = data.get("category")
             if category:
                 pdata = category.get("products", {})
-                return {
+                result = {
                     "edges": pdata.get("edges", []),
                     "page_info": pdata.get("pageInfo", {}),
                     "total_count": pdata.get("totalCount", 0),
                 }
+                _apply_product_translations(result["edges"])
+                _extract_status(result["edges"])
+                _extract_prices(result["edges"])
+                return result
     except SaleorUnavailable:
         logger.warning("Saleor unavailable while fetching products for slug=%s", slug)
     return {"edges": [], "page_info": {}, "total_count": 0}
@@ -324,6 +445,7 @@ def get_category_product_count(slug: str, language: str | None = None) -> int:
             "first": 1,
             "after": None,
             "channel": settings.SALEOR_CHANNEL,
+            "lang": language.upper(),
         }
         data = safe_execute_query(query, variables)
         if data is None:
@@ -360,6 +482,7 @@ def get_category_attributes(slug: str, language: str | None = None, selected_fil
             "first": total,
             "after": None,
             "channel": settings.SALEOR_CHANNEL,
+            "lang": language.upper(),
         }
         data = safe_execute_query(query, variables)
         if data is None:
@@ -375,11 +498,23 @@ def get_category_attributes(slug: str, language: str | None = None, selected_fil
         for edge in edges:
             for attr in edge["node"].get("attributes", []):
                 attr_slug = attr["attribute"]["slug"]
-                attr_names[attr_slug] = attr["attribute"]["name"]
+                attr_translation = attr["attribute"].get("translation")
+                attr_name = (
+                    attr_translation.get("name")
+                    if attr_translation and attr_translation.get("name")
+                    else attr["attribute"]["name"]
+                )
+                attr_names[attr_slug] = attr_name
                 for value in attr["values"]:
                     val_slug = value["slug"]
                     attr_counts[attr_slug][val_slug] += 1
-                    value_names[attr_slug][val_slug] = value.get("name", val_slug)
+                    val_translation = value.get("translation")
+                    val_name = (
+                        val_translation.get("name")
+                        if val_translation and val_translation.get("name")
+                        else value.get("name", val_slug)
+                    )
+                    value_names[attr_slug][val_slug] = val_name
 
         filters = []
         for attr_slug, value_counts in attr_counts.items():
@@ -406,6 +541,79 @@ def get_category_attributes(slug: str, language: str | None = None, selected_fil
         return []
 
 
+def get_product_snapshot(slug: str, language: str | None = None) -> dict | None:
+    """
+    Return a lightweight product snapshot for the basket.
+    Cached in Redis per language.
+    """
+    if language is None:
+        language = settings.LANGUAGE_CODE
+
+    cache_key = f"products:snapshot:{language}:{slug}"
+    snapshot = cache.get(cache_key)
+    if snapshot is not None:
+        return snapshot
+
+    try:
+        query = load_query(APP_NAME, "queries/product_by_slug.graphql")
+        variables = {
+            "slug": slug,
+            "channel": settings.SALEOR_CHANNEL,
+            "lang": language.upper(),
+        }
+        data = safe_execute_query(query, variables)
+        if data is None:
+            return None
+
+        product = data.get("product")
+        if not product:
+            return None
+
+        # Применяем перевод названия
+        translation = product.get("translation")
+        if translation and translation.get("name"):
+            product["name"] = translation["name"]
+
+        # Доступность для покупки
+        available = product.get("availableForPurchase")
+        available_for_purchase = bool(available) if available else False
+
+        # Цена
+        pricing = product.get("pricing", {})
+        price_range = pricing.get("priceRange", {})
+        price_amount = None
+        price_currency = None
+        if price_range:
+            start = price_range.get("start", {}).get("gross", {})
+            price_amount = start.get("amount")
+            price_currency = start.get("currency")
+
+        variants = product.get("variants", [])
+        variant = variants[0] if variants else None
+        variant_id = variant["id"] if variant else None
+        sku = variant.get("sku") if variant else None
+
+        snapshot = {
+            "slug": product["slug"],
+            "name": product.get("name", ""),
+            "thumbnail": product.get("thumbnail", {}).get("url") if product.get("thumbnail") else None,
+            "available_for_purchase": available_for_purchase,
+            "price": {
+                "amount": price_amount,
+                "currency": price_currency,
+            },
+            "variant_id": variant_id,
+            "sku": sku,
+        }
+
+        cache.set(cache_key, snapshot, timeout=TIMEOUT_SNAPSHOT)
+        return snapshot
+
+    except SaleorUnavailable:
+        logger.warning("Saleor unavailable while fetching snapshot for %s", slug)
+        return None
+
+
 # ----------------------------------------------------------------------
 # Cache invalidation
 # ----------------------------------------------------------------------
@@ -420,3 +628,45 @@ def invalidate_product_cache_by_slug(slug: str):
     for lang_code, _ in settings.LANGUAGES:
         cache.delete(f"products:{lang_code}:{slug}")
     logger.info("Invalidated cache for product slug=%s", slug)
+
+
+def invalidate_product_category_cache(category_slug: str):
+    """
+    Remove all cached filter, attribute and count data for a given category.
+
+    Call this whenever a product inside the category is created, updated
+    or deleted.
+    """
+    for lang_code, _ in settings.LANGUAGES:
+        cache.delete(f"products:count:{lang_code}:{category_slug}")
+        cache.delete_pattern(f"products:attributes:unfiltered:{lang_code}:{category_slug}")
+        cache.delete_pattern(f"products:facet:{lang_code}:{category_slug}:*")
+        cache.delete_pattern(f"products:by_category:{lang_code}:{category_slug}:*")
+    logger.info("Invalidated product caches for category slug=%s", category_slug)
+
+
+# def invalidate_all_product_cache():
+#     """
+#     Invalidate **all** product‑related caches (detail pages, lists,
+#     filters, attributes, counts).  Safe to call when promotions change
+#     and we don't know exactly which products are affected.
+#     """
+#     for lang_code, _ in settings.LANGUAGES:
+#         cache.delete_pattern(f"products:{lang_code}:*")
+#         cache.delete_pattern(f"products:by_category:{lang_code}:*")
+#         cache.delete_pattern(f"products:attributes:unfiltered:{lang_code}:*")
+#         cache.delete_pattern(f"products:facet:{lang_code}:*")
+#     cache.delete_pattern("products:count:*")
+#     logger.info("All product caches invalidated (promotion change)")
+def invalidate_all_product_cache():
+    """
+    Invalidate **all** product‑related caches (detail pages, lists,
+    filters, attributes, counts).
+    """
+    prefix = settings.CACHES['default'].get('KEY_PREFIX', '')
+    if prefix:
+        pattern = f"{prefix}:*products*"
+    else:
+        pattern = "products:*"
+    deleted = delete_keys_by_pattern(pattern)
+    logger.info("All product caches invalidated, deleted %d keys", deleted)

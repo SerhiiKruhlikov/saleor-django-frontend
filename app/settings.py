@@ -1,3 +1,4 @@
+# app/settings.py
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -16,16 +17,20 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     'unlumbering-ling-whiny.ngrok-free.dev',
     '.ngrok-free.dev',
+    'host.docker.internal',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'https://unlumbering-ling-whiny.ngrok-free.dev',
-    'https://*.ngrok-free.dev'
+    'https://*.ngrok-free.dev',
 ]
 
 INSTALLED_APPS = [
     'shop',
     'categories',
     'products',
+    'compare',
+    'basket',
+    'orders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,6 +133,7 @@ SALEOR_WEBHOOK_SECRET = os.environ.get("SALEOR_WEBHOOK_SECRET", "")
 SALEOR_CHANNEL = os.environ.get("SALEOR_CHANNEL", "uk-store")
 SALEOR_DEFAULT_CURRENCY = os.environ.get("SALEOR_DEFAULT_CURRENCY", "UAH")
 SALEOR_PAGINATION_PRODUCTS_PER_PAGE = int(os.environ.get("SALEOR_PAGINATION_PRODUCTS_PER_PAGE", 12))
+SALEOR_RECONNECT_INVALIDATION_ENABLED = True
 
 
 # SPHINX
@@ -135,14 +141,24 @@ DOCS = True
 
 
 # REDIS
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/1"),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         },
+#         "KEY_PREFIX": "test_techpro_dev"
+#     }
+# }
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/1"),
+        "LOCATION": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
-        "KEY_PREFIX": "test_techpro_dev"
+        "KEY_PREFIX": "test_graphql"
     }
 }
 
@@ -172,6 +188,8 @@ CACHE_TIMEOUTS = {
     'PRODUCT_BY_SLUG': 1800,
     'PRODUCTS_BY_CATEGORY': 600,
     'ROUTER_SLUG_TYPE': 86400,      # 24 hours – how long a slug type is cached
+    'COMPARE_CACHE_TTL': 86400,
+    'BASKET_CACHE_TTL': 864000,
 }
 
 

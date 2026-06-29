@@ -1,0 +1,12 @@
+# basket/graphql/queries/checkout_shipping_address_update.graphql
+mutation CheckoutShippingAddressUpdate($id: ID!, $address: AddressInput!) {
+  checkoutShippingAddressUpdate(id: $id, shippingAddress: $address) {
+    checkout {
+      id
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

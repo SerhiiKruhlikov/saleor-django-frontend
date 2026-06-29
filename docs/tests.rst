@@ -1,3 +1,5 @@
+.. docs/tests.rst
+
 Tests Reference
 ===============
 
