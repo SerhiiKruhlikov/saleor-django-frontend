@@ -7,11 +7,7 @@
 {% block content %}
   <h1>{% trans "Basket" %}</h1>
 
-  <div id="basket-wrapper" class="basket-wrapper"
-       hx-get="{% url 'basket_api:basket_table_api' %}?lang={{ request.LANGUAGE_CODE }}"
-       hx-trigger="load"
-       hx-include="#basket-items-data"
-       hx-swap="innerHTML">
+  <div id="basket-wrapper" class="basket-wrapper">
     {# Скелетон #}
     <div class="products-grid">
       {% for i in "123"|make_list %}
@@ -24,33 +20,5 @@
     </div>
   </div>
 
-  <input type="hidden" id="basket-items-data" name="items" value="">
-
   <a href="{% url 'router:dynamic_router' slug='catalog' %}">← {% trans "Go to catalog" %}</a>
-
-  <script>
-    (function () {
-      const BASKET_KEY = (window.SDF_PREFIX || 'sdf') + '_basket';
-      const itemsInput = document.getElementById('basket-items-data');
-
-      function updateItems() {
-        const stored = localStorage.getItem(BASKET_KEY);
-        const basket = stored ? JSON.parse(stored) : { items: [] };
-        const items = basket.items.map(item => ({ slug: item.slug, quantity: item.quantity }));
-        itemsInput.value = JSON.stringify(items);
-      }
-
-      updateItems();
-      window.addEventListener('storage', function (e) {
-        if (e.key === BASKET_KEY) {
-          updateItems();
-          // Триггерим перезагрузку таблицы, если изменилось в другой вкладке
-          const wrapper = document.getElementById('basket-wrapper');
-          if (wrapper) {
-            htmx.trigger(wrapper, 'load');
-          }
-        }
-      });
-    })();
-  </script>
 {% endblock %}

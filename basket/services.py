@@ -1,6 +1,5 @@
 # basket/services.py
 import logging
-from django.conf import settings
 from gateway.saleor.loader import load_query
 
 logger = logging.getLogger(__name__)

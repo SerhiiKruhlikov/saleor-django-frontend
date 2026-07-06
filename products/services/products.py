@@ -645,19 +645,20 @@ def invalidate_product_category_cache(category_slug: str):
     logger.info("Invalidated product caches for category slug=%s", category_slug)
 
 
-# def invalidate_all_product_cache():
-#     """
-#     Invalidate **all** product‑related caches (detail pages, lists,
-#     filters, attributes, counts).  Safe to call when promotions change
-#     and we don't know exactly which products are affected.
-#     """
-#     for lang_code, _ in settings.LANGUAGES:
-#         cache.delete_pattern(f"products:{lang_code}:*")
-#         cache.delete_pattern(f"products:by_category:{lang_code}:*")
-#         cache.delete_pattern(f"products:attributes:unfiltered:{lang_code}:*")
-#         cache.delete_pattern(f"products:facet:{lang_code}:*")
-#     cache.delete_pattern("products:count:*")
-#     logger.info("All product caches invalidated (promotion change)")
+def invalidate_basket_snapshots(slug: str):
+    """
+    Deletes all cached snapshots for this product in all languages,
+    respecting the cache key prefix.
+    """
+    prefix = settings.CACHES['default'].get('KEY_PREFIX', '')
+    if prefix:
+        pattern = f"{prefix}:*products:snapshot:*:{slug}"
+    else:
+        pattern = f"*products:snapshot:*:{slug}"
+    deleted = delete_keys_by_pattern(pattern)
+    logger.info("Invalidated basket snapshots for slug=%s, deleted %d keys", slug, deleted)
+
+
 def invalidate_all_product_cache():
     """
     Invalidate **all** product‑related caches (detail pages, lists,

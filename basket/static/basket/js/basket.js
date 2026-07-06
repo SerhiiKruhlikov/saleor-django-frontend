@@ -1,5 +1,4 @@
 // basket/static/basket/js/basket.js
-
 const PREFIX = (window.SDF_PREFIX || 'sdf') + '_';
 const BASKET_KEY = PREFIX + 'basket';
 const CURRENCY = window.CURRENCY || 'UAH';
@@ -36,7 +35,7 @@ export function addToBasket(slug, quantity = 1) {
   updateBasketUI();
   fetchAndCacheSnapshot(slug, true);
   if (document.getElementById('basket-wrapper')) {
-    refreshBasketTable();
+    loadBasketTable();
   }
 }
 
@@ -46,7 +45,7 @@ export function removeFromBasket(slug) {
   saveBasket(basket);
   updateBasketUI();
   if (document.getElementById('basket-wrapper')) {
-    refreshBasketTable();
+    loadBasketTable();
   }
 }
 
@@ -59,7 +58,7 @@ export function updateQuantity(slug, quantity) {
     updateBasketUI();
   }
   if (document.getElementById('basket-wrapper')) {
-    refreshBasketTable();
+    loadBasketTable();
   }
 }
 
@@ -91,16 +90,12 @@ function saveSnapshotsMap(map) {
 }
 
 async function fetchAndCacheSnapshot(slug, force = false) {
-  console.log('fetchAndCacheSnapshot called for', slug, 'force:', force);
   const lang = getLang();
-  console.log('Language:', lang);
   const url = `/api/basket/snapshots/?slugs=${encodeURIComponent(slug)}&lang=${encodeURIComponent(lang)}`;
   try {
     const res = await fetch(url);
-    console.log('Fetch response status:', res.status);
     if (!res.ok) return;
     const data = await res.json();
-    console.log('Received data:', data);
     const snapshots = data.snapshots || [];
     if (snapshots.length > 0) {
       const snapshot = snapshots[0];
@@ -108,7 +103,6 @@ async function fetchAndCacheSnapshot(slug, force = false) {
       if (!map[slug]) map[slug] = {};
       map[slug][lang] = { snapshot, ts: now() };
       saveSnapshotsMap(map);
-      console.log('Snapshot saved for', slug, snapshot);
       updateBasketUI();
     }
   } catch (e) {
@@ -120,7 +114,6 @@ async function fetchAndCacheSnapshot(slug, force = false) {
 // Header widget
 // ---------------------------------------------------------------------------
 export function updateBasketUI() {
-  console.log('updateBasketUI called');
   const basket = getBasket();
   const count = basket.items.length;
 
@@ -130,10 +123,8 @@ export function updateBasketUI() {
     badge.style.display = count > 0 ? '' : 'none';
   }
   const total = calculateBasketTotal(basket);
-  console.log('Total to display:', total);
   const totalEl = document.querySelector('.basket-total');
   if (totalEl) {
-    const total = calculateBasketTotal(basket);
     totalEl.textContent = total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + CURRENCY;
   }
 
@@ -149,32 +140,149 @@ export function updateBasketUI() {
   }
 }
 
-function refreshSnapshotsForCurrentLanguage() {
+function updateBasketTotalFromDOM() {
+  let subtotal = 0;
+  document.querySelectorAll('.basket-item').forEach(row => {
+    const priceEl = row.querySelector('.basket-item-new-price, .basket-item-price');
+    if (!priceEl) return;
+    const unitPrice = parseFloat(priceEl.dataset.unitPrice) || 0;
+    const qtyInput = row.querySelector('.basket-qty');
+    const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+    subtotal += unitPrice * qty;
+  });
+  const subtotalEl = document.getElementById('basket-subtotal');
+  if (subtotalEl) {
+    subtotalEl.textContent = subtotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+  const totalEl = document.getElementById('basket-total');
+  if (totalEl) {
+    totalEl.textContent = subtotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+  const totalHeaderEl = document.querySelector('.basket-total');
+  if (totalHeaderEl) {
+    totalHeaderEl.textContent = subtotal.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + CURRENCY;
+  }
+}
+
+function refreshSnapshotsForCurrentLanguage(force = false) {
   const basket = getBasket();
   const lang = getLang();
-  const slugs = basket.items.map(item => item.slug);
-  slugs.forEach(slug => {
+  const allSlugs = [
+    ...basket.items.map(item => item.slug),
+    ...basket.unavailableItems.map(item => item.slug)
+  ];
+  const uniqueSlugs = [...new Set(allSlugs)];
+  const promises = [];
+  uniqueSlugs.forEach(slug => {
     const snap = basket.snapshots?.[slug]?.[lang];
-    // если снепшота нет или он старше 24 часов (можно взять константу)
-    if (!snap || (now() - snap.ts) > 24 * 60 * 60 * 1000) {
-      fetchAndCacheSnapshot(slug, false); // не принудительно, но загрузит, если нет
+    if (force || !snap) {
+      promises.push(fetchAndCacheSnapshot(slug, true));
     }
   });
+  return Promise.all(promises);
 }
 
 function calculateBasketTotal(basket) {
   const lang = getLang();
-  console.log('Calculating total, lang:', lang, 'basket:', basket);
   let total = 0;
   basket.items.forEach(item => {
     const snap = basket.snapshots?.[item.slug]?.[lang];
-    console.log('Item:', item.slug, 'snap:', snap);
     if (snap?.snapshot?.price?.amount) {
       total += snap.snapshot.price.amount * item.quantity;
     }
   });
-  console.log('Total:', total);
   return total;
+}
+
+function syncBasketWithSnapshots() {
+  const basket = getBasket();
+  const lang = getLang();
+  let changed = false;
+
+  const newItems = [];
+  const newUnavailable = [];
+  const itemsSlugs = new Set(basket.items.map(i => i.slug));
+  const unavailableSlugs = new Set(basket.unavailableItems.map(i => i.slug));
+
+  basket.items.forEach(item => {
+    const snap = basket.snapshots?.[item.slug]?.[lang]?.snapshot;
+    if (snap && snap.available_for_purchase === true) {
+      newItems.push(item);
+    } else {
+      if (!unavailableSlugs.has(item.slug)) {
+        basket.unavailableItems.push(item);
+        changed = true;
+      }
+      if (basket.snapshots && basket.snapshots[item.slug]) {
+        delete basket.snapshots[item.slug][lang];
+        if (Object.keys(basket.snapshots[item.slug]).length === 0) {
+          delete basket.snapshots[item.slug];
+        }
+      }
+      changed = true;
+    }
+  });
+
+  basket.unavailableItems.forEach(item => {
+    const snap = basket.snapshots?.[item.slug]?.[lang]?.snapshot;
+    if (snap && snap.available_for_purchase === true) {
+      if (!itemsSlugs.has(item.slug)) {
+        newItems.push(item);
+        changed = true;
+      }
+    } else {
+      newUnavailable.push(item);
+    }
+  });
+
+  basket.items = newItems;
+  basket.unavailableItems = newUnavailable;
+
+  if (changed) {
+    saveBasket(basket);
+    updateBasketUI();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HTMX integration
+// ---------------------------------------------------------------------------
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+  if (evt.detail.target.id === 'basket-wrapper') {
+    updateBasketTotalFromDOM();
+    const count = document.querySelectorAll('.basket-item').length;
+    const badge = document.querySelector('.basket-badge');
+    if (badge) {
+      badge.textContent = count;
+      badge.style.display = count > 0 ? '' : 'none';
+    }
+    const link = document.querySelector('.basket-link');
+    if (link) {
+      if (count === 0) {
+        link.classList.add('disabled');
+        link.removeAttribute('href');
+      } else {
+        link.classList.remove('disabled');
+        link.setAttribute('href', '/basket/');
+      }
+    }
+  }
+});
+
+function loadBasketTable() {
+  const wrapper = document.getElementById('basket-wrapper');
+  if (!wrapper) return;
+  const basket = getBasket();
+  const items = basket.items.map(item => ({ slug: item.slug, quantity: item.quantity }));
+  const itemsJson = JSON.stringify(items);
+  const unavailableSlugs = basket.unavailableItems.map(item => item.slug);
+  const unavailableJson = JSON.stringify(unavailableSlugs);
+  const lang = getLang();
+  const url = '/api/basket/table/?lang=' + lang + '&items=' + encodeURIComponent(itemsJson) + '&unavailable=' + encodeURIComponent(unavailableJson);
+  htmx.ajax('GET', url, {
+    target: '#basket-wrapper',
+    swap: 'innerHTML'
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -187,7 +295,7 @@ function setupBasketEvents() {
       e.preventDefault();
       const slug = removeBtn.dataset.slug;
       removeFromBasket(slug);
-      refreshBasketTable();
+      loadBasketTable();
       return;
     }
 
@@ -202,7 +310,6 @@ function setupBasketEvents() {
   document.body.addEventListener('change', function (e) {
     const input = e.target.closest('.basket-qty');
     if (input) {
-      console.log('Change event on .basket-qty');
       const slug = input.dataset.slug;
       const qty = parseInt(input.value) || 1;
       updateQuantity(slug, qty);
@@ -211,39 +318,29 @@ function setupBasketEvents() {
 }
 
 // ---------------------------------------------------------------------------
-// HTMX integration
-// ---------------------------------------------------------------------------
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-  if (evt.detail.target.id === 'basket-wrapper') {
-    updateBasketUI();
-  }
-});
-
-function refreshBasketTable() {
-  const wrapper = document.getElementById('basket-wrapper');
-  if (!wrapper) return;
-  const basket = getBasket();
-  const items = basket.items.map(item => ({ slug: item.slug, quantity: item.quantity }));
-  const itemsJson = JSON.stringify(items);
-  const lang = getLang();
-  const url = '/api/basket/table/?lang=' + lang + '&items=' + encodeURIComponent(itemsJson);
-  htmx.ajax('GET', url, {
-    target: '#basket-wrapper',
-    swap: 'innerHTML'
-  });
-}
-
-// ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function() {
-    setupBasketEvents();
-    updateBasketUI();
-    refreshSnapshotsForCurrentLanguage();
-  });
-} else {
+function initBasket() {
   setupBasketEvents();
   updateBasketUI();
-  refreshSnapshotsForCurrentLanguage();
+
+  // 1. Синхронизация по локальным данным
+  syncBasketWithSnapshots();
+
+  // 2. Фоновое обновление снепшотов
+  refreshSnapshotsForCurrentLanguage(true).then(() => {
+    syncBasketWithSnapshots();
+    // 3. Загрузка таблицы после синхронизации
+    loadBasketTable();
+  });
+
+  // Если запросы затянулись, но таблица уже должна показаться,
+  // можно сразу загрузить таблицу, а потом обновить.
+  // Но для надёжности делаем после обновления снепшотов.
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initBasket);
+} else {
+  initBasket();
 }

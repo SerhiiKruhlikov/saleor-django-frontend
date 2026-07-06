@@ -3,8 +3,7 @@ import logging
 from django.core.cache import cache
 
 from categories.services.categories import invalidate_global_category_cache
-from products.services.products import invalidate_product_cache_by_slug, invalidate_product_category_cache, \
-    invalidate_all_product_cache
+from products.services.products import invalidate_product_cache_by_slug, invalidate_product_category_cache, invalidate_all_product_cache, invalidate_basket_snapshots
 from router.services import invalidate_router_cache
 
 logger = logging.getLogger(__name__)
@@ -51,6 +50,7 @@ def handle_product_event(event_type: str, payload: dict):
     if slug:
         invalidate_product_cache_by_slug(slug)
         invalidate_router_cache(slug)
+        invalidate_basket_snapshots(slug)
         logger.info("Invalidated cache for product slug=%s due to event: %s", slug, event_type)
 
     if category_slug:

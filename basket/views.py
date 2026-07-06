@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from django.utils.translation import activate, deactivate_all
-from django.conf import settings
 
 from basket.services import create_order
 from products.services.products import get_product_snapshot
@@ -141,7 +140,15 @@ def basket_table_api(request):
         slugs = [s.strip() for s in slugs_str.split(',') if s.strip()]
         items_data = [{'slug': slug, 'quantity': 1} for slug in slugs]
 
-    if not items_data:
+    unavailable_str = request.GET.get('unavailable', '')
+    unavailable_slugs = []
+    if unavailable_str:
+        try:
+            unavailable_slugs = json.loads(unavailable_str)
+        except json.JSONDecodeError:
+            pass
+
+    if not items_data and not unavailable_slugs:
         return HttpResponse("<p>{% trans 'No products in basket.' %}</p>")
 
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
@@ -149,9 +156,10 @@ def basket_table_api(request):
 
     try:
         quantities = {item['slug']: item['quantity'] for item in items_data}
-
         items = []
         unavailable = []
+
+        # Обрабатываем доступные товары
         for item_data in items_data:
             slug = item_data['slug']
             snap = get_product_snapshot(slug, language=lang)
@@ -162,6 +170,17 @@ def basket_table_api(request):
             else:
                 snap['quantity'] = quantities.get(slug, 1)
                 items.append(snap)
+
+        # Добавляем недоступные товары из переданного списка (если их ещё нет)
+        for slug in unavailable_slugs:
+            # Проверяем, не добавлен ли уже этот товар в unavailable
+            if not any(u.get('slug') == slug for u in unavailable):
+                # Пытаемся получить снепшот для отображения имени, но если нет – используем slug
+                snap = get_product_snapshot(slug, language=lang)
+                if snap:
+                    unavailable.append(snap)
+                else:
+                    unavailable.append({"slug": slug, "name": slug, "price": "—"})
 
         subtotal = sum(
             item.get('price', {}).get('amount', 0) * item.get('quantity', 1)
